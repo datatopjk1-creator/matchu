@@ -3,231 +3,261 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Verifikasi Email | Matchu</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
-:root{ --primary:#7A2236; --bg:#F8F5F2; --muted:#6B7280; }
-*{ margin:0; padding:0; box-sizing:border-box; }
-body{ font-family:'Inter',sans-serif; background:var(--bg); min-height:100vh; display:flex; justify-content:center; align-items:center; padding:20px; }
-.card{ width:100%; max-width:520px; background:white; border-radius:30px; padding:52px 48px; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,.05); }
-.logo{ font-family:'Playfair Display',serif; font-size:56px; color:var(--primary); margin-bottom:8px; }
-.tagline{ color:var(--primary); font-style:italic; font-size:14px; margin-bottom:32px; }
-.step{ color:var(--primary); font-weight:600; font-size:13px; margin-bottom:8px; }
-.progress{ width:100%; height:7px; background:#eee; border-radius:20px; margin-bottom:28px; overflow:hidden; }
-.progress-fill{ width:33%; height:100%; background:var(--primary); border-radius:20px; }
-.title{ font-family:'Playfair Display',serif; font-size:28px; margin-bottom:10px; }
-.desc{ color:var(--muted); line-height:1.8; font-size:14px; margin-bottom:20px; }
-.email-box{ background:#f9f4f5; padding:12px 18px; border-radius:12px; margin-bottom:24px; font-weight:600; color:var(--primary); font-size:14px; }
-.otp-container{ display:flex; justify-content:center; gap:10px; margin-bottom:8px; }
-.otp{ width:52px; height:56px; border:1.5px solid #ddd; border-radius:12px; text-align:center; font-size:22px; font-weight:700; font-family:'Inter',sans-serif; color:var(--primary); transition:.2s; outline:none; }
-.otp:focus{ border-color:var(--primary); background:#fdf9f9; }
-.otp.filled{ border-color:var(--primary); background:#f9f4f5; }
-.err-otp{ color:#e53e3e; font-size:13px; margin-bottom:14px; min-height:18px; }
-.btn{ width:100%; padding:14px; border:none; border-radius:13px; background:var(--primary); color:white; font-size:15px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; transition:.2s; }
-.btn:hover{ opacity:.9; }
-.btn:disabled{ opacity:.6; cursor:not-allowed; }
-.resend-wrap{ margin-top:16px; font-size:14px; color:var(--muted); }
-.resend-btn{ background:none; border:none; color:var(--primary); font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; font-size:14px; }
-.resend-btn:disabled{ color:var(--muted); cursor:not-allowed; }
-.note{ margin-top:14px; color:#999; font-size:12px; }
-.back-link{ display:block; margin-top:18px; color:var(--muted); font-size:13px; }
-.back-link a{ color:var(--primary); text-decoration:none; font-weight:600; }
-@media(max-width:480px){
-  .card{ padding:32px 20px; border-radius:20px; }
-  .logo{ font-size:40px; }
-  .title{ font-size:22px; }
-  .otp{ width:44px; height:50px; font-size:18px; }
-  .otp-container{ gap:7px; }
+
+:root{
+    --primary:#7A2236;
+    --bg:#F8F5F2;
+    --muted:#6B7280;
 }
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:20px;
+}
+
+.card{
+
+    width:100%;
+    max-width:650px;
+
+    background:white;
+
+    border-radius:30px;
+
+    padding:60px;
+
+    text-align:center;
+
+    box-shadow:
+    0 20px 50px rgba(0,0,0,.05);
+}
+
+.logo{
+
+    font-family:'Playfair Display',serif;
+
+    font-size:64px;
+
+    color:#7A2236;
+
+    margin-bottom:10px;
+}
+
+.tagline{
+
+    color:#7A2236;
+
+    font-style:italic;
+
+    margin-bottom:40px;
+}
+
+.icon{
+
+    font-size:70px;
+
+    margin-bottom:25px;
+}
+
+.title{
+
+    font-family:'Playfair Display',serif;
+
+    font-size:40px;
+
+    margin-bottom:15px;
+}
+
+.desc{
+
+    color:var(--muted);
+
+    line-height:1.8;
+
+    margin-bottom:35px;
+}
+
+.email-box{
+
+    background:#f9f4f5;
+
+    padding:18px;
+
+    border-radius:14px;
+
+    margin-bottom:30px;
+
+    font-weight:600;
+
+    color:#7A2236;
+}
+
+.otp-container{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:12px;
+
+    margin-bottom:30px;
+}
+
+.otp{
+
+    width:60px;
+
+    height:60px;
+
+    border:1px solid #ddd;
+
+    border-radius:14px;
+
+    text-align:center;
+
+    font-size:24px;
+
+    font-weight:700;
+}
+
+.btn{
+
+    width:100%;
+
+    padding:16px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#7A2236;
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    cursor:pointer;
+}
+
+.btn:hover{
+
+    opacity:.9;
+}
+
+.resend{
+
+    display:block;
+
+    margin-top:20px;
+
+    text-decoration:none;
+
+    color:#7A2236;
+
+    font-weight:600;
+}
+
+.note{
+
+    margin-top:25px;
+
+    color:#888;
+
+    font-size:13px;
+}
+
 </style>
 </head>
+
 <body>
+
 <div class="card">
-  <div class="logo">MATCHU</div>
-  <div class="tagline">Beyond Matching. Toward Marriage.</div>
-  <div class="step">LANGKAH 1 DARI 3 — Verifikasi Email</div>
-  <div class="progress"><div class="progress-fill"></div></div>
-  <div class="title">Masukkan Kode OTP</div>
-  <div class="desc">Kami telah mengirimkan kode verifikasi 6 digit ke:</div>
-  <div class="email-box" id="email-display">memuat...</div>
 
-  <div class="otp-container" id="otp-wrap">
-    <input class="otp" maxlength="1" type="text" inputmode="numeric">
-    <input class="otp" maxlength="1" type="text" inputmode="numeric">
-    <input class="otp" maxlength="1" type="text" inputmode="numeric">
-    <input class="otp" maxlength="1" type="text" inputmode="numeric">
-    <input class="otp" maxlength="1" type="text" inputmode="numeric">
-    <input class="otp" maxlength="1" type="text" inputmode="numeric">
-  </div>
-  <div class="err-otp" id="otp-err"></div>
-
-  <button class="btn" id="btn-verify" onclick="verifyOTP()">Verifikasi Email</button>
-
-  <div class="resend-wrap">
-    Tidak menerima kode?
-    <button class="resend-btn" id="resend-btn" onclick="resendOTP()" disabled>Kirim Ulang</button>
-    <span id="resend-timer">(<span id="countdown">60</span>s)</span>
-  </div>
-  <div class="note">Kode berlaku selama 10 menit.</div>
-  <div class="back-link"><a href="register.html">Kembali dan ganti email</a></div>
+<div class="logo">
+MATCHU
 </div>
 
-<script>
-// Ambil data dari localStorage
-const userData = JSON.parse(localStorage.getItem('matchu_user') || '{}');
-const email = userData.email || '';
+<div class="tagline">
+Beyond Matching. Toward Marriage.
+</div>
 
-if (!email) {
-  alert('Sesi tidak ditemukan. Silakan daftar ulang.');
-  window.location.href = 'complete-profile.html';
-}
-document.getElementById('email-display').textContent = email;
+<div class="icon">
+📧
+</div>
 
-// OTP input behavior
-const inputs = document.querySelectorAll('.otp');
-inputs.forEach((input, idx) => {
-  input.addEventListener('input', function() {
-    this.value = this.value.replace(/[^0-9]/g, '');
-    if (this.value) {
-      this.classList.add('filled');
-      if (idx < inputs.length - 1) inputs[idx + 1].focus();
-    } else {
-      this.classList.remove('filled');
-    }
-    document.getElementById('otp-err').textContent = '';
-  });
-  input.addEventListener('keydown', function(e) {
-    if (e.key === 'Backspace' && !this.value && idx > 0) {
-      inputs[idx - 1].focus();
-      inputs[idx - 1].value = '';
-      inputs[idx - 1].classList.remove('filled');
-    }
-  });
-  input.addEventListener('paste', function(e) {
-    e.preventDefault();
-    const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
-    [...pasted].slice(0, 6).forEach((char, i) => {
-      if (inputs[i]) { inputs[i].value = char; inputs[i].classList.add('filled'); }
-    });
-    inputs[Math.min(pasted.length, 5)].focus();
-  });
-});
-inputs[0].focus();
+<div class="title">
+Verifikasi Email
+</div>
 
-async function verifyOTP() {
-  const otp = [...inputs].map(i => i.value).join('');
-  if (otp.length < 6) {
-    document.getElementById('otp-err').textContent = 'Masukkan 6 digit kode OTP.';
-    return;
-  }
+<div class="desc">
 
-  const btn = document.getElementById('btn-verify');
-  btn.disabled = true;
-  btn.textContent = 'Memverifikasi...';
+Kami telah mengirimkan kode verifikasi 6 digit ke alamat email Anda.
 
-  try {
-    // 1. Verifikasi OTP
-    const res1 = await fetch('/api/verify-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, otp }),
-    });
-    const d1 = await res1.json();
+Masukkan kode tersebut untuk melanjutkan proses pendaftaran.
 
-    if (!d1.success) {
-      document.getElementById('otp-err').textContent = d1.message || 'OTP tidak valid.';
-      inputs.forEach(i => { i.value = ''; i.classList.remove('filled'); });
-      inputs[0].focus();
-      btn.disabled = false;
-      btn.textContent = 'Verifikasi Email';
-      return;
-    }
+</div>
 
-    // 2. OTP valid — simpan data step 1 ke Supabase
-    btn.textContent = 'Menyimpan data...';
-    const res2 = await fetch('/api/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        nama: userData.nama,
-        email: userData.email,
-        tanggal_lahir: userData.tanggal_lahir,
-        jenis_kelamin: userData.jenis_kelamin,
-      }),
-    });
-    const d2 = await res2.json();
+<div class="email-box">
 
-    if (!d2.success) {
-      document.getElementById('otp-err').textContent = d2.error || 'Gagal menyimpan data. Coba lagi.';
-      btn.disabled = false;
-      btn.textContent = 'Verifikasi Email';
-      return;
-    }
+contoh@email.com
 
-    // 3. Simpan userId ke localStorage untuk dipakai step 2 & 3
-    const updated = { ...userData, userId: d2.userId };
-    localStorage.setItem('matchu_user', JSON.stringify(updated));
+</div>
 
-    // 4. Lanjut ke step 2
-    window.location.href = 'register-step2.html';
+<div class="otp-container">
 
-  } catch {
-    document.getElementById('otp-err').textContent = 'Gagal terhubung ke server.';
-    btn.disabled = false;
-    btn.textContent = 'Verifikasi Email';
-  }
-}
+<input class="otp" maxlength="1">
+<input class="otp" maxlength="1">
+<input class="otp" maxlength="1">
+<input class="otp" maxlength="1">
+<input class="otp" maxlength="1">
+<input class="otp" maxlength="1">
 
-// Resend + countdown
-let countdownInterval;
-function startCountdown() {
-  let sisa = 60;
-  const timerEl = document.getElementById('resend-timer');
-  const countEl = document.getElementById('countdown');
-  const resendBtn = document.getElementById('resend-btn');
-  timerEl.style.display = 'inline';
-  resendBtn.disabled = true;
-  countEl.textContent = sisa;
-  clearInterval(countdownInterval);
-  countdownInterval = setInterval(() => {
-    sisa--;
-    countEl.textContent = sisa;
-    if (sisa <= 0) {
-      clearInterval(countdownInterval);
-      timerEl.style.display = 'none';
-      resendBtn.disabled = false;
-    }
-  }, 1000);
-}
-startCountdown();
+</div>
 
-async function resendOTP() {
-  document.getElementById('resend-btn').disabled = true;
-  try {
-    const res = await fetch('/api/send-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
-    });
-    const data = await res.json();
-    if (data.success) {
-      inputs.forEach(i => { i.value = ''; i.classList.remove('filled'); });
-      inputs[0].focus();
-      document.getElementById('otp-err').textContent = '';
-      startCountdown();
-    } else {
-      alert('Gagal kirim ulang kode.');
-      document.getElementById('resend-btn').disabled = false;
-    }
-  } catch {
-    alert('Gagal terhubung ke server.');
-    document.getElementById('resend-btn').disabled = false;
-  }
-}
+<button class="btn">
 
-document.addEventListener('keydown', e => { if (e.key === 'Enter') verifyOTP(); });
-</script>
+Verifikasi Email
+
+</button>
+
+<a href="#" class="resend">
+
+Kirim Ulang Kode
+
+</a>
+
+<div class="note">
+
+Kode berlaku selama 10 menit.
+
+</div>
+
+</div>
+
 </body>
 </html>
