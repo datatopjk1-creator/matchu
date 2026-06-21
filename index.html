@@ -41,6 +41,8 @@ section { padding: 80px 0; }
 .lang-btn.active { background: #F5F0EB; color: var(--primary); }
 .nav-btn { padding: 10px 22px; border-radius: 50px; background: #F5F0EB; color: var(--primary); font-weight: 600; font-size: 13px; transition: .3s; white-space: nowrap; }
 .nav-btn:hover { background: #fff; }
+.nav-btn-outline { padding: 10px 22px; border-radius: 50px; background: transparent; color: #F5F0EB; font-weight: 600; font-size: 13px; transition: .3s; white-space: nowrap; border: 1.5px solid rgba(245,240,235,.5); }
+.nav-btn-outline:hover { background: rgba(255,255,255,.1); border-color: #F5F0EB; }
 .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; flex-direction: column; gap: 5px; }
 .nav-hamburger span { display: block; width: 22px; height: 2px; background: #F5F0EB; border-radius: 2px; }
 
@@ -315,11 +317,8 @@ section { padding: 80px 0; }
 .waitlist-box { background: var(--primary); padding: 56px 48px; border-radius: 28px; text-align: center; color: white; }
 .waitlist-box h2 { font-size: clamp(28px, 4vw, 44px); margin-bottom: 12px; color: white; }
 .waitlist-box p { margin-bottom: 32px; opacity: .8; font-size: 16px; }
-.waitlist-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 600px; margin: auto; }
-.waitlist-form input { padding: 14px 18px; border: none; border-radius: 12px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; }
-.waitlist-form button { grid-column: span 2; padding: 16px; background: white; color: var(--primary); font-weight: 700; font-size: 16px; border: none; border-radius: 12px; cursor: pointer; transition: .3s; font-family: 'Inter', sans-serif; }
-.waitlist-form button:hover { background: #F3E5E8; }
-.waitlist-success { display: none; margin-top: 20px; font-size: 16px; font-weight: 600; }
+.waitlist-cta-btn { display: inline-block; padding: 16px 48px; background: white; color: var(--primary); font-weight: 700; font-size: 16px; border: none; border-radius: 50px; cursor: pointer; transition: .3s; font-family: 'Inter', sans-serif; }
+.waitlist-cta-btn:hover { background: #F3E5E8; }
 
 /* ── FOOTER ── */
 footer { padding: 56px 0; border-top: 1px solid var(--border); }
@@ -361,13 +360,11 @@ footer { padding: 56px 0; border-top: 1px solid var(--border); }
   .security-grid { grid-template-columns: 1fr 1fr; }
   .solution-strip { padding: 28px 20px; }
   .safety-notice { padding: 22px 18px; }
-  .waitlist-form { grid-template-columns: 1fr; }
-  .waitlist-form button { grid-column: span 1; }
   .waitlist-box { padding: 36px 20px; }
   .letter-card { padding: 20px 16px; }
   .pricing-card { width: 100%; padding: 28px 22px; }
   .footer-grid { grid-template-columns: 1fr; gap: 24px; }
-  .nav-btn { display: none; }
+  .nav-btn, .nav-btn-outline { display: none; }
   .tl-content { padding-left: 14px; }
 }
 </style>
@@ -386,14 +383,15 @@ footer { padding: 56px 0; border-top: 1px solid var(--border); }
       <li><a href="#keunggulan">Keunggulan</a></li>
       <li><a href="#how">Cara Kerja</a></li>
       <li><a href="#premium">Paket</a></li>
-      <li><a href="#waitlist">Daftar</a></li>
+      <li><a href="register.html">Daftar</a></li>
     </ul>
     <div class="nav-right">
       <div class="lang-toggle">
         <button class="lang-btn active" onclick="setLang('id')">ID</button>
         <button class="lang-btn" onclick="setLang('en')">EN</button>
       </div>
-      <a href="#waitlist" class="nav-btn">Gabung Sekarang</a>
+      <a href="login.html" class="nav-btn-outline">Masuk</a>
+      <a href="register.html" class="nav-btn">Daftar</a>
       <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
@@ -441,7 +439,7 @@ footer { padding: 56px 0; border-top: 1px solid var(--border); }
         </div>
       </div>
       <div class="hero-cta-group">
-        <a href="#waitlist" class="btn-hero-primary">Join Waitlist</a>
+        <a href="register.html" class="btn-hero-primary">Daftar</a>
         <a href="#how" class="btn-hero-outline">How It Works</a>
       </div>
     </div>
@@ -752,7 +750,7 @@ footer { padding: 56px 0; border-top: 1px solid var(--border); }
           <li class="li-limit">✗ Tidak bisa pilih kota kandidat</li>
           <li class="li-limit">✗ Tanpa prioritas antrian</li>
         </ul>
-        <a href="#waitlist" class="pricing-btn-outline">Mulai Gratis</a>
+        <a href="register.html" class="pricing-btn-outline">Mulai Gratis</a>
       </div>
       <div class="pricing-card featured">
         <div class="popular-badge">DIREKOMENDASIKAN</div>
@@ -771,27 +769,20 @@ footer { padding: 56px 0; border-top: 1px solid var(--border); }
           <li>✓ Prioritas antrian kandidat</li>
           <li>✓ Badge "Terverifikasi Premium"</li>
         </ul>
-        <a href="#waitlist" class="pricing-btn-primary">Coba Premium</a>
+        <a href="register.html" class="pricing-btn-primary">Coba Premium</a>
       </div>
     </div>
     <div class="pricing-note">🔒 Pembayaran aman via Midtrans · GoPay · OVO · Transfer Bank · QRIS</div>
   </div>
 </section>
 
-<!-- WAITLIST -->
+<!-- WAITLIST / DAFTAR -->
 <section id="waitlist">
   <div class="container">
     <div class="waitlist-box">
       <h2>Jadilah bagian dari Matchu.</h2>
       <p>Daftar sekarang dan dapatkan akses lebih awal saat aplikasi diluncurkan.</p>
-      <div class="waitlist-form" id="wl-form">
-        <input type="text" placeholder="Nama Lengkap" />
-        <input type="email" placeholder="Email" />
-        <input type="text" placeholder="Kampus / Universitas" />
-        <input type="text" placeholder="Profesi" />
-        <button onclick="submitWaitlist()">Gabung Waitlist →</button>
-      </div>
-      <div class="waitlist-success" id="wl-success">✓ Berhasil! Kami akan menghubungimu saat aplikasi siap.</div>
+      <a href="register.html" class="waitlist-cta-btn">Daftar →</a>
     </div>
   </div>
 </section>
@@ -831,12 +822,12 @@ const translations = {
   id: {
     'eyebrow': 'Platform Matchmaking untuk Profesional',
     'hero-desc': 'Temukan orang yang memiliki tujuan, nilai hidup, dan arah masa depan yang sejalan.',
-    'btn-join': 'Gabung Waitlist', 'btn-how': 'Cara Kerja',
+    'btn-join': 'Daftar', 'btn-how': 'Cara Kerja',
   },
   en: {
     'eyebrow': 'Curated Matchmaking for Professionals',
     'hero-desc': 'Find someone who shares your goals, values, and vision for the future.',
-    'btn-join': 'Join Waitlist', 'btn-how': 'How It Works',
+    'btn-join': 'Sign Up', 'btn-how': 'How It Works',
   }
 };
 
@@ -847,18 +838,6 @@ function setLang(lang) {
 
 function toggleMenu() {
   document.getElementById('navMenu').classList.toggle('open');
-}
-
-function submitWaitlist() {
-  const inputs = document.querySelectorAll('#wl-form input');
-  let valid = true;
-  inputs.forEach(inp => {
-    if (!inp.value.trim()) { inp.style.outline = '2px solid #ff6b6b'; valid = false; }
-    else { inp.style.outline = 'none'; }
-  });
-  if (!valid) return;
-  document.getElementById('wl-form').style.display = 'none';
-  document.getElementById('wl-success').style.display = 'block';
 }
 
 // Filter box toggle

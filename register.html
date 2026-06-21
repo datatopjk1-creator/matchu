@@ -3,440 +3,179 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Daftar | Matchu</title>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
 <style>
-
-:root{
-    --primary:#7A2236;
-    --bg:#F8F5F2;
-    --card:#FFFFFF;
-    --text:#222;
-    --muted:#6B7280;
+:root{ --primary:#7A2236; --bg:#F8F5F2; --text:#222; --muted:#6B7280; }
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{ font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+.register-wrapper{ min-height:100vh; display:flex; justify-content:center; align-items:center; padding:40px 20px; }
+.register-card{ width:100%; max-width:700px; background:white; border-radius:30px; padding:55px; box-shadow:0 20px 50px rgba(0,0,0,.05); }
+.logo{ text-align:center; font-family:'Playfair Display',serif; font-size:64px; color:var(--primary); margin-bottom:10px; }
+.tagline{ text-align:center; color:var(--primary); font-style:italic; margin-bottom:40px; }
+.form-title{ font-family:'Playfair Display',serif; font-size:38px; text-align:center; margin-bottom:10px; }
+.form-desc{ text-align:center; color:var(--muted); line-height:1.8; margin-bottom:40px; }
+.step{ text-align:center; color:var(--primary); font-weight:600; margin-bottom:15px; }
+.form-group{ margin-bottom:22px; }
+label{ display:block; margin-bottom:8px; font-weight:600; }
+input, select{ width:100%; padding:15px 16px; border:1px solid #ddd; border-radius:14px; font-size:15px; font-family:'Inter',sans-serif; transition:.2s; }
+input:focus, select:focus{ outline:none; border-color:var(--primary); }
+.hint{ display:block; margin-top:8px; color:var(--muted); font-size:13px; line-height:1.5; }
+.err-msg{ color:#e53e3e; font-size:13px; margin-top:5px; display:none; }
+.gender-group{ display:flex; gap:15px; margin-top:10px; }
+.gender-item{ flex:1; border:2px solid #ddd; border-radius:14px; padding:15px; text-align:center; cursor:pointer; font-weight:500; font-size:15px; transition:.2s; user-select:none; }
+.gender-item:hover{ border-color:var(--primary); background:#f9f4f5; }
+.gender-item.selected{ border-color:var(--primary); background:#f9f4f5; color:var(--primary); font-weight:600; }
+.notice{ background:#f9f4f5; border-left:4px solid var(--primary); padding:18px; border-radius:14px; margin-top:25px; }
+.notice-title{ font-weight:700; color:var(--primary); margin-bottom:6px; }
+.notice-text{ color:#555; line-height:1.7; font-size:14px; }
+.age-check{ margin-top:25px; display:flex; gap:10px; align-items:flex-start; }
+.age-check input{ width:auto; margin-top:4px; flex-shrink:0; accent-color:var(--primary); }
+.btn-register{ width:100%; margin-top:30px; background:var(--primary); color:white; border:none; padding:17px; border-radius:14px; font-size:16px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; transition:.2s; }
+.btn-register:hover{ opacity:.9; }
+.btn-register:disabled{ opacity:.6; cursor:not-allowed; }
+.login-link{ margin-top:25px; text-align:center; color:var(--muted); }
+.login-link a{ color:var(--primary); text-decoration:none; font-weight:600; }
+@media(max-width:600px){
+  .register-card{ padding:32px 22px; border-radius:20px; }
+  .logo{ font-size:44px; }
+  .form-title{ font-size:26px; }
+  input, select{ padding:13px 14px; font-size:14px; border-radius:12px; }
+  .gender-item{ padding:12px 8px; font-size:14px; border-radius:12px; }
+  .btn-register{ padding:15px; font-size:15px; }
+  .register-wrapper{ padding:20px 16px; }
 }
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    font-family:'Inter',sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    min-height:100vh;
-}
-
-.register-wrapper{
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:40px 20px;
-}
-
-.register-card{
-
-    width:100%;
-    max-width:700px;
-
-    background:white;
-
-    border-radius:30px;
-
-    padding:55px;
-
-    box-shadow:
-    0 20px 50px rgba(0,0,0,.05);
-}
-
-.logo{
-
-    text-align:center;
-
-    font-family:'Playfair Display',serif;
-
-    font-size:64px;
-
-    color:var(--primary);
-
-    margin-bottom:10px;
-}
-
-.tagline{
-
-    text-align:center;
-
-    color:var(--primary);
-
-    font-style:italic;
-
-    margin-bottom:40px;
-}
-
-.form-title{
-
-    font-family:'Playfair Display',serif;
-
-    font-size:38px;
-
-    text-align:center;
-
-    margin-bottom:10px;
-}
-
-.form-desc{
-
-    text-align:center;
-
-    color:var(--muted);
-
-    line-height:1.8;
-
-    margin-bottom:40px;
-}
-
-.form-group{
-    margin-bottom:22px;
-}
-
-label{
-
-    display:block;
-
-    margin-bottom:8px;
-
-    font-weight:600;
-}
-
-input,
-select{
-
-    width:100%;
-
-    padding:15px 16px;
-
-    border:1px solid #ddd;
-
-    border-radius:14px;
-
-    font-size:15px;
-}
-
-input:focus,
-select:focus{
-
-    outline:none;
-
-    border-color:var(--primary);
-}
-
-.hint{
-
-    display:block;
-
-    margin-top:8px;
-
-    color:var(--muted);
-
-    font-size:13px;
-
-    line-height:1.5;
-}
-
-.gender-group{
-
-    display:flex;
-
-    gap:15px;
-
-    margin-top:10px;
-}
-
-.gender-item{
-
-    flex:1;
-
-    border:1px solid #ddd;
-
-    border-radius:14px;
-
-    padding:15px;
-
-    text-align:center;
-
-    cursor:pointer;
-}
-
-.gender-item:hover{
-
-    border-color:var(--primary);
-}
-
-.notice{
-
-    background:#f9f4f5;
-
-    border-left:4px solid var(--primary);
-
-    padding:18px;
-
-    border-radius:14px;
-
-    margin-top:25px;
-}
-
-.notice-title{
-
-    font-weight:700;
-
-    color:var(--primary);
-
-    margin-bottom:6px;
-}
-
-.notice-text{
-
-    color:#555;
-
-    line-height:1.7;
-
-    font-size:14px;
-}
-
-.age-check{
-
-    margin-top:25px;
-
-    display:flex;
-
-    gap:10px;
-
-    align-items:flex-start;
-}
-
-.age-check input{
-
-    width:auto;
-
-    margin-top:4px;
-}
-
-.btn-register{
-
-    width:100%;
-
-    margin-top:30px;
-
-    background:var(--primary);
-
-    color:white;
-
-    border:none;
-
-    padding:17px;
-
-    border-radius:14px;
-
-    font-size:16px;
-
-    font-weight:600;
-
-    cursor:pointer;
-}
-
-.btn-register:hover{
-
-    opacity:.9;
-}
-
-.login-link{
-
-    margin-top:25px;
-
-    text-align:center;
-
-    color:var(--muted);
-}
-
-.login-link a{
-
-    color:var(--primary);
-
-    text-decoration:none;
-
-    font-weight:600;
-}
-
-.step{
-
-    text-align:center;
-
-    color:var(--primary);
-
-    font-weight:600;
-
-    margin-bottom:15px;
-}
-
 </style>
 </head>
-
 <body>
-
 <div class="register-wrapper">
-
 <div class="register-card">
+  <div class="logo">MATCHU</div>
+  <div class="tagline">Beyond Matching. Toward Marriage.</div>
+  <div class="step">LANGKAH 1 DARI 3</div>
+  <div class="form-title">Buat Akun Matchu</div>
+  <div class="form-desc">Bergabunglah dengan komunitas matchmaking terverifikasi untuk profesional dan alumni perguruan tinggi yang serius membangun masa depan bersama.</div>
 
-<div class="logo">
-MATCHU
+  <form onsubmit="return handleSubmit(event)">
+    <div class="form-group">
+      <label>Nama Lengkap</label>
+      <input type="text" id="nama" placeholder="Masukkan nama lengkap" required>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="nama@email.com" required>
+    </div>
+    <div class="form-group">
+      <label>Kata Sandi</label>
+      <input type="password" id="password" placeholder="Buat kata sandi" required>
+      <small class="hint">Minimal 8 karakter, 1 huruf besar, 1 angka.</small>
+      <div class="err-msg" id="pass-err">Password tidak memenuhi syarat.</div>
+    </div>
+    <div class="form-group">
+      <label>Konfirmasi Kata Sandi</label>
+      <input type="password" id="confirm-password" placeholder="Ulangi kata sandi" required>
+      <div class="err-msg" id="confirm-err">Kata sandi tidak sama.</div>
+    </div>
+    <div class="form-group">
+      <label>Tanggal Lahir</label>
+      <input type="date" id="tanggal-lahir" required>
+      <div class="err-msg" id="dob-err">Usia minimal 22 tahun.</div>
+    </div>
+    <div class="form-group">
+      <label>Jenis Kelamin</label>
+      <div class="gender-group">
+        <div class="gender-item" id="gender-pria" onclick="pilihGender('Pria')">Pria</div>
+        <div class="gender-item" id="gender-wanita" onclick="pilihGender('Wanita')">Wanita</div>
+      </div>
+      <input type="hidden" id="gender-input">
+      <div class="err-msg" id="gender-err">Pilih jenis kelamin.</div>
+    </div>
+    <div class="notice">
+      <div class="notice-title">Persyaratan Matchu</div>
+      <div class="notice-text">Usia minimal 22 tahun dan sedang menempuh atau telah menyelesaikan pendidikan tinggi (D3, D4, S1, S2, atau S3).<br><br>Mahasiswa tingkat akhir, fresh graduate, maupun profesional yang telah bekerja dipersilakan bergabung.</div>
+    </div>
+    <div class="age-check">
+      <input type="checkbox" id="age-agree" required>
+      <span>Saya menyatakan bahwa saya berusia minimal 22 tahun dan memenuhi persyaratan pendidikan yang berlaku di Matchu.</span>
+    </div>
+    <button type="submit" class="btn-register" id="btn-submit">Lanjutkan</button>
+    <div class="login-link">Sudah memiliki akun? <a href="login.html">Masuk</a></div>
+  </form>
+</div>
 </div>
 
-<div class="tagline">
-Beyond Matching. Toward Marriage.
-</div>
+<script>
+// Bersihkan data lama kalau ada
+localStorage.removeItem('matchu_user');
 
-<div class="step">
-LANGKAH 1 DARI 3
-</div>
+function pilihGender(pilihan) {
+  document.getElementById('gender-pria').classList.toggle('selected', pilihan === 'Pria');
+  document.getElementById('gender-wanita').classList.toggle('selected', pilihan === 'Wanita');
+  document.getElementById('gender-input').value = pilihan;
+  document.getElementById('gender-err').style.display = 'none';
+}
 
-<div class="form-title">
-Buat Akun Matchu
-</div>
+async function handleSubmit(e) {
+  e.preventDefault();
+  let valid = true;
 
-<div class="form-desc">
+  const gender = document.getElementById('gender-input').value;
+  if (!gender) { document.getElementById('gender-err').style.display = 'block'; valid = false; }
 
-Bergabunglah dengan komunitas matchmaking terverifikasi untuk profesional dan alumni perguruan tinggi yang serius membangun masa depan bersama.
+  const pass = document.getElementById('password').value;
+  if (!/^(?=.*[A-Z])(?=.*\d).{8,}$/.test(pass)) {
+    document.getElementById('pass-err').style.display = 'block'; valid = false;
+  } else { document.getElementById('pass-err').style.display = 'none'; }
 
-</div>
+  const confirm = document.getElementById('confirm-password').value;
+  if (pass !== confirm) {
+    document.getElementById('confirm-err').style.display = 'block'; valid = false;
+  } else { document.getElementById('confirm-err').style.display = 'none'; }
 
-<form action="register-step2.html">
+  const tglLahir = new Date(document.getElementById('tanggal-lahir').value);
+  const today = new Date();
+  let usia = today.getFullYear() - tglLahir.getFullYear();
+  const b = today.getMonth() - tglLahir.getMonth();
+  if (b < 0 || (b === 0 && today.getDate() < tglLahir.getDate())) usia--;
+  if (usia < 22) {
+    document.getElementById('dob-err').style.display = 'block'; valid = false;
+  } else { document.getElementById('dob-err').style.display = 'none'; }
 
-<div class="form-group">
-<label>Nama Lengkap</label>
-<input
-type="text"
-placeholder="Masukkan nama lengkap"
-required>
-</div>
+  if (!valid) return false;
 
-<div class="form-group">
-<label>Email</label>
-<input
-type="email"
-placeholder="nama@email.com"
-required>
-</div>
+  const email = document.getElementById('email').value.trim();
+  const nama = document.getElementById('nama').value.trim();
+  const tanggal_lahir = document.getElementById('tanggal-lahir').value;
 
-<div class="form-group">
+  // Simpan data sementara — userId akan diisi setelah OTP diverifikasi
+  localStorage.setItem('matchu_user', JSON.stringify({ nama, email, tanggal_lahir, jenis_kelamin: gender }));
 
-<label>Kata Sandi</label>
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = 'Mengirim kode verifikasi...';
 
-<input
-type="password"
-placeholder="Buat kata sandi"
-required>
-
-<small class="hint">
-Password harus terdiri dari minimal 8 karakter, mengandung setidaknya 1 huruf besar dan 1 angka.
-</small>
-
-</div>
-
-<div class="form-group">
-
-<label>Konfirmasi Kata Sandi</label>
-
-<input
-type="password"
-placeholder="Ulangi kata sandi"
-required>
-
-</div>
-
-<div class="form-group">
-
-<label>Tanggal Lahir</label>
-
-<input
-type="date"
-required>
-
-</div>
-
-<div class="form-group">
-
-<label>Jenis Kelamin</label>
-
-<div class="gender-group">
-
-<div class="gender-item">
-Pria
-</div>
-
-<div class="gender-item">
-Wanita
-</div>
-
-</div>
-
-</div>
-
-<div class="notice">
-
-<div class="notice-title">
-Persyaratan Matchu
-</div>
-
-<div class="notice-text">
-
-Usia minimal 22 tahun dan sedang menempuh atau telah menyelesaikan pendidikan tinggi (D3, D4, S1, S2, atau S3).
-
-<br><br>
-
-Mahasiswa tingkat akhir, fresh graduate, maupun profesional yang telah bekerja dipersilakan bergabung.
-
-</div>
-
-</div>
-
-<div class="age-check">
-
-<input type="checkbox" required>
-
-<span>
-Saya menyatakan bahwa saya berusia minimal 22 tahun dan memenuhi persyaratan pendidikan yang berlaku di Matchu.
-</span>
-
-
-</div>
-
-<button class="btn-register">
-Lanjutkan
-</button>
-
-<div class="login-link">
-
-Sudah memiliki akun?
-
-<a href="login.html">
-Masuk
-</a>
-
-</div>
-
-</form>
-
-</div>
-
-</div>
-
+  try {
+    const res = await fetch('/api/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      window.location.href = 'verify-email.html';
+    } else {
+      alert('Gagal mengirim kode: ' + (data.error || 'Coba lagi.'));
+      btn.disabled = false;
+      btn.textContent = 'Lanjutkan';
+    }
+  } catch {
+    alert('Gagal terhubung ke server.');
+    btn.disabled = false;
+    btn.textContent = 'Lanjutkan';
+  }
+}
+</script>
 </body>
 </html>
