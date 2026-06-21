@@ -8,9 +8,9 @@ const supabase = createClient(
 
 export async function POST(req: Request) {
   try {
-    const { nama, email, tanggal_lahir, jenis_kelamin } = await req.json();
+    const { nama, nama_panggilan, email, tanggal_lahir, jenis_kelamin } = await req.json();
 
-    if (!nama || !email) {
+    if (!email) {
       return NextResponse.json({ success: false, error: 'Data tidak lengkap.' }, { status: 400 });
     }
 
@@ -26,10 +26,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, userId: existing.id });
     }
 
-    // Insert user baru
+    // Insert user baru — pakai nama_lengkap sesuai skema tabel
     const { data, error } = await supabase
       .from('users')
-      .insert({ nama, email, tanggal_lahir, jenis_kelamin, email_verified: true })
+      .insert({
+        nama_lengkap: nama || null,
+        nama_panggilan: nama_panggilan || null,
+        email,
+        tanggal_lahir: tanggal_lahir || null,
+        jenis_kelamin: jenis_kelamin || null,
+        email_verified: true,
+        trust_score: 20,
+        status: 'aktif',
+      })
       .select('id')
       .single();
 
