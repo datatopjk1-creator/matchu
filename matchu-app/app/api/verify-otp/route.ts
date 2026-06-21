@@ -1,76 +1,51 @@
-import { NextResponse } from "next/server";
-import { supabase } from "../../../src/lib/supabase";
+import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export async function POST(req: Request) {
   try {
     const { email, otp } = await req.json();
+    if (!email || !otp) {
+      return NextResponse.json({ success: false, message: 'Data tidak lengkap.' }, { status: 400 });
+    }
 
-    // Ambil OTP terbaru untuk email ini
     const { data, error } = await supabase
-      .from("email_otps")
-      .select("*")
-      .eq("email", email)
-      .eq("otp", otp)
-      .order("created_at", { ascending: false })
+      .from('email_otps')
+      .select('*')
+      .eq('email', email)
+      .eq('otp', otp)
+      .order('created_at', { ascending: false })
       .limit(1);
 
     if (error) throw error;
-
     if (!data || data.length === 0) {
-      return NextResponse.json({
-        success: false,
-        message: "OTP tidak valid",
-      });
+      return NextResponse.json({ success: false, message: 'OTP tidak valid.' });
     }
 
     const record = data[0];
 
-    // Cek terlalu banyak percobaan
     if (record.attempts >= 3) {
-      await supabase
-        .from("email_otps")
-        .delete()
-        .eq("uuid", record.uuid);
-
-      return NextResponse.json({
-        success: false,
-        message: "Terlalu banyak percobaan, minta OTP baru",
-      });
+      await supabase.from('email_otps').delete().eq('uuid', record.uuid);
+      return NextResponse.json({ success: false, message: 'Terlalu banyak percobaan. Minta OTP baru.' });
     }
 
-    // Cek apakah OTP sudah kadaluarsa (pakai UTC)
-    const expiresAtMs = new Date(record.expires_at + "Z").getTime();
-    const nowMs = Date.now();
-
-    if (expiresAtMs < nowMs) {
-      // Hapus OTP yang sudah expired
-      await supabase
-        .from("email_otps")
-        .delete()
-        .eq("uuid", record.uuid);
-
-      return NextResponse.json({
-        success: false,
-        message: "OTP sudah kadaluarsa",
-      });
+    // Cek expired (UTC)
+    const expiresAtMs = new Date(record.expires_at).getTime();
+    if (expiresAtMs < Date.now()) {
+      await supabase.from('email_otps').delete().eq('uuid', record.uuid);
+      return NextResponse.json({ success: false, message: 'OTP sudah kadaluarsa.' });
     }
 
-    // OTP valid — hapus supaya tidak bisa dipakai lagi
-    await supabase
-      .from("email_otps")
-      .delete()
-      .eq("uuid", record.uuid);
+    // Valid — hapus OTP
+    await supabase.from('email_otps').delete().eq('uuid', record.uuid);
 
-    return NextResponse.json({
-      success: true,
-      message: "OTP valid",
-    });
-
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { success: false, message: "Terjadi kesalahan" },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: true, message: 'OTP valid.' });
+  } catch (error: any) {
+    console.error('verify-otp error:', error);
+    return NextResponse.json({ success: false, message: 'Server error.' }, { status: 500 });
   }
 }
