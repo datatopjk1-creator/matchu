@@ -62,7 +62,6 @@ body{ font-family:'Inter',sans-serif; background:var(--bg); min-height:100vh; di
 </div>
 
 <script>
-  // ── Ambil data dari localStorage ─────────────────────────────────────────
   const userData = JSON.parse(localStorage.getItem('matchu_user') || '{}');
 
   if (!userData.email) {
@@ -72,9 +71,8 @@ body{ font-family:'Inter',sans-serif; background:var(--bg); min-height:100vh; di
 
   document.getElementById('email-display').textContent = userData.email;
 
-  // ── OTP input behaviour ──────────────────────────────────────────────────
+  // OTP input behaviour
   const otpInputs = document.querySelectorAll('.otp');
-
   otpInputs.forEach((input, i) => {
     input.addEventListener('input', () => {
       input.value = input.value.replace(/\D/g, '');
@@ -83,7 +81,6 @@ body{ font-family:'Inter',sans-serif; background:var(--bg); min-height:100vh; di
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Backspace' && !input.value && i > 0) otpInputs[i - 1].focus();
     });
-    // Paste seluruh kode sekaligus
     input.addEventListener('paste', (e) => {
       e.preventDefault();
       const digits = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
@@ -96,18 +93,15 @@ body{ font-family:'Inter',sans-serif; background:var(--bg); min-height:100vh; di
   function getCode() {
     return Array.from(otpInputs).map(i => i.value).join('');
   }
-
   function showErr(msg) {
     const el = document.getElementById('err-msg');
     el.textContent = msg;
     el.style.display = 'block';
   }
-
   function hideErr() {
     document.getElementById('err-msg').style.display = 'none';
   }
 
-  // ── Verifikasi OTP → lalu complete-register ──────────────────────────────
   async function verifyOTP() {
     hideErr();
     const code = getCode();
@@ -118,7 +112,7 @@ body{ font-family:'Inter',sans-serif; background:var(--bg); min-height:100vh; di
     btn.textContent = 'Memverifikasi...';
 
     try {
-      // Langkah 1: verifikasi OTP ke tabel email_otps
+      // Langkah 1: verifikasi OTP
       const resOTP = await fetch('/api/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -135,7 +129,7 @@ body{ font-family:'Inter',sans-serif; background:var(--bg); min-height:100vh; di
 
       btn.textContent = 'Mendaftarkan akun...';
 
-      // Langkah 2: daftarkan user ke Supabase Auth + tabel users
+      // Langkah 2: daftarkan ke Supabase Auth + tabel users
       const resReg = await fetch('/api/complete-register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -143,7 +137,7 @@ body{ font-family:'Inter',sans-serif; background:var(--bg); min-height:100vh; di
           nama:           userData.nama,
           nama_panggilan: userData.nama_panggilan,
           email:          userData.email,
-          password:       userData.password,        // ← dari localStorage sementara
+          password:       userData.password,
           tanggal_lahir:  userData.tanggal_lahir,
           jenis_kelamin:  userData.jenis_kelamin,
         }),
@@ -157,11 +151,17 @@ body{ font-family:'Inter',sans-serif; background:var(--bg); min-height:100vh; di
         return;
       }
 
-      // Berhasil — bersihkan data sementara, simpan user id
-      localStorage.setItem('matchu_user_id', dataReg.userId);
-      localStorage.removeItem('matchu_user');   // hapus data sensitif
+      // ✅ SIMPAN userId ke dalam matchu_user yang sudah ada
+      // JANGAN hapus matchu_user — masih dibutuhkan oleh step 2 dan step 3
+      // Password dihapus di sini karena sudah tidak diperlukan
+      const updatedUser = {
+        ...userData,
+        userId: dataReg.userId,   // ← dibutuhkan register-step2.html
+        password: undefined,      // ← hapus password dari storage
+      };
+      delete updatedUser.password;
+      localStorage.setItem('matchu_user', JSON.stringify(updatedUser));
 
-      // Lanjut ke halaman berikutnya (lengkapi profil / dashboard)
       window.location.href = 'complete-profile.html';
 
     } catch (err) {
@@ -171,16 +171,14 @@ body{ font-family:'Inter',sans-serif; background:var(--bg); min-height:100vh; di
     }
   }
 
-  // ── Kirim ulang OTP dengan cooldown 60 detik ─────────────────────────────
+  // Kirim ulang OTP
   let cooldown = 0;
   let timer = null;
 
   async function resendOTP() {
     if (cooldown > 0) return;
-
     const btn = document.getElementById('btn-resend');
     btn.disabled = true;
-
     try {
       const res = await fetch('/api/send-otp', {
         method: 'POST',
@@ -188,7 +186,6 @@ body{ font-family:'Inter',sans-serif; background:var(--bg); min-height:100vh; di
         body: JSON.stringify({ email: userData.email }),
       });
       const data = await res.json();
-
       if (data.success) {
         startCooldown(60);
       } else {
@@ -205,7 +202,6 @@ body{ font-family:'Inter',sans-serif; background:var(--bg); min-height:100vh; di
     cooldown = seconds;
     const btn    = document.getElementById('btn-resend');
     const ctdown = document.getElementById('countdown');
-
     clearInterval(timer);
     timer = setInterval(() => {
       cooldown--;
