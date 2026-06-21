@@ -1,12 +1,10 @@
-// matchu-app/app/api/complete-register/route.ts
-// Dipanggil SETELAH OTP berhasil diverifikasi
-// Menerima semua data user termasuk password, lalu simpan ke Supabase Auth + tabel users
+// matchu-app/app/api/register-user/route.ts
+// Dipanggil dari register-step4.html (upload foto + instagram)
+// Menyimpan foto dan instagram ke tabel profiles di Supabase
 
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-// Pakai SERVICE ROLE KEY (bukan anon key) agar bisa insert ke auth.users
-// Simpan di .env.local sebagai SUPABASE_SERVICE_ROLE_KEY
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -15,70 +13,138 @@ const supabaseAdmin = createClient(
 
 export async function POST(req: Request) {
   try {
-    const { nama, nama_panggilan, email, password, tanggal_lahir, jenis_kelamin } = await req.json();
+    const body = await req.json();
 
-    if (!email || !password || !nama) {
-      return NextResponse.json({ success: false, error: 'Data tidak lengkap.' }, { status: 400 });
-    }
-
-    // ── 1. Buat user di Supabase Auth ──────────────────────────────────────
-    // Ini yang memungkinkan user login dengan email + password lewat Supabase
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+    // Ambil semua field dari body — nama bisa dari userData yang di-spread
+    const {
+      userId,
+      nama,
+      nama_panggilan,
       email,
-      password,
-      email_confirm: true, // langsung verified karena kita sudah OTP manual
+      tanggal_lahir,
+      jenis_kelamin,
+      instagram,
+      foto1,
+      foto2,
+    } = body;
+
+    // Log untuk debug
+    console.log('register-user body:', {
+      userId,
+      nama,
+      email,
+      instagram,
+      hasFoto1: !!foto1,
     });
 
-    if (authError) {
-      // Jika email sudah ada di auth, coba update password saja
-      if (authError.message.includes('already been registered')) {
-        return NextResponse.json({ success: false, error: 'Email sudah terdaftar.' });
-      }
-      throw authError;
+    if (!userId) {
+      return NextResponse.json({ success: false, error: 'userId tidak ditemukan.' }, { status: 400 });
     }
 
-    const authUserId = authData.user.id;
-
-    // ── 2. Cek apakah sudah ada di tabel users (dari pendaftaran sebelumnya) ──
-    const { data: existingUser } = await supabaseAdmin
+    // ── 1. Update tabel users dengan data yang mungkin belum tersimpan ──
+    // (nama_lengkap wajib ada — ambil dari body atau fallback ke email)
+    const { error: updateError } = await supabaseAdmin
       .from('users')
+      .update({
+        nama_lengkap:   nama || email || 'User',   // fallback agar tidak null
+        nama_panggilan: nama_panggilan || nama || 'User',
+        instagram:      instagram || null,
+      })
+      .eq('id', userId);
+
+    if (updateError) {
+      console.error('update users error:', updateError);
+      // Lanjutkan meskipun update gagal — mungkin kolom instagram belum ada
+    }
+
+    // ── 2. Upload foto ke Supabase Storage (bucket: photos) ──
+    let foto1Url = null;
+    let foto2Url = null;
+
+    if (foto1) {
+      // foto1 adalah base64 string "data:image/jpeg;base64,..."
+      const base64Data = foto1.split(',')[1];
+      const buffer = Buffer.from(base64Data, 'base64');
+      const fileName = `${userId}/foto1_${Date.now()}.jpg`;
+
+      const { error: uploadError } = await supabaseAdmin.storage
+        .from('photos')
+        .upload(fileName, buffer, {
+          contentType: 'image/jpeg',
+          upsert: true,
+        });
+
+      if (!uploadError) {
+        const { data: urlData } = supabaseAdmin.storage
+          .from('photos')
+          .getPublicUrl(fileName);
+        foto1Url = urlData.publicUrl;
+      } else {
+        console.error('upload foto1 error:', uploadError);
+      }
+    }
+
+    if (foto2) {
+      const base64Data = foto2.split(',')[1];
+      const buffer = Buffer.from(base64Data, 'base64');
+      const fileName = `${userId}/foto2_${Date.now()}.jpg`;
+
+      const { error: uploadError } = await supabaseAdmin.storage
+        .from('photos')
+        .upload(fileName, buffer, {
+          contentType: 'image/jpeg',
+          upsert: true,
+        });
+
+      if (!uploadError) {
+        const { data: urlData } = supabaseAdmin.storage
+          .from('photos')
+          .getPublicUrl(fileName);
+        foto2Url = urlData.publicUrl;
+      }
+    }
+
+    // ── 3. Simpan URL foto ke tabel profiles ──
+    // Cek apakah sudah ada row untuk user ini
+    const { data: existingProfile } = await supabaseAdmin
+      .from('profiles')
       .select('id')
-      .eq('email', email)
+      .eq('id', userId)
       .maybeSingle();
 
-    if (existingUser) {
-      // Update saja jika sudah ada
+    if (existingProfile) {
+      // Update
       await supabaseAdmin
-        .from('users')
-        .update({ email_verified: true })
-        .eq('email', email);
-
-      return NextResponse.json({ success: true, userId: existingUser.id });
+        .from('profiles')
+        .update({
+          foto_utama: foto1Url,
+          foto_kedua: foto2Url,
+          instagram:  instagram || null,
+        })
+        .eq('id', userId);
+    } else {
+      // Insert baru
+      await supabaseAdmin
+        .from('profiles')
+        .insert({
+          id:         userId,
+          foto_utama: foto1Url,
+          foto_kedua: foto2Url,
+          instagram:  instagram || null,
+        });
     }
 
-    // ── 3. Insert ke tabel users ────────────────────────────────────────────
-    const { data: userData, error: insertError } = await supabaseAdmin
-      .from('users')
-      .insert({
-        id: authUserId,          // samakan id dengan Supabase Auth agar mudah di-join
-        nama_lengkap: nama,
-        nama_panggilan: nama_panggilan || nama,
-        email,
-        tanggal_lahir: tanggal_lahir || null,
-        jenis_kelamin: jenis_kelamin || null,
-        email_verified: true,
-        trust_score: 20,
-        status: 'aktif',
-      })
-      .select('id')
-      .single();
-
-    if (insertError) throw insertError;
-
-    return NextResponse.json({ success: true, userId: userData.id });
+    return NextResponse.json({
+      success: true,
+      userId,
+      foto1Url,
+    });
 
   } catch (error: any) {
-    console.error('complete-register error:', error);
-    return NextResponse.json({ success: false, error: error?.message }, { status: 500 });
+    console.error('register-user error:', error);
+    return NextResponse.json(
+      { success: false, error: error?.message || 'Server error' },
+      { status: 500 }
+    );
   }
 }
