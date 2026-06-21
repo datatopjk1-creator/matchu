@@ -162,7 +162,7 @@ body{ font-family:'Inter',sans-serif; background:var(--bg); min-height:100vh; di
       delete updatedUser.password;
       localStorage.setItem('matchu_user', JSON.stringify(updatedUser));
 
-      window.location.href = 'complete-profile.html';
+      window.location.href = 'register-step2.html';
 
     } catch (err) {
       showErr('Gagal terhubung ke server. Coba lagi.');
