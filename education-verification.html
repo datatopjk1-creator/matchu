@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Verifikasi Pendidikan | Matchu</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--primary:#7A2236;
+--bg:#F8F5F2;
+--card:#FFFFFF;
+--text:#222;
+--muted:#6B7280;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+background:var(--bg);
+font-family:'Inter',sans-serif;
+padding:40px 20px;
+}
+
+.container{
+max-width:750px;
+margin:auto;
+}
+
+.card{
+background:white;
+border-radius:28px;
+padding:40px;
+box-shadow:0 20px 50px rgba(0,0,0,.05);
+}
+
+.title{
+font-family:'Playfair Display',serif;
+font-size:38px;
+margin-bottom:10px;
+color:var(--primary);
+}
+
+.desc{
+color:var(--muted);
+line-height:1.8;
+margin-bottom:30px;
+}
+
+.notice{
+background:#f9f4f5;
+border-left:4px solid var(--primary);
+padding:18px;
+border-radius:12px;
+margin-bottom:25px;
+line-height:1.8;
+}
+
+.form-group{
+margin-bottom:20px;
+}
+
+label{
+display:block;
+margin-bottom:8px;
+font-weight:600;
+}
+
+input,
+select{
+width:100%;
+padding:14px;
+border:1px solid #ddd;
+border-radius:12px;
+font-size:15px;
+}
+
+.btn{
+width:100%;
+padding:16px;
+border:none;
+background:var(--primary);
+color:white;
+border-radius:14px;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+margin-top:20px;
+}
+
+.btn:hover{
+opacity:.9;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1 class="title">
+Verifikasi Pendidikan
+</h1>
+
+<p class="desc">
+Verifikasi pendidikan membantu meningkatkan kepercayaan dan kualitas komunitas Matchu.
+</p>
+
+<div class="notice">
+
+<strong>Dokumen yang diterima:</strong>
+
+<br><br>
+
+• KTM (Kartu Tanda Mahasiswa)
+
+<br>
+
+• SIM (untuk alumni yang sudah tidak memiliki KTM)
+
+<br><br>
+
+Dokumen hanya digunakan untuk proses verifikasi dan tidak akan ditampilkan kepada pengguna lain.
+
+</div>
+
+<form>
+
+<div class="form-group">
+<label>Nama Kampus</label>
+<input type="text" required>
+</div>
+
+<div class="form-group">
+<label>Jurusan</label>
+<input type="text" required>
+</div>
+
+<div class="form-group">
+<label>Jenjang Pendidikan</label>
+
+<select required>
+<option value="">Pilih Jenjang</option>
+<option>D3</option>
+<option>D4</option>
+<option>S1</option>
+<option>S2</option>
+<option>S3</option>
+</select>
+
+</div>
+
+<div class="form-group">
+<label>Tahun Masuk</label>
+<input type="number" required>
+</div>
+
+<div class="form-group">
+<label>Tahun Lulus (Opsional)</label>
+<input type="number">
+</div>
+
+<div class="form-group">
+<label>Upload KTM atau SIM</label>
+<input type="file" accept="image/*,.pdf" required>
+</div>
+
+<button class="btn">
+Ajukan Verifikasi
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+</html>

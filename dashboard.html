@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard | Matchu</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--primary:#7A2236;
+--primary-light:#9b3149;
+--bg:#F8F5F2;
+--card:#FFFFFF;
+--text:#222;
+--muted:#777;
+--border:#ECECEC;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Inter',sans-serif;
+background:var(--bg);
+color:var(--text);
+}
+
+.wrapper{
+display:flex;
+min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:260px;
+background:white;
+border-right:1px solid var(--border);
+transition:.3s;
+position:fixed;
+height:100vh;
+left:0;
+top:0;
+overflow:hidden;
+z-index:100;
+}
+
+.sidebar.collapsed{
+width:80px;
+}
+
+.logo{
+height:80px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-family:'Playfair Display',serif;
+font-size:32px;
+color:var(--primary);
+border-bottom:1px solid var(--border);
+}
+
+.sidebar.collapsed .logo{
+font-size:20px;
+}
+
+.menu{
+padding:20px;
+}
+
+.menu a{
+display:flex;
+align-items:center;
+gap:15px;
+padding:14px 16px;
+border-radius:12px;
+text-decoration:none;
+color:#444;
+font-weight:500;
+margin-bottom:8px;
+transition:.2s;
+}
+
+.menu a:hover{
+background:#f9f4f5;
+color:var(--primary);
+}
+
+.sidebar.collapsed .menu span{
+display:none;
+}
+
+/* MAIN */
+
+.main{
+flex:1;
+margin-left:260px;
+transition:.3s;
+}
+
+.main.expanded{
+margin-left:80px;
+}
+
+/* TOPBAR */
+
+.topbar{
+height:80px;
+background:white;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 30px;
+border-bottom:1px solid var(--border);
+}
+
+.toggle{
+font-size:24px;
+cursor:pointer;
+color:var(--primary);
+font-weight:bold;
+}
+
+.user-box{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.avatar{
+width:42px;
+height:42px;
+border-radius:50%;
+background:var(--primary);
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:700;
+}
+
+/* CONTENT */
+
+.content{
+padding:35px;
+}
+
+.welcome-card{
+background:white;
+border-radius:24px;
+padding:30px;
+margin-bottom:25px;
+}
+
+.welcome-title{
+font-size:34px;
+font-family:'Playfair Display',serif;
+margin-bottom:10px;
+color:var(--primary);
+}
+
+.welcome-text{
+color:var(--muted);
+line-height:1.8;
+}
+
+/* PREMIUM */
+
+.premium-card{
+background:linear-gradient(135deg,#7A2236,#9b3149);
+color:white;
+padding:28px;
+border-radius:24px;
+margin-bottom:25px;
+}
+
+.premium-title{
+font-size:24px;
+font-weight:700;
+margin-bottom:10px;
+}
+
+.premium-desc{
+line-height:1.8;
+opacity:.95;
+margin-bottom:20px;
+}
+
+.upgrade-btn{
+background:white;
+color:var(--primary);
+padding:12px 18px;
+border:none;
+border-radius:12px;
+font-weight:700;
+cursor:pointer;
+}
+
+/* STATS */
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+margin-bottom:25px;
+}
+
+.stat{
+background:white;
+padding:25px;
+border-radius:20px;
+text-align:center;
+}
+
+.stat-number{
+font-size:34px;
+font-weight:700;
+color:var(--primary);
+margin-bottom:8px;
+}
+
+.stat-label{
+color:var(--muted);
+}
+
+/* GRID */
+
+.grid{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:20px;
+}
+
+.card{
+background:white;
+border-radius:24px;
+padding:25px;
+}
+
+.card-title{
+font-size:24px;
+font-family:'Playfair Display',serif;
+margin-bottom:20px;
+}
+
+/* MATCH */
+
+.match-item{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 0;
+border-bottom:1px solid #eee;
+}
+
+.match-info h4{
+margin-bottom:5px;
+}
+
+.match-info p{
+font-size:14px;
+color:var(--muted);
+}
+
+.match-btn{
+background:var(--primary);
+color:white;
+border:none;
+padding:10px 16px;
+border-radius:10px;
+cursor:pointer;
+}
+
+/* NOTIFICATION */
+
+.notification{
+padding:15px 0;
+border-bottom:1px solid #eee;
+font-size:14px;
+color:#555;
+}
+
+/* MOBILE */
+
+@media(max-width:1000px){
+
+.stats{
+grid-template-columns:repeat(2,1fr);
+}
+
+.grid{
+grid-template-columns:1fr;
+}
+
+}
+
+@media(max-width:768px){
+
+.sidebar{
+left:-260px;
+}
+
+.sidebar.mobile-show{
+left:0;
+}
+
+.main{
+margin-left:0;
+}
+
+.main.expanded{
+margin-left:0;
+}
+
+.stats{
+grid-template-columns:1fr;
+}
+
+.content{
+padding:20px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<div class="sidebar" id="sidebar">
+
+<div class="logo">
+MATCHU
+</div>
+
+<div class="menu">
+
+<a href="#">
+<span>Dashboard</span>
+</a>
+
+<a href="#">
+<span>Profil Saya</span>
+</a>
+
+<a href="#">
+<span>Kandidat</span>
+</a>
+
+<a href="#">
+<span>Permintaan Perkenalan</span>
+</a>
+
+<a href="#">
+<span>Chat</span>
+</a>
+
+<a href="#">
+<span>Notifikasi</span>
+</a>
+
+<a href="#">
+<span>Pengaturan</span>
+</a>
+
+<a href="#">
+<span>Keluar</span>
+</a>
+
+</div>
+
+</div>
+
+<div class="main" id="main">
+
+<div class="topbar">
+
+<div class="toggle" onclick="toggleSidebar()">
+☰
+</div>
+
+<div class="user-box">
+
+<div class="avatar">
+A
+</div>
+
+<div>
+Ayu
+</div>
+
+</div>
+
+</div>
+
+<div class="content">
+
+<div class="welcome-card">
+
+<div class="welcome-title">
+Selamat Datang di Matchu
+</div>
+
+<div class="welcome-text">
+
+Profil Anda telah berhasil diverifikasi.
+
+<br><br>
+
+✓ Email Terverifikasi<br>
+✓ Pendidikan Terverifikasi<br>
+✓ Profil Aktif
+
+</div>
+
+</div>
+
+<div class="premium-card">
+
+<div class="premium-title">
+Status Akun Anda: REGULER
+</div>
+
+<div class="premium-desc">
+
+Anda mendapatkan akses 5 kandidat baru setiap minggu.
+
+Upgrade ke Premium untuk membuka pencarian lanjutan berdasarkan kampus, pendidikan, profesi, kota, dan mendapatkan lebih banyak kesempatan berkenalan.
+
+</div>
+
+<button class="upgrade-btn">
+Upgrade Premium
+</button>
+
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<div class="stat-number">5</div>
+<div class="stat-label">Kandidat Minggu Ini</div>
+</div>
+
+<div class="stat">
+<div class="stat-number">2</div>
+<div class="stat-label">Permintaan Aktif</div>
+</div>
+
+<div class="stat">
+<div class="stat-number">1</div>
+<div class="stat-label">Chat Aktif</div>
+</div>
+
+<div class="stat">
+<div class="stat-number">85%</div>
+<div class="stat-label">Profil Lengkap</div>
+</div>
+
+</div>
+
+<div class="grid">
+
+<div class="card">
+
+<div class="card-title">
+Kandidat Minggu Ini
+</div>
+
+<div class="match-item">
+
+<div class="match-info">
+<h4>Ahmad Fauzan</h4>
+<p>S2 Teknik Mesin • Bandung • 92% Cocok</p>
+</div>
+
+<button class="match-btn">
+Lihat Profil
+</button>
+
+</div>
+
+<div class="match-item">
+
+<div class="match-info">
+<h4>Rizky Maulana</h4>
+<p>Dokter • Jakarta • 89% Cocok</p>
+</div>
+
+<button class="match-btn">
+Lihat Profil
+</button>
+
+</div>
+
+<div class="match-item">
+
+<div class="match-info">
+<h4>Fadli Akbar</h4>
+<p>Data Scientist • Surabaya • 87% Cocok</p>
+</div>
+
+<button class="match-btn">
+Lihat Profil
+</button>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="card-title">
+Notifikasi
+</div>
+
+<div class="notification">
+Profil Anda berhasil diverifikasi.
+</div>
+
+<div class="notification">
+Ada kandidat baru yang sesuai dengan preferensi Anda.
+</div>
+
+<div class="notification">
+1 permintaan perkenalan sedang menunggu respons.
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function toggleSidebar(){
+
+const sidebar=document.getElementById('sidebar');
+const main=document.getElementById('main');
+
+if(window.innerWidth<=768){
+
+sidebar.classList.toggle('mobile-show');
+
+}else{
+
+sidebar.classList.toggle('collapsed');
+main.classList.toggle('expanded');
+
+}
+
+}
+
+</script>
+
+</body>
+</html>

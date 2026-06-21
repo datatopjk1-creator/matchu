@@ -50,39 +50,54 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
 </style>
 </head>
 <body>
+
 <div class="register-wrapper">
 <div class="register-card">
+
   <div class="logo">MATCHU</div>
   <div class="tagline">Beyond Matching. Toward Marriage.</div>
   <div class="step">LANGKAH 1 DARI 3</div>
   <div class="form-title">Buat Akun Matchu</div>
-  <div class="form-desc">Bergabunglah dengan komunitas matchmaking terverifikasi untuk profesional dan alumni perguruan tinggi yang serius membangun masa depan bersama.</div>
+  <div class="form-desc">
+    Bergabunglah dengan komunitas matchmaking terverifikasi untuk profesional dan alumni perguruan tinggi yang serius membangun masa depan bersama.
+  </div>
 
   <form onsubmit="return handleSubmit(event)">
+
     <div class="form-group">
       <label>Nama Lengkap</label>
       <input type="text" id="nama" placeholder="Masukkan nama lengkap" required>
     </div>
+
+    <div class="form-group">
+      <label>Nama Panggilan</label>
+      <input type="text" id="nama-panggilan" placeholder="Nama yang ingin ditampilkan di Matchu" required>
+    </div>
+
     <div class="form-group">
       <label>Email</label>
       <input type="email" id="email" placeholder="nama@email.com" required>
     </div>
+
     <div class="form-group">
       <label>Kata Sandi</label>
       <input type="password" id="password" placeholder="Buat kata sandi" required>
       <small class="hint">Minimal 8 karakter, 1 huruf besar, 1 angka.</small>
       <div class="err-msg" id="pass-err">Password tidak memenuhi syarat.</div>
     </div>
+
     <div class="form-group">
       <label>Konfirmasi Kata Sandi</label>
       <input type="password" id="confirm-password" placeholder="Ulangi kata sandi" required>
       <div class="err-msg" id="confirm-err">Kata sandi tidak sama.</div>
     </div>
+
     <div class="form-group">
       <label>Tanggal Lahir</label>
       <input type="date" id="tanggal-lahir" required>
       <div class="err-msg" id="dob-err">Usia minimal 22 tahun.</div>
     </div>
+
     <div class="form-group">
       <label>Jenis Kelamin</label>
       <div class="gender-group">
@@ -92,22 +107,33 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
       <input type="hidden" id="gender-input">
       <div class="err-msg" id="gender-err">Pilih jenis kelamin.</div>
     </div>
+
     <div class="notice">
       <div class="notice-title">Persyaratan Matchu</div>
-      <div class="notice-text">Usia minimal 22 tahun dan sedang menempuh atau telah menyelesaikan pendidikan tinggi (D3, D4, S1, S2, atau S3).<br><br>Mahasiswa tingkat akhir, fresh graduate, maupun profesional yang telah bekerja dipersilakan bergabung.</div>
+      <div class="notice-text">
+        Usia minimal 22 tahun dan sedang menempuh atau telah menyelesaikan pendidikan tinggi (D3, D4, S1, S2, atau S3).
+        <br><br>
+        Mahasiswa tingkat akhir, fresh graduate, maupun profesional yang telah bekerja dipersilakan bergabung.
+      </div>
     </div>
+
     <div class="age-check">
       <input type="checkbox" id="age-agree" required>
       <span>Saya menyatakan bahwa saya berusia minimal 22 tahun dan memenuhi persyaratan pendidikan yang berlaku di Matchu.</span>
     </div>
+
     <button type="submit" class="btn-register" id="btn-submit">Lanjutkan</button>
-    <div class="login-link">Sudah memiliki akun? <a href="login.html">Masuk</a></div>
+
+    <div class="login-link">
+      Sudah memiliki akun? <a href="login.html">Masuk</a>
+    </div>
+
   </form>
 </div>
 </div>
 
 <script>
-// Bersihkan data lama kalau ada
+// Bersihkan data lama
 localStorage.removeItem('matchu_user');
 
 function pilihGender(pilihan) {
@@ -121,36 +147,59 @@ async function handleSubmit(e) {
   e.preventDefault();
   let valid = true;
 
+  // Cek gender
   const gender = document.getElementById('gender-input').value;
-  if (!gender) { document.getElementById('gender-err').style.display = 'block'; valid = false; }
+  if (!gender) {
+    document.getElementById('gender-err').style.display = 'block';
+    valid = false;
+  }
 
+  // Cek password
   const pass = document.getElementById('password').value;
   if (!/^(?=.*[A-Z])(?=.*\d).{8,}$/.test(pass)) {
-    document.getElementById('pass-err').style.display = 'block'; valid = false;
-  } else { document.getElementById('pass-err').style.display = 'none'; }
+    document.getElementById('pass-err').style.display = 'block';
+    valid = false;
+  } else {
+    document.getElementById('pass-err').style.display = 'none';
+  }
 
+  // Cek konfirmasi password
   const confirm = document.getElementById('confirm-password').value;
   if (pass !== confirm) {
-    document.getElementById('confirm-err').style.display = 'block'; valid = false;
-  } else { document.getElementById('confirm-err').style.display = 'none'; }
+    document.getElementById('confirm-err').style.display = 'block';
+    valid = false;
+  } else {
+    document.getElementById('confirm-err').style.display = 'none';
+  }
 
+  // Cek usia minimal 22 tahun
   const tglLahir = new Date(document.getElementById('tanggal-lahir').value);
   const today = new Date();
   let usia = today.getFullYear() - tglLahir.getFullYear();
   const b = today.getMonth() - tglLahir.getMonth();
   if (b < 0 || (b === 0 && today.getDate() < tglLahir.getDate())) usia--;
   if (usia < 22) {
-    document.getElementById('dob-err').style.display = 'block'; valid = false;
-  } else { document.getElementById('dob-err').style.display = 'none'; }
+    document.getElementById('dob-err').style.display = 'block';
+    valid = false;
+  } else {
+    document.getElementById('dob-err').style.display = 'none';
+  }
 
   if (!valid) return false;
 
   const email = document.getElementById('email').value.trim();
   const nama = document.getElementById('nama').value.trim();
+  const namaPanggilan = document.getElementById('nama-panggilan').value.trim();
   const tanggal_lahir = document.getElementById('tanggal-lahir').value;
 
-  // Simpan data sementara — userId akan diisi setelah OTP diverifikasi
-  localStorage.setItem('matchu_user', JSON.stringify({ nama, email, tanggal_lahir, jenis_kelamin: gender }));
+  // Simpan ke localStorage sementara
+  localStorage.setItem('matchu_user', JSON.stringify({
+    nama,
+    nama_panggilan: namaPanggilan,
+    email,
+    tanggal_lahir,
+    jenis_kelamin: gender,
+  }));
 
   const btn = document.getElementById('btn-submit');
   btn.disabled = true;
