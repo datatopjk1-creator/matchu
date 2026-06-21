@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profil Saya | Matchu</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & ROOT ===== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --brand: #7A2236;
+  --brand-dark: #5E1A2A;
+  --brand-light: #f9f0f3;
+  --brand-mid: #c4677e;
+  --bg: #F5F2EF;
+  --white: #ffffff;
+  --text: #1C1C1E;
+  --text-2: #6B7280;
+  --border: #E8E3DF;
+  --sidebar-w: 260px;
+  --topbar-h: 68px;
+  --radius: 16px;
+  --shadow: 0 2px 16px rgba(0,0,0,0.06);
+}
+
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* ===== OVERLAY ===== */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 100; }
+.overlay.active { display: block; }
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sidebar-w); height: 100vh;
+  background: var(--white); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  z-index: 200; transition: transform .28s cubic-bezier(.4,0,.2,1); overflow: hidden;
+}
+.sidebar.hidden { transform: translateX(-100%); }
+
+.sidebar-logo {
+  height: var(--topbar-h); display: flex;
+  align-items: center; justify-content: space-between;
+  padding: 0 24px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.logo-text { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--brand); letter-spacing: 2px; }
+.sidebar-close { width: 34px; height: 34px; border: none; background: none; cursor: pointer; font-size: 20px; color: var(--text-2); display: flex; align-items: center; justify-content: center; border-radius: 8px; }
+.sidebar-close:hover { background: var(--bg); }
+
+.sidebar-nav { padding: 16px 0; flex: 1; overflow-y: auto; }
+.nav-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-2); padding: 14px 24px 6px; }
+
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 20px; height: 48px; text-decoration: none;
+  color: #444; font-size: 14.5px; font-weight: 500;
+  border-radius: 12px; margin: 2px 10px;
+  transition: background .15s, color .15s;
+}
+.nav-item:hover { background: var(--brand-light); color: var(--brand); }
+.nav-item.active { background: var(--brand-light); color: var(--brand); font-weight: 600; }
+.nav-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-badge { margin-left: auto; background: var(--brand); color: white; font-size: 10px; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+.sidebar-footer { padding: 16px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.sidebar-user { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; background: var(--bg); }
+.s-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--brand); color: white; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.s-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.s-role { font-size: 11px; color: var(--text-2); }
+
+/* ===== MAIN ===== */
+.main { min-height: 100vh; }
+
+/* ===== TOPBAR ===== */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  height: var(--topbar-h); background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 24px; gap: 12px;
+}
+.hamburger { width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 10px; background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; flex-shrink: 0; }
+.hamburger span { display: block; width: 18px; height: 2px; background: var(--text); border-radius: 2px; transition: all .2s; }
+.hamburger:hover span { background: var(--brand); }
+.topbar-brand { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--brand); font-weight: 700; letter-spacing: 1px; }
+.topbar-spacer { flex: 1; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+
+.notif-btn { position: relative; width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 10px; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s; }
+.notif-btn:hover { background: var(--brand-light); }
+.notif-btn svg { width: 18px; height: 18px; stroke: var(--text); }
+.notif-dot { position: absolute; top: 7px; right: 7px; width: 8px; height: 8px; border-radius: 50%; background: var(--brand); border: 2px solid white; }
+.user-pill { display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 6px; border: 1px solid var(--border); border-radius: 50px; background: none; cursor: pointer; transition: background .15s; }
+.user-pill:hover { background: var(--brand-light); }
+.t-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--brand); color: white; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+.t-name { font-size: 13px; font-weight: 600; color: var(--text); }
+
+/* ===== NOTIF DROPDOWN ===== */
+.notif-dropdown { position: absolute; top: calc(var(--topbar-h) + 6px); right: 20px; width: 310px; background: white; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.14); border: 1px solid var(--border); z-index: 300; display: none; }
+.notif-dropdown.open { display: block; }
+.notif-drop-head { padding: 16px 18px 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.notif-drop-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.notif-drop-clear { font-size: 12px; color: var(--brand); cursor: pointer; font-weight: 600; }
+.notif-drop-item { display: flex; align-items: flex-start; gap: 12px; padding: 13px 18px; border-bottom: 1px solid var(--border); transition: background .1s; }
+.notif-drop-item:last-child { border-bottom: none; }
+.notif-drop-item:hover { background: var(--bg); }
+.notif-drop-icon { width: 34px; height: 34px; border-radius: 10px; background: var(--brand-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.notif-drop-icon svg { width: 16px; height: 16px; stroke: var(--brand); }
+.notif-drop-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+.notif-drop-time { font-size: 11px; color: var(--text-2); margin-top: 2px; }
+
+/* ===== CONTENT ===== */
+.content { padding: 28px 28px 60px; max-width: 1100px; }
+
+/* ===== PAGE BANNER ===== */
+.page-banner {
+  background: linear-gradient(130deg, var(--brand) 0%, #9E304D 60%, #c4677e 100%);
+  border-radius: 20px; padding: 28px 32px; color: white;
+  margin-bottom: 24px; position: relative; overflow: hidden;
+  display: flex; align-items: center; gap: 24px;
+}
+.page-banner::before { content: ''; position: absolute; right: -40px; top: -40px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,0.06); }
+.page-banner::after { content: ''; position: absolute; right: 60px; bottom: -60px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,0.04); }
+
+/* Profile avatar in banner */
+.banner-avatar {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: 3px solid rgba(255,255,255,0.5);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; font-weight: 700; color: white;
+  flex-shrink: 0; position: relative; z-index: 1;
+}
+.banner-info { position: relative; z-index: 1; flex: 1; }
+.banner-tag { display: inline-block; padding: 4px 12px; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.25); border-radius: 50px; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 8px; }
+.banner-info h1 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; margin-bottom: 4px; line-height: 1.2; }
+.banner-info p { font-size: 13px; opacity: .82; }
+.banner-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.vbadge { display: inline-flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; font-size: 11px; font-weight: 600; padding: 4px 11px; border-radius: 50px; }
+.banner-actions { display: flex; gap: 10px; position: relative; z-index: 1; flex-shrink: 0; }
+.btn-white { padding: 10px 22px; background: white; color: var(--brand); border: none; border-radius: 50px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .18s; white-space: nowrap; }
+.btn-white:hover { background: #f5f5f5; transform: translateY(-1px); }
+.btn-white-out { padding: 10px 22px; background: transparent; color: white; border: 1.5px solid rgba(255,255,255,0.5); border-radius: 50px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .18s; white-space: nowrap; }
+.btn-white-out:hover { background: rgba(255,255,255,0.12); }
+
+/* ===== STATS ROW ===== */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: var(--white); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+.stat-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--brand-light); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+.stat-icon svg { width: 18px; height: 18px; stroke: var(--brand); }
+.stat-num { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: var(--brand); line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 13px; color: var(--text-2); }
+
+/* ===== CARD ===== */
+.card { background: var(--white); border-radius: 20px; padding: 24px 26px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 20px; }
+.card-title { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; color: var(--text); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
+.card-edit { font-size: 12px; font-weight: 600; color: var(--brand); background: var(--brand-light); padding: 5px 12px; border-radius: 50px; cursor: pointer; border: none; transition: background .15s; }
+.card-edit:hover { background: #f0dde3; }
+
+/* ===== TRUST SCORE ===== */
+.trust-wrap { display: flex; align-items: center; gap: 20px; margin-bottom: 18px; }
+.trust-ring { width: 80px; height: 80px; flex-shrink: 0; position: relative; }
+.trust-ring svg { transform: rotate(-90deg); }
+.trust-ring-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: var(--brand); }
+.trust-right {}
+.trust-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.trust-sub { font-size: 12px; color: var(--text-2); margin-bottom: 2px; }
+.trust-status { display: inline-block; background: #e8f5e9; color: #2e7d32; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+
+.trust-items { display: flex; flex-direction: column; gap: 7px; }
+.trust-item { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--text); padding: 8px 12px; background: var(--bg); border-radius: 10px; }
+.trust-pts-done { font-weight: 700; color: #2e7d32; font-size: 12px; }
+.trust-pts-pending { font-weight: 700; color: var(--text-2); font-size: 12px; opacity: 0.5; }
+.trust-item.pending { opacity: .45; }
+
+.complete-btn { width: 100%; margin-top: 14px; background: var(--brand); color: white; border: none; padding: 11px 0; border-radius: 50px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background .15s; }
+.complete-btn:hover { background: var(--brand-dark); }
+
+/* ===== TWO COL GRID ===== */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+
+/* ===== INFO ROWS ===== */
+.info-row { padding: 10px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.info-row:last-child { border-bottom: none; }
+.info-label { font-size: 12px; color: var(--text-2); }
+.info-value { font-size: 14px; font-weight: 600; color: var(--text); text-align: right; }
+.info-value.verified { color: #2e7d32; }
+
+/* ===== BIO ===== */
+.bio-text { font-size: 14.5px; color: #555; line-height: 1.85; padding: 14px 16px; background: var(--bg); border-radius: 12px; border-left: 3px solid var(--brand-mid); }
+
+/* ===== TAGS ===== */
+.tags-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag-chip { padding: 7px 15px; background: var(--brand-light); color: var(--brand); border-radius: 50px; font-size: 13px; font-weight: 500; border: 1px solid rgba(122,34,54,0.12); }
+
+/* ===== TUJUAN GRID ===== */
+.goal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.goal-item { background: var(--bg); border-radius: 12px; padding: 14px 16px; border: 1px solid var(--border); }
+.goal-label { font-size: 11px; color: var(--text-2); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+.goal-value { font-size: 14px; font-weight: 700; color: var(--text); }
+
+/* ===== PHOTOS ===== */
+.photos-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+.photo-slot {
+  aspect-ratio: 1; border-radius: 14px;
+  background: var(--bg); border: 2px dashed var(--border);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px; cursor: pointer; transition: all .18s; color: var(--text-2);
+  font-size: 12px; font-weight: 500;
+}
+.photo-slot:hover { border-color: var(--brand-mid); background: var(--brand-light); color: var(--brand); }
+.photo-slot.filled { border-style: solid; border-color: var(--border); background: #e8e0e3; }
+.photo-slot svg { width: 22px; height: 22px; }
+.photo-main-label { font-size: 10px; font-weight: 700; color: var(--brand); background: var(--brand-light); padding: 2px 8px; border-radius: 20px; margin-top: 4px; }
+
+.add-photo-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: var(--brand); color: white; border: none; border-radius: 50px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .15s; }
+.add-photo-btn:hover { background: var(--brand-dark); }
+.add-photo-btn svg { width: 16px; height: 16px; stroke: white; }
+
+/* ===== DANGER ZONE ===== */
+.danger-card { background: #FFF8F8; border-radius: 20px; padding: 24px 26px; border: 1px solid #ffd5d5; margin-bottom: 20px; box-shadow: var(--shadow); }
+.danger-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: #c0392b; margin-bottom: 8px; }
+.danger-desc { font-size: 13.5px; color: #888; line-height: 1.7; margin-bottom: 16px; }
+.danger-btn { padding: 10px 24px; background: #c0392b; color: white; border: none; border-radius: 50px; font-size: 13px; font-weight: 700; cursor: pointer; transition: background .15s; }
+.danger-btn:hover { background: #9b2c2c; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .two-col { grid-template-columns: 1fr; }
+  .photos-grid { grid-template-columns: repeat(2, 1fr); }
+  .goal-grid { grid-template-columns: 1fr; }
+  .content { padding: 16px 16px 60px; }
+  .page-banner { flex-direction: column; align-items: flex-start; }
+  .banner-actions { width: 100%; }
+}
+@media (max-width: 560px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .t-name { display: none; }
+  .banner-avatar { width: 64px; height: 64px; font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar hidden" id="sidebar">
+  <div class="sidebar-logo">
+    <span class="logo-text">MATCHU</span>
+    <button class="sidebar-close" id="sidebarClose">✕</button>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Menu Utama</div>
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><rect x="3" y="3" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/></svg></span>
+      Dashboard
+    </a>
+    <a href="profil.html" class="nav-item active">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+      Profil Saya
+    </a>
+    <a href="kandidat.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M2 20c0-3.3 3.1-6 7-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="15" r="4" stroke="currentColor" stroke-width="1.8"/></svg></span>
+      Kandidat
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="permintaan-perkenalan.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg></span>
+      Permintaan Perkenalan
+      <span class="nav-badge">2</span>
+    </a>
+    <a href="chat.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+      Chat
+      <span class="nav-badge">1</span>
+    </a>
+    <a href="notifikasi.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+      Notifikasi
+    </a>
+    <div class="nav-label" style="margin-top:8px">Akun</div>
+    <a href="premium.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+      Premium
+    </a>
+    <a href="pengaturan.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" stroke-width="1.8"/></svg></span>
+      Pengaturan
+    </a>
+    <a href="logout.html" class="nav-item" style="color:#c0392b;">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round"/><polyline points="16,17 21,12 16,7" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="21" y1="12" x2="9" y2="12" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+      Keluar
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="s-avatar">A</div>
+      <div>
+        <div class="s-name">Alif Ramadhan</div>
+        <div class="s-role">Member Reguler</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- NOTIF DROPDOWN -->
+<div class="notif-dropdown" id="notifDropdown">
+  <div class="notif-drop-head">
+    <div class="notif-drop-title">Notifikasi</div>
+    <span class="notif-drop-clear">Tandai semua dibaca</span>
+  </div>
+  <div class="notif-drop-item">
+    <div class="notif-drop-icon"><svg fill="none" viewBox="0 0 24 24"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg></div>
+    <div>
+      <div class="notif-drop-text"><b>Manda</b> menerima surat perkenalan Anda.</div>
+      <div class="notif-drop-time">2 jam lalu</div>
+    </div>
+  </div>
+  <div class="notif-drop-item">
+    <div class="notif-drop-icon"><svg fill="none" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+    <div>
+      <div class="notif-drop-text">Chat dengan <b>Rara</b> akan berakhir dalam 2 hari.</div>
+      <div class="notif-drop-time">5 jam lalu</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <button class="hamburger" id="hamburger" aria-label="Buka menu">
+      <span></span><span></span><span></span>
+    </button>
+    <span class="topbar-brand">MATCHU</span>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-right">
+      <button class="notif-btn" id="notifBtn" aria-label="Notifikasi">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke-linecap="round"/></svg>
+        <span class="notif-dot"></span>
+      </button>
+      <button class="user-pill" aria-label="Profil">
+        <div class="t-avatar">A</div>
+        <span class="t-name">Alif</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- PAGE CONTENT -->
+  <div class="content">
+
+    <!-- BANNER PROFIL -->
+    <div class="page-banner">
+      <div class="banner-avatar">A</div>
+      <div class="banner-info">
+        <div class="banner-tag">Profil Saya</div>
+        <h1>Alif Ramadhan</h1>
+        <p>25 Tahun &nbsp;·&nbsp; Software Engineer &nbsp;·&nbsp; Bandung, Jawa Barat</p>
+        <div class="banner-badges">
+          <span class="vbadge">✓ Pendidikan Terverifikasi</span>
+          <span class="vbadge">✓ Pekerjaan Terverifikasi</span>
+          <span class="vbadge">✓ Email Terverifikasi</span>
+        </div>
+      </div>
+      <div class="banner-actions">
+        <button class="btn-white" onclick="openEdit()">Edit Profil</button>
+        <button class="btn-white-out">Lihat Tampilan Publik</button>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z" stroke-linejoin="round"/></svg></div>
+        <div class="stat-num" data-target="18">0</div>
+        <div class="stat-label">Surat Dikirim</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        <div class="stat-num" data-target="12">0</div>
+        <div class="stat-label">Surat Diterima</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linejoin="round"/></svg></div>
+        <div class="stat-num" data-target="3">0</div>
+        <div class="stat-label">Chat Aktif</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg></div>
+        <div class="stat-num" data-target="89" data-suffix="%">0%</div>
+        <div class="stat-label">Rata-rata Kecocokan</div>
+      </div>
+    </div>
+
+    <!-- TRUST SCORE + INFO DASAR -->
+    <div class="two-col">
+
+      <!-- Trust Score -->
+      <div class="card">
+        <div class="card-title">
+          Trust Score
+          <button class="card-edit" onclick="openEdit()">Lengkapi Profil</button>
+        </div>
+        <div class="trust-wrap">
+          <div class="trust-ring">
+            <svg width="80" height="80" viewBox="0 0 80 80">
+              <circle cx="40" cy="40" r="32" fill="none" stroke="#f0e6ea" stroke-width="8"/>
+              <circle cx="40" cy="40" r="32" fill="none" stroke="#7A2236" stroke-width="8"
+                stroke-dasharray="201" stroke-dashoffset="30" stroke-linecap="round"/>
+            </svg>
+            <div class="trust-ring-num">85</div>
+          </div>
+          <div class="trust-right">
+            <div class="trust-title">85 / 100 Poin</div>
+            <div class="trust-sub">Target minimal 80 poin</div>
+            <span class="trust-status">✓ Aktif Direkomendasikan</span>
+          </div>
+        </div>
+        <div class="trust-items">
+          <div class="trust-item"><span>Email Terverifikasi</span><span class="trust-pts-done">✓ +20</span></div>
+          <div class="trust-item"><span>Nama Lengkap</span><span class="trust-pts-done">✓ +10</span></div>
+          <div class="trust-item"><span>Foto Profil</span><span class="trust-pts-done">✓ +15</span></div>
+          <div class="trust-item"><span>Data Pendidikan</span><span class="trust-pts-done">✓ +15</span></div>
+          <div class="trust-item"><span>Screenshot PDDIKTI</span><span class="trust-pts-done">✓ +20</span></div>
+          <div class="trust-item pending"><span>Instagram</span><span class="trust-pts-pending">+10</span></div>
+          <div class="trust-item pending"><span>Bio Profil</span><span class="trust-pts-pending">+10</span></div>
+        </div>
+        <button class="complete-btn">+ Tambah Instagram & Bio</button>
+      </div>
+
+      <!-- Info Dasar -->
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div class="card">
+          <div class="card-title">Informasi Dasar <button class="card-edit">Edit</button></div>
+          <div class="info-row"><span class="info-label">Nama Panggilan</span><span class="info-value">Alif</span></div>
+          <div class="info-row"><span class="info-label">Nama Lengkap</span><span class="info-value">Alif Ramadhan</span></div>
+          <div class="info-row"><span class="info-label">Tanggal Lahir</span><span class="info-value">14 Maret 2000</span></div>
+          <div class="info-row"><span class="info-label">Usia</span><span class="info-value">25 Tahun</span></div>
+          <div class="info-row"><span class="info-label">Agama</span><span class="info-value">Islam</span></div>
+          <div class="info-row"><span class="info-label">Status</span><span class="info-value">Belum Menikah</span></div>
+          <div class="info-row"><span class="info-label">Domisili</span><span class="info-value">Bandung, Jawa Barat</span></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Pendidikan <button class="card-edit">Edit</button></div>
+          <div class="info-row"><span class="info-label">Universitas</span><span class="info-value">Institut Teknologi Bandung</span></div>
+          <div class="info-row"><span class="info-label">Jurusan</span><span class="info-value">S1 Teknik Informatika</span></div>
+          <div class="info-row"><span class="info-label">Angkatan</span><span class="info-value">2019</span></div>
+          <div class="info-row"><span class="info-label">Status</span><span class="info-value verified">✓ Terverifikasi via PDDikti</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PEKERJAAN + TENTANG -->
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Pekerjaan <button class="card-edit">Edit</button></div>
+        <div class="info-row"><span class="info-label">Profesi</span><span class="info-value">Software Engineer</span></div>
+        <div class="info-row"><span class="info-label">Instansi</span><span class="info-value">PT Teknologi Nusantara</span></div>
+        <div class="info-row"><span class="info-label">Bidang</span><span class="info-value">Teknologi Informasi</span></div>
+        <div class="info-row"><span class="info-label">Status Verifikasi</span><span class="info-value verified">✓ Terverifikasi</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Tujuan Pernikahan <button class="card-edit">Edit</button></div>
+        <div class="goal-grid">
+          <div class="goal-item"><div class="goal-label">Target Menikah</div><div class="goal-value">1–2 Tahun</div></div>
+          <div class="goal-item"><div class="goal-label">Rencana Anak</div><div class="goal-value">2 Anak</div></div>
+          <div class="goal-item"><div class="goal-label">Bersedia Pindah Kota</div><div class="goal-value">Ya</div></div>
+          <div class="goal-item"><div class="goal-label">Bahasa Sehari-hari</div><div class="goal-value">Indonesia</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TENTANG SAYA -->
+    <div class="card">
+      <div class="card-title">Tentang Saya <button class="card-edit">Edit</button></div>
+      <div class="bio-text">
+        Saya pribadi yang tenang, menyukai hal-hal terstruktur, dan senang berdiskusi. Saat ini bekerja sebagai software engineer dan sedang membangun karir yang stabil. Saya menyukai membaca, traveling ke tempat alam, dan sesekali memasak. Mencari pasangan yang memiliki tujuan hidup yang jelas, komunikatif, dan terbuka satu sama lain.
+      </div>
+    </div>
+
+    <!-- HOBI -->
+    <div class="card">
+      <div class="card-title">Hobi & Minat <button class="card-edit">Edit</button></div>
+      <div class="tags-wrap">
+        <span class="tag-chip">Traveling</span>
+        <span class="tag-chip">Membaca</span>
+        <span class="tag-chip">Memasak</span>
+        <span class="tag-chip">Lari Pagi</span>
+        <span class="tag-chip">Kopi</span>
+        <span class="tag-chip">Film</span>
+        <span class="tag-chip">Hiking</span>
+        <span class="tag-chip">Teknologi</span>
+      </div>
+    </div>
+
+    <!-- GALERI FOTO -->
+    <div class="card">
+      <div class="card-title">Galeri Foto <button class="card-edit">Kelola Foto</button></div>
+      <div class="photos-grid">
+        <div class="photo-slot filled">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" width="28" height="28"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>Foto Utama</span>
+          <span class="photo-main-label">UTAMA</span>
+        </div>
+        <div class="photo-slot filled">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" width="28" height="28"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>Foto 2</span>
+        </div>
+        <div class="photo-slot">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" width="28" height="28"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+          <span>Tambah Foto</span>
+        </div>
+        <div class="photo-slot">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" width="28" height="28"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+          <span>Tambah Foto</span>
+        </div>
+      </div>
+      <button class="add-photo-btn">
+        <svg fill="none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-width="2.5"/></svg>
+        Tambah Foto
+      </button>
+    </div>
+
+    <!-- DANGER ZONE -->
+    <div class="danger-card">
+      <div class="danger-title">⚠ Zona Berbahaya</div>
+      <div class="danger-desc">Menghapus akun akan menghapus seluruh data, permintaan perkenalan, dan histori chat secara permanen dan tidak dapat dipulihkan.</div>
+      <button class="danger-btn" onclick="confirmDelete()">Hapus Akun Permanen</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- EDIT MODAL (simple overlay) -->
+<div id="editModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:500;display:none;align-items:center;justify-content:center;">
+  <div style="background:white;border-radius:20px;padding:28px;width:480px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <span style="font-size:18px;font-weight:700;color:var(--text);font-family:'Playfair Display',serif;">Edit Profil</span>
+      <button onclick="closeEdit()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-2);">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <label style="font-size:12px;color:var(--text-2);display:block;margin-bottom:4px;">Nama Panggilan</label>
+        <input value="Alif" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-size:14px;outline:none;font-family:'Inter',sans-serif;">
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--text-2);display:block;margin-bottom:4px;">Domisili</label>
+        <input value="Bandung, Jawa Barat" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-size:14px;outline:none;font-family:'Inter',sans-serif;">
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--text-2);display:block;margin-bottom:4px;">Instagram</label>
+        <input placeholder="@username" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-size:14px;outline:none;font-family:'Inter',sans-serif;">
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--text-2);display:block;margin-bottom:4px;">Bio</label>
+        <textarea rows="3" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-size:14px;outline:none;resize:none;font-family:'Inter',sans-serif;">Saya pribadi yang tenang, menyukai hal-hal terstruktur...</textarea>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;">
+      <button onclick="closeEdit()" style="flex:1;padding:11px;border:1px solid var(--border);background:var(--bg);border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;">Batal</button>
+      <button onclick="saveEdit()" style="flex:1;padding:11px;background:var(--brand);color:white;border:none;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;">Simpan Perubahan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== SIDEBAR ===== */
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const hamburger = document.getElementById('hamburger');
+const sidebarClose = document.getElementById('sidebarClose');
+
+function openSidebar() { sidebar.classList.remove('hidden'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+function closeSidebar() { sidebar.classList.add('hidden'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
+
+hamburger.addEventListener('click', () => sidebar.classList.contains('hidden') ? openSidebar() : closeSidebar());
+sidebarClose.addEventListener('click', closeSidebar);
+overlay.addEventListener('click', () => { closeSidebar(); closeNotif(); });
+
+/* ===== NOTIF ===== */
+const notifBtn = document.getElementById('notifBtn');
+const notifDropdown = document.getElementById('notifDropdown');
+function closeNotif() { notifDropdown.classList.remove('open'); }
+notifBtn.addEventListener('click', e => { e.stopPropagation(); notifDropdown.classList.toggle('open'); });
+document.addEventListener('click', e => { if (!notifDropdown.contains(e.target) && e.target !== notifBtn) closeNotif(); });
+
+/* ===== EDIT MODAL ===== */
+const editModal = document.getElementById('editModal');
+function openEdit() { editModal.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+function closeEdit() { editModal.style.display = 'none'; document.body.style.overflow = ''; }
+function saveEdit() {
+  closeEdit();
+  const toast = document.createElement('div');
+  toast.textContent = '✓ Profil berhasil diperbarui';
+  Object.assign(toast.style, { position:'fixed', bottom:'24px', left:'50%', transform:'translateX(-50%)', background:'var(--brand)', color:'white', padding:'12px 24px', borderRadius:'50px', fontSize:'14px', fontWeight:'600', zIndex:'9999', boxShadow:'0 8px 24px rgba(0,0,0,0.2)', transition:'opacity .3s' });
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 2500);
+}
+editModal.addEventListener('click', e => { if (e.target === editModal) closeEdit(); });
+
+/* ===== DELETE CONFIRM ===== */
+function confirmDelete() {
+  if (confirm('Apakah Anda yakin ingin menghapus akun? Tindakan ini tidak dapat dibatalkan.')) {
+    alert('Akun dihapus. (Demo)');
+  }
+}
+
+/* ===== STAT COUNTER ===== */
+const statNums = document.querySelectorAll('.stat-num');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target;
+    const target = parseInt(el.dataset.target);
+    const suffix = el.dataset.suffix || '';
+    let cur = 0;
+    const step = Math.ceil(target / 25);
+    const t = setInterval(() => { cur = Math.min(cur + step, target); el.textContent = cur + suffix; if (cur >= target) clearInterval(t); }, 40);
+    obs.unobserve(el);
+  });
+}, { threshold: 0.5 });
+statNums.forEach(el => obs.observe(el));
+
+/* ===== SCROLL REVEAL ===== */
+const reveals = document.querySelectorAll('.stat-card, .card, .danger-card, .page-banner');
+reveals.forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateY(16px)'; el.style.transition = 'opacity .5s ease, transform .5s ease'; });
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; ro.unobserve(e.target); } });
+}, { threshold: 0.08 });
+reveals.forEach(el => ro.observe(el));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cara Kerja Matchu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --brand: #7A2236;
+  --brand-mid: #c4677e;
+  --brand-light: #f9f4f5;
+  --bg: #F8F5F2;
+  --white: #ffffff;
+  --text: #1a1a1a;
+  --muted: #6B7280;
+  --border: #e5e0dc;
+  --green: #2e7d32;
+  --green-bg: #e8f5e9;
+  --shadow: 0 4px 24px rgba(122,34,54,0.07);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.page { max-width: 860px; margin: auto; padding: 60px 24px 100px; }
+
+/* HERO */
+.hero { text-align: center; margin-bottom: 80px; }
+.logo { font-family: 'Playfair Display', serif; font-size: 56px; color: var(--brand); letter-spacing: 3px; }
+.tagline { font-style: italic; color: var(--brand-mid); font-size: 15px; margin-top: 6px; margin-bottom: 32px; }
+.hero h1 { font-family: 'Playfair Display', serif; font-size: 40px; color: var(--text); line-height: 1.2; margin-bottom: 16px; }
+.hero p { font-size: 17px; color: var(--muted); max-width: 620px; margin: auto; }
+
+/* STEP WRAPPER */
+.step-wrap { margin-bottom: 64px; }
+.step-header { display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
+.step-num {
+  width: 48px; height: 48px; min-width: 48px;
+  background: var(--brand); color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 18px;
+}
+.step-title { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--text); }
+.step-desc { font-size: 15px; color: var(--muted); margin-bottom: 20px; margin-left: 64px; }
+
+.row { display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
+.col-txt { flex: 1; min-width: 220px; }
+.col-vis { flex-shrink: 0; }
+
+.info-box {
+  background: var(--brand-light);
+  border-left: 3px solid var(--brand);
+  border-radius: 0 10px 10px 0;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.8;
+}
+.info-box b { color: var(--brand); }
+
+hr.div { border: none; border-top: 1px solid var(--border); margin: 56px 0; }
+
+/* ========== PHONE FRAMES ========== */
+.phone {
+  width: 230px;
+  background: white;
+  border-radius: 30px;
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.phone-bar {
+  background: var(--brand);
+  color: white;
+  padding: 14px 16px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.phone-body { padding: 14px; }
+
+/* REGISTER */
+.reg-logo { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--brand); text-align: center; margin-bottom: 16px; }
+.reg-field { margin-bottom: 10px; }
+.reg-label { font-size: 11px; color: var(--muted); margin-bottom: 3px; }
+.reg-input {
+  width: 100%;
+  background: #f5f3f0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--text);
+}
+.reg-btn {
+  width: 100%; background: var(--brand); color: white;
+  border: none; padding: 10px; border-radius: 10px;
+  font-size: 13px; font-weight: 600; margin-top: 8px; cursor: pointer;
+}
+.check-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--green); margin-top: 8px; }
+
+/* TRUST SCORE */
+.trust-bar-wrap { background: #e8e0e3; border-radius: 8px; height: 10px; margin: 4px 0 6px; overflow: hidden; }
+.trust-bar { background: var(--brand); height: 100%; border-radius: 8px; width: 90%; }
+.trust-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 10px; border-radius: 8px; font-size: 12px;
+  margin-bottom: 5px; background: #f5f3f0; color: var(--text);
+}
+.trust-pts { font-weight: 700; color: var(--brand); }
+.trust-pending { opacity: 0.4; }
+
+/* CANDIDATE CARD */
+.cand-card {
+  width: 210px;
+  background: white;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.cand-photo-blur {
+  height: 120px;
+  background: repeating-linear-gradient(135deg, #d8d0d3 0, #d8d0d3 4px, #ede8ea 4px, #ede8ea 8px);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: #999; font-weight: 500; letter-spacing: 0.5px;
+}
+.cand-body { padding: 13px; }
+.cand-name { font-weight: 700; font-size: 17px; color: var(--text); }
+.cand-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  background: var(--green-bg); color: var(--green);
+  font-size: 10px; padding: 2px 8px; border-radius: 20px;
+  margin: 4px 0 8px; font-weight: 600;
+}
+.cand-info { font-size: 12px; color: var(--muted); line-height: 1.8; }
+.match-chip {
+  display: inline-block;
+  background: var(--brand-light); color: var(--brand);
+  font-size: 11px; font-weight: 700;
+  padding: 4px 10px; border-radius: 20px; margin: 10px 0 8px;
+}
+.cand-btns { display: flex; gap: 6px; }
+.btn-out {
+  flex: 1; border: 1.5px solid var(--brand); background: transparent;
+  color: var(--brand); font-size: 11px; padding: 7px 0;
+  border-radius: 9px; cursor: pointer; font-weight: 600;
+}
+.btn-fill {
+  flex: 1; border: none; background: var(--brand); color: white;
+  font-size: 11px; padding: 7px 0; border-radius: 9px; cursor: pointer; font-weight: 600;
+}
+
+/* PROFILE DETAIL */
+.profile-wrap {
+  width: 230px; background: white; border-radius: 18px;
+  border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow);
+}
+.profile-photo-blur {
+  height: 140px;
+  background: repeating-linear-gradient(135deg, #d8d0d3 0, #d8d0d3 4px, #ede8ea 4px, #ede8ea 8px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px;
+}
+.blur-icon { font-size: 28px; color: #b0a0a5; }
+.blur-text { font-size: 11px; color: #b0a0a5; font-weight: 500; }
+.profile-body { padding: 14px; }
+.profile-alias { font-size: 18px; font-weight: 700; color: var(--text); }
+.profile-campus { font-size: 13px; color: var(--muted); margin: 2px 0 8px; }
+.profile-row { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; border-bottom: 1px solid #f0ece9; color: var(--text); }
+.profile-row:last-child { border-bottom: none; }
+.profile-key { color: var(--muted); }
+.hidden-val {
+  background: #eee; color: #bbb; font-size: 10px;
+  padding: 2px 8px; border-radius: 8px; font-weight: 500;
+}
+.trust-score-small { font-size: 11px; color: var(--muted); margin-top: 10px; text-align: center; }
+
+/* LETTER */
+.letter-phone {
+  width: 215px; background: white; border-radius: 28px;
+  border: 1.5px solid var(--border); overflow: hidden; box-shadow: var(--shadow);
+}
+.letter-bar { background: var(--brand); color: white; font-size: 13px; font-weight: 600; padding: 13px 16px; }
+.letter-body { padding: 14px; }
+.letter-to { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+.letter-text {
+  font-size: 12.5px; color: var(--text); line-height: 1.75;
+  background: #f5f3f0; border-radius: 10px; padding: 10px; margin-bottom: 10px;
+}
+.letter-send {
+  width: 100%; background: var(--brand); color: white;
+  border: none; padding: 9px; border-radius: 10px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+}
+
+/* NOTIF */
+.notif-card {
+  width: 270px; background: white; border-radius: 16px;
+  border: 1px solid var(--border); padding: 14px 16px; box-shadow: var(--shadow);
+}
+.notif-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.notif-icon {
+  width: 34px; height: 34px; background: var(--brand);
+  border-radius: 9px; display: flex; align-items: center; justify-content: center;
+}
+.notif-app { font-size: 12px; font-weight: 700; color: var(--brand); }
+.notif-time { font-size: 11px; color: var(--muted); margin-left: auto; }
+.notif-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.notif-sub { font-size: 13px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+.notif-btns { display: flex; gap: 8px; }
+.notif-sec {
+  flex: 1; border: 1px solid var(--border); background: #f5f3f0;
+  color: var(--text); font-size: 12px; font-weight: 600;
+  padding: 7px 0; border-radius: 8px; cursor: pointer; text-align: center;
+}
+.notif-pri {
+  flex: 1; border: none; background: var(--brand); color: white;
+  font-size: 12px; font-weight: 700; padding: 7px 0;
+  border-radius: 8px; cursor: pointer; text-align: center;
+}
+
+/* CHAT */
+.chat-wrap {
+  width: 260px; background: #f5f3f0; border-radius: 20px;
+  border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow);
+}
+.chat-header {
+  background: white; display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px; border-bottom: 1px solid var(--border);
+}
+.chat-avatar-blur {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: repeating-linear-gradient(135deg, #ccc 0, #ccc 3px, #ddd 3px, #ddd 6px);
+  flex-shrink: 0;
+}
+.chat-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.chat-sub { font-size: 10px; color: var(--muted); }
+.chat-body { padding: 12px 12px 8px; }
+.bbl { background: white; border-radius: 4px 14px 14px 14px; padding: 9px 12px; font-size: 12.5px; color: var(--text); max-width: 78%; margin-bottom: 7px; line-height: 1.5; border: 1px solid var(--border); }
+.bbr { background: var(--brand); color: white; border-radius: 14px 4px 14px 14px; padding: 9px 12px; font-size: 12.5px; max-width: 78%; margin-left: auto; margin-bottom: 7px; line-height: 1.5; }
+.chat-input-row {
+  background: white; margin: 0; padding: 10px 12px;
+  display: flex; align-items: center; gap: 8px;
+  border-top: 1px solid var(--border);
+}
+.chat-input-box {
+  flex: 1; background: #f5f3f0; border: 1px solid var(--border);
+  border-radius: 20px; padding: 7px 12px; font-size: 12px; color: var(--muted);
+}
+.chat-send-btn {
+  background: var(--brand); color: white; border: none;
+  width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.chat-action-bar {
+  background: white; padding: 8px 12px;
+  display: flex; gap: 8px; border-top: 1px solid var(--border);
+}
+.interest-btn {
+  flex: 1; background: var(--brand); color: white; border: none;
+  padding: 8px 0; border-radius: 9px; font-size: 12px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.report-btn {
+  background: #fff0f0; color: #c0392b; border: 1px solid #f5c6c6;
+  padding: 8px 14px; border-radius: 9px; font-size: 12px; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+}
+
+/* REPORT MODAL */
+.report-modal-wrap {
+  background: rgba(0,0,0,0.35);
+  border-radius: 20px; padding: 20px;
+  margin-top: 16px; width: 260px;
+  display: flex; align-items: center; justify-content: center;
+}
+.report-modal {
+  background: white; border-radius: 16px; width: 100%;
+  padding: 18px; box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+}
+.modal-title { font-size: 15px; font-weight: 700; color: #c0392b; margin-bottom: 4px; }
+.modal-sub { font-size: 12px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+.report-option {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--text); padding: 7px 0;
+  border-bottom: 1px solid #f5f5f5; cursor: pointer;
+}
+.report-option:last-of-type { border-bottom: none; margin-bottom: 10px; }
+.report-radio {
+  width: 16px; height: 16px; border: 2px solid var(--border);
+  border-radius: 50%; flex-shrink: 0;
+}
+.report-radio.active { border-color: #c0392b; background: #c0392b; }
+.modal-btns { display: flex; gap: 8px; margin-top: 10px; }
+.modal-cancel {
+  flex: 1; border: 1px solid var(--border); background: #f5f3f0;
+  color: var(--text); font-size: 12px; font-weight: 600;
+  padding: 8px 0; border-radius: 8px; cursor: pointer; text-align: center;
+}
+.modal-report {
+  flex: 1; border: none; background: #c0392b; color: white;
+  font-size: 12px; font-weight: 700; padding: 8px 0; border-radius: 8px; cursor: pointer; text-align: center;
+}
+
+/* BEFORE AFTER */
+.ba-grid { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.ba-card {
+  flex: 1; min-width: 160px; background: white; border-radius: 16px;
+  border: 1px solid var(--border); padding: 14px; box-shadow: var(--shadow);
+}
+.ba-photo-blur {
+  height: 80px; border-radius: 10px;
+  background: repeating-linear-gradient(135deg, #d8d0d3 0, #d8d0d3 3px, #ede8ea 3px, #ede8ea 6px);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: #b0a0a5; font-weight: 500; margin-bottom: 10px;
+}
+.ba-photo-real {
+  height: 80px; border-radius: 10px; background: var(--brand-light);
+  display: flex; align-items: center; justify-content: center; font-size: 36px; margin-bottom: 10px;
+}
+.ba-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+.ba-row { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+.chip-hidden { background: #eee; color: #bbb; font-size: 10px; padding: 2px 8px; border-radius: 8px; }
+.chip-visible { background: var(--green-bg); color: var(--green); font-size: 10px; padding: 2px 8px; border-radius: 8px; font-weight: 600; }
+.ba-arrow { text-align: center; flex-shrink: 0; }
+.ba-arrow-label { font-size: 11px; font-weight: 700; color: var(--brand); text-align: center; margin-bottom: 6px; }
+.ba-arrow-icon { font-size: 28px; color: var(--brand); text-align: center; }
+
+/* PDDIKTI */
+.pddikti-wrap {
+  background: white; border-radius: 16px; border: 1px solid var(--border);
+  padding: 16px; margin-top: 16px; box-shadow: var(--shadow); width: 100%;
+}
+.pddikti-header {
+  background: #003580; color: white; border-radius: 10px;
+  padding: 10px 14px; margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.pddikti-logo { font-size: 14px; font-weight: 700; letter-spacing: 0.5px; }
+.pddikti-gov { font-size: 10px; opacity: 0.8; }
+.pddikti-search {
+  display: flex; gap: 6px; margin-bottom: 12px;
+}
+.pddikti-field {
+  flex: 1; background: #f5f7ff; border: 1px solid #d0d8f0;
+  border-radius: 7px; padding: 7px 10px; font-size: 12px; color: #334;
+}
+.pddikti-btn {
+  background: #003580; color: white; border: none;
+  border-radius: 7px; padding: 7px 12px; font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.pddikti-result {
+  background: #f0f8ff; border: 1px solid #b0d0f0; border-radius: 10px; padding: 12px;
+}
+.pddikti-result-name { font-size: 15px; font-weight: 700; color: #003580; margin-bottom: 4px; }
+.pddikti-result-row { font-size: 12px; color: #445; margin-top: 3px; }
+.verified-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--green-bg); color: var(--green);
+  font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; margin-top: 10px;
+}
+
+/* TIMING CARDS */
+.timing-grid { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+.timing-card {
+  flex: 1; min-width: 140px; background: white;
+  border-radius: 14px; padding: 16px; border: 1px solid var(--border);
+  box-shadow: var(--shadow); text-align: center;
+}
+.timing-card.premium { background: var(--brand-light); border-color: var(--brand-mid); }
+.timing-icon { font-size: 26px; margin-bottom: 8px; }
+.timing-label { font-size: 13px; font-weight: 700; color: var(--text); }
+.timing-card.premium .timing-label { color: var(--brand); }
+.timing-desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.timing-card.premium .timing-desc { color: var(--brand-mid); }
+.platform-row { font-size: 13px; color: var(--text); line-height: 2; }
+
+/* SECURITY */
+.sec-list { list-style: none; }
+.sec-list li {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px;
+}
+.sec-list li:last-child { border-bottom: none; }
+.sec-icon { font-size: 20px; color: var(--brand); margin-top: 1px; flex-shrink: 0; }
+
+/* FINAL */
+.final-box {
+  text-align: center; padding: 40px 28px;
+  background: var(--brand-light); border-radius: 24px;
+  border: 1px solid #e8d0d6; margin-top: 32px;
+}
+.final-box .logo { font-size: 40px; margin-bottom: 10px; }
+.final-box .quote { font-style: italic; color: var(--brand); font-size: 16px; margin-bottom: 14px; }
+.final-box p { font-size: 14px; color: var(--muted); max-width: 480px; margin: auto; }
+
+/* SECTION LABEL */
+.section-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--brand); background: var(--brand-light);
+  display: inline-block; padding: 4px 12px; border-radius: 20px; margin-bottom: 16px;
+}
+
+/* SVG arrow between steps */
+.arrow-down { text-align: center; color: var(--brand); font-size: 22px; margin: 6px 0; }
+
+/* Kandidat grid */
+.cand-grid { display: flex; gap: 12px; flex-wrap: nowrap; overflow-x: auto; }
+
+/* Reguler vs Premium compare */
+.compare-grid { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+.compare-card {
+  flex: 1; min-width: 160px; background: white; border-radius: 14px;
+  border: 1px solid var(--border); padding: 16px; box-shadow: var(--shadow);
+}
+.compare-card.premium-card { background: var(--brand-light); border-color: var(--brand-mid); }
+.compare-tier { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.compare-card.premium-card .compare-tier { color: var(--brand); }
+.compare-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+.compare-card.premium-card .compare-title { color: var(--brand); }
+.compare-item { font-size: 13px; color: var(--text); padding: 5px 0; border-bottom: 1px solid #f0ece9; display: flex; align-items: flex-start; gap: 7px; }
+.compare-item:last-child { border-bottom: none; }
+.ci-check { color: var(--brand); font-weight: 700; flex-shrink: 0; }
+.ci-check.green { color: var(--green); }
+
+@media (max-width: 600px) {
+  .logo { font-size: 40px; }
+  .hero h1 { font-size: 30px; }
+  .step-title { font-size: 22px; }
+  .step-desc { margin-left: 0; }
+  .col-vis { width: 100%; display: flex; justify-content: center; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="logo">MATCHU</div>
+    <div class="tagline">Beyond Matching. Toward Marriage.</div>
+    <h1>Bagaimana Matchu Bekerja?</h1>
+    <p>Kenali seseorang dari karakter, pendidikan, dan tujuan hidup terlebih dahulu — sebelum melihat penampilannya. Nama panggilan yang ditampilkan adalah nama samaran; nama asli baru terbuka setelah Mutual Interest.</p>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div class="step-title">Buat Akun &amp; Verifikasi</div>
+    </div>
+    <div class="step-desc">Daftar menggunakan email aktif, lalu lengkapi profil Anda. Unggah foto dan data pendidikan untuk meningkatkan kepercayaan akun.</div>
+    <div class="row">
+      <div class="col-txt">
+        <div class="info-box">Profil yang lengkap meningkatkan peluang Anda direkomendasikan kepada pengguna lain melalui Trust Score.</div>
+        <div class="info-box"><b>Nama yang ditampilkan</b> ke pengguna lain adalah <b>nama panggilan / samaran</b>, bukan nama asli. Nama asli hanya terbuka setelah Mutual Interest.</div>
+      </div>
+      <div class="col-vis">
+        <div class="phone">
+          <div class="phone-bar"><span>MATCHU</span><span style="font-size:11px;opacity:.8;">Daftar</span></div>
+          <div class="phone-body">
+            <div class="reg-logo">MATCHU</div>
+            <div class="reg-field">
+              <div class="reg-label">Nama Panggilan / Samaran</div>
+              <div class="reg-input">Alif</div>
+            </div>
+            <div class="reg-field">
+              <div class="reg-label">Email</div>
+              <div class="reg-input">alif@email.com</div>
+            </div>
+            <div class="reg-field">
+              <div class="reg-label">Kata Sandi</div>
+              <div class="reg-input" style="letter-spacing:3px">••••••••</div>
+            </div>
+            <button class="reg-btn">Buat Akun</button>
+            <div class="check-row">✓ Email terverifikasi otomatis</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- STEP 2 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div class="step-title">Bangun Trust Score</div>
+    </div>
+    <div class="step-desc">Setiap akun memiliki Trust Score yang menunjukkan kelengkapan dan kepercayaan profil. Target minimal 80 poin agar profil aktif direkomendasikan.</div>
+    <div class="row">
+      <div class="col-txt">
+        <div class="info-box"><b>Badge Pendidikan Terverifikasi</b><br>Unggah screenshot hasil pencarian PDDIKTI. Data ini hanya untuk verifikasi — tidak ditampilkan kepada pengguna lain.</div>
+        <div class="info-box"><b>Yang ditampilkan ke pengguna lain:</b><br>✓ Nama Panggilan (samaran) &nbsp; ✓ Usia<br>✓ Kampus &nbsp; ✓ Jurusan &nbsp; ✓ Domisili<br><br>✗ Nama Lengkap (tersembunyi)<br>✗ Instagram (tersembunyi)<br>✗ Foto asli (disamarkan)</div>
+      </div>
+      <div class="col-vis">
+        <div class="phone">
+          <div class="phone-bar"><span>Trust Score</span><span style="font-size:18px;font-weight:700">90/100</span></div>
+          <div class="phone-body">
+            <div class="trust-bar-wrap"><div class="trust-bar"></div></div>
+            <div style="font-size:11px;color:var(--green);text-align:center;margin-bottom:12px;font-weight:600">✓ Profil siap direkomendasikan</div>
+            <div class="trust-row">Email Terverifikasi<span class="trust-pts">+20</span></div>
+            <div class="trust-row">Nama Lengkap<span class="trust-pts">+10</span></div>
+            <div class="trust-row">Foto Profil<span class="trust-pts">+15</span></div>
+            <div class="trust-row">Instagram<span class="trust-pts">+10</span></div>
+            <div class="trust-row">Data Pendidikan<span class="trust-pts">+15</span></div>
+            <div class="trust-row">Screenshot PDDIKTI<span class="trust-pts">+20</span></div>
+            <div class="trust-row trust-pending">Bio Profil<span class="trust-pts">+10</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- STEP 3 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div class="step-title">Temukan Kandidat</div>
+    </div>
+    <div class="step-desc">Matchu menampilkan kandidat secara mingguan. Foto masih disamarkan agar Anda fokus pada karakter, pendidikan, dan kecocokan.</div>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-tier">Reguler</div>
+        <div class="compare-title">5 Kandidat / Minggu</div>
+        <div class="compare-item"><span class="ci-check">•</span>Min. 1 dengan universitas serupa</div>
+        <div class="compare-item"><span class="ci-check">•</span>Min. 1 dengan profesi serupa</div>
+        <div class="compare-item"><span class="ci-check">•</span>Min. 1 dengan domisili serupa</div>
+        <div class="compare-item"><span class="ci-check">•</span>Kandidat lainnya dipilih acak</div>
+      </div>
+      <div class="compare-card premium-card">
+        <div class="compare-tier">Premium</div>
+        <div class="compare-title">Tanpa Batas</div>
+        <div class="compare-item"><span class="ci-check green">✓</span>Cari kandidat secara mandiri</div>
+        <div class="compare-item"><span class="ci-check green">✓</span>Filter berdasarkan universitas</div>
+        <div class="compare-item"><span class="ci-check green">✓</span>Filter berdasarkan domisili</div>
+        <div class="compare-item"><span class="ci-check green">✓</span>Tanpa batas kandidat per minggu</div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;">
+      <div class="section-label">Contoh Tampilan Kartu Kandidat</div>
+      <div class="cand-grid">
+        <div class="cand-card">
+          <div class="cand-photo-blur">Foto Disamarkan</div>
+          <div class="cand-body">
+            <div class="cand-name">Manda</div>
+            <span class="cand-badge">✓ Pendidikan Terverifikasi</span>
+            <div class="cand-info">24 Tahun<br>Institut Teknologi Bandung<br>S1 Teknik Informatika<br>Bandung</div>
+            <div class="match-chip">Kecocokan 92%</div>
+            <div class="cand-btns">
+              <button class="btn-out">Lihat Profil</button>
+              <button class="btn-fill">Perkenalan</button>
+            </div>
+          </div>
+        </div>
+        <div class="cand-card">
+          <div class="cand-photo-blur">Foto Disamarkan</div>
+          <div class="cand-body">
+            <div class="cand-name">Rara</div>
+            <span class="cand-badge">✓ Pendidikan Terverifikasi</span>
+            <div class="cand-info">23 Tahun<br>Universitas Indonesia<br>S1 Psikologi<br>Depok</div>
+            <div class="match-chip">Kecocokan 87%</div>
+            <div class="cand-btns">
+              <button class="btn-out">Lihat Profil</button>
+              <button class="btn-fill">Perkenalan</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- STEP 4 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <div class="step-title">Lihat Profil Kandidat</div>
+    </div>
+    <div class="step-desc">Sebelum ada ketertarikan dari kedua pihak, hanya informasi terbatas yang ditampilkan. Nama yang terlihat adalah nama panggilan/samaran — bukan nama asli.</div>
+    <div class="row">
+      <div class="col-txt">
+        <div class="info-box">
+          <b>Ditampilkan sebelum Mutual Interest:</b><br>
+          ✓ Nama Panggilan (samaran) &nbsp; ✓ Usia<br>
+          ✓ Kampus &nbsp; ✓ Jurusan &nbsp; ✓ Domisili &nbsp; ✓ Trust Score<br><br>
+          ✗ Nama Lengkap — <span style="font-size:12px;background:#eee;color:#999;padding:1px 6px;border-radius:5px">Tersembunyi</span><br>
+          ✗ Instagram — <span style="font-size:12px;background:#eee;color:#999;padding:1px 6px;border-radius:5px">Tersembunyi</span><br>
+          ✗ Foto Profil Asli — <span style="font-size:12px;background:#eee;color:#999;padding:1px 6px;border-radius:5px">Disamarkan</span>
+        </div>
+      </div>
+      <div class="col-vis">
+        <div class="profile-wrap">
+          <div class="profile-photo-blur">
+            <div class="blur-icon">👤</div>
+            <div class="blur-text">Foto Disamarkan</div>
+          </div>
+          <div class="profile-body">
+            <div class="profile-alias">Manda</div>
+            <div class="profile-campus">Institut Teknologi Bandung</div>
+            <div class="profile-row"><span class="profile-key">Usia</span><span>24 Tahun</span></div>
+            <div class="profile-row"><span class="profile-key">Jurusan</span><span>S1 Teknik Informatika</span></div>
+            <div class="profile-row"><span class="profile-key">Domisili</span><span>Bandung</span></div>
+            <div class="profile-row"><span class="profile-key">Nama Asli</span><span class="hidden-val">Tersembunyi</span></div>
+            <div class="profile-row"><span class="profile-key">Instagram</span><span class="hidden-val">Tersembunyi</span></div>
+            <div class="trust-score-small">Trust Score: 90 / 100 &nbsp;✓ Pendidikan Terverifikasi</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- STEP 5 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">5</div>
+      <div class="step-title">Kirim Surat Perkenalan</div>
+    </div>
+    <div class="step-desc">Jika tertarik, kirim surat perkenalan singkat. Surat membantu penerima memahami alasan Anda ingin mengenalnya lebih dalam.</div>
+    <div class="row">
+      <div class="col-txt">
+        <div class="info-box">Surat hanya dapat dikirim kepada kandidat yang Anda pilih langsung — bukan siaran massal.</div>
+        <div class="info-box"><b>Akun Premium</b> mendapat kuota surat lebih banyak dan prioritas tampil di daftar kandidat penerima.</div>
+      </div>
+      <div class="col-vis">
+        <div class="letter-phone">
+          <div class="letter-bar">✉ Surat Perkenalan</div>
+          <div class="letter-body">
+            <div class="letter-to">Kepada: Manda</div>
+            <div class="letter-text">Halo Manda,<br><br>Saya tertarik dengan profil Anda karena memiliki tujuan hidup yang tampak sejalan. Semoga kita bisa saling mengenal lebih jauh.</div>
+            <button class="letter-send">Kirim Surat</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- STEP 6 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">6</div>
+      <div class="step-title">Terima Surat Perkenalan</div>
+    </div>
+    <div class="step-desc">Penerima mendapat notifikasi dan dapat memilih menerima atau menolak. Jika diterima, ruang chat pribadi terbuka.</div>
+    <div class="row">
+      <div class="col-txt">
+        <div class="info-box">Tidak ada tekanan — pengguna bebas menerima atau menolak tanpa harus memberi penjelasan apapun.</div>
+      </div>
+      <div class="col-vis">
+        <div class="notif-card">
+          <div class="notif-top">
+            <div class="notif-icon">
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M4 4h16v12H4z" stroke="white" stroke-width="2" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="white" stroke-width="2"/></svg>
+            </div>
+            <div>
+              <div class="notif-app">MATCHU</div>
+            </div>
+            <div class="notif-time">Baru saja</div>
+          </div>
+          <div class="notif-title">Surat Perkenalan Masuk</div>
+          <div class="notif-sub">Alif mengirimkan surat perkenalan untukmu. Baca dan tentukan pilihanmu.</div>
+          <div class="notif-btns">
+            <div class="notif-sec">Tolak</div>
+            <div class="notif-pri">Baca &amp; Terima</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- STEP 7 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">7</div>
+      <div class="step-title">Ruang Chat + Tombol Interest &amp; Report</div>
+    </div>
+    <div class="step-desc">Setelah surat diterima, ruang chat terbuka. Di dalam chat terdapat dua tombol penting: <b>Interest</b> dan <b>Report</b>. Foto &amp; identitas lengkap masih tersembunyi di tahap ini.</div>
+    <div class="row">
+      <div class="col-txt">
+        <div class="info-box">
+          <b>Tombol Interest</b><br>
+          Tekan saat Anda merasa ada kecocokan. Lawan bicara <b>tidak mendapat notifikasi</b> saat Anda menekan Interest. Notifikasi hanya muncul ketika kedua pihak sudah menekan Interest (Mutual Interest).
+        </div>
+        <div class="info-box" style="border-left-color:#c0392b;background:#fff0f0;">
+          <b style="color:#c0392b">Tombol Report</b><br>
+          Gunakan kapan saja jika Anda mencurigai:<br>
+          • Penipuan atau penyamaran identitas<br>
+          • Informasi yang tidak sesuai kenyataan<br>
+          • Perilaku yang tidak pantas<br><br>
+          Saat laporan dikirim, koneksi <b>langsung diputus</b> dan pengguna tidak dapat menghubungi Anda lagi.
+        </div>
+      </div>
+      <div class="col-vis">
+        <div class="chat-wrap">
+          <div class="chat-header">
+            <div class="chat-avatar-blur"></div>
+            <div>
+              <div class="chat-name">Manda</div>
+              <div class="chat-sub">ITB · Bandung</div>
+            </div>
+          </div>
+          <div class="chat-body">
+            <div class="bbl">Halo Alif, terima kasih sudah mengirim surat. 😊</div>
+            <div class="bbr">Senang bisa berkenalan, Manda!</div>
+            <div class="bbl">Sudah lama di Bandung?</div>
+            <div class="bbr">Iya, sejak kuliah di sini 😄</div>
+          </div>
+          <div class="chat-input-row">
+            <div class="chat-input-box">Tulis pesan...</div>
+            <div class="chat-send-btn">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="chat-action-bar">
+            <button class="interest-btn">
+              <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M12 21C12 21 3 14.5 3 8.5C3 5.4 5.4 3 8.5 3C10.2 3 11.8 3.8 12 5C12.2 3.8 13.8 3 15.5 3C18.6 3 21 5.4 21 8.5C21 14.5 12 21 12 21Z" stroke="white" stroke-width="2" fill="white"/></svg>
+              Interest
+            </button>
+            <button class="report-btn">⚑ Report</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report modal -->
+    <div style="margin-top:24px;">
+      <div class="section-label">Tampilan saat Report dikirim</div>
+      <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;">
+        <div class="report-modal-wrap" style="width:260px;">
+          <div class="report-modal">
+            <div class="modal-title">⚑ Laporkan Pengguna</div>
+            <div class="modal-sub">Pilih alasan laporan Anda. Koneksi akan langsung diputus.</div>
+            <div class="report-option"><div class="report-radio active"></div>Penipuan / identitas palsu</div>
+            <div class="report-option"><div class="report-radio"></div>Informasi tidak sesuai kenyataan</div>
+            <div class="report-option"><div class="report-radio"></div>Perilaku tidak pantas</div>
+            <div class="report-option"><div class="report-radio"></div>Lainnya</div>
+            <div class="modal-btns">
+              <div class="modal-cancel">Batal</div>
+              <div class="modal-report">Kirim Laporan</div>
+            </div>
+          </div>
+        </div>
+        <div style="flex:1;min-width:180px;">
+          <div class="info-box" style="border-left-color:#c0392b;background:#fff0f0;margin-top:0">
+            <b style="color:#c0392b">Setelah laporan terkirim:</b><br><br>
+            ✓ Hubungan langsung dihentikan<br>
+            ✓ Pengguna tidak dapat menghubungi Anda lagi<br>
+            ✓ Laporan masuk ke tim Matchu untuk ditinjau<br>
+            ✓ Data laporan dijaga kerahasiaannya
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- STEP 8 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">8</div>
+      <div class="step-title">Interest &amp; Mutual Interest</div>
+    </div>
+    <div class="step-desc">Ketika Anda menekan Interest, lawan bicara tidak tahu. Baru saat keduanya menekan Interest, Mutual Interest tercapai — dan identitas lengkap otomatis terbuka.</div>
+
+    <div class="ba-grid">
+      <div class="ba-card">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-align:center;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Sebelum Mutual Interest</div>
+        <div class="ba-photo-blur">Foto Disamarkan</div>
+        <div class="ba-name">Manda</div>
+        <div class="ba-row">👤 <span class="chip-hidden">Nama asli tersembunyi</span></div>
+        <div class="ba-row">📸 <span class="chip-hidden">Instagram tersembunyi</span></div>
+        <div class="ba-row">🖼 <span class="chip-hidden">Foto disamarkan</span></div>
+      </div>
+      <div class="ba-arrow">
+        <div class="ba-arrow-label">MUTUAL<br>INTEREST</div>
+        <div class="ba-arrow-icon">❤️</div>
+        <div style="font-size:26px;color:var(--brand);margin-top:4px;text-align:center">→</div>
+      </div>
+      <div class="ba-card">
+        <div style="font-size:11px;font-weight:700;color:var(--green);text-align:center;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Setelah Mutual Interest ✓</div>
+        <div class="ba-photo-real">🙂</div>
+        <div class="ba-name">Amanda Setiawan</div>
+        <div class="ba-row">👤 <span class="chip-visible">Nama lengkap terbuka</span></div>
+        <div class="ba-row">📸 <span class="chip-visible">@amandasetiawan</span></div>
+        <div class="ba-row">🖼 <span class="chip-visible">Foto profil terbuka</span></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- STEP 9 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">9</div>
+      <div class="step-title">Verifikasi Data via PDDIKTI</div>
+    </div>
+    <div class="step-desc">Setelah Mutual Interest dan nama lengkap terbuka, Anda dapat memverifikasi kebenaran data pendidikan secara mandiri melalui situs resmi PDDIKTI menggunakan nama lengkap, universitas, dan jurusan.</div>
+    <div class="row">
+      <div class="col-txt">
+        <div class="info-box">
+          <b>Data yang bisa diverifikasi:</b><br>
+          ✓ Nama Lengkap (baru terbuka setelah Mutual Interest)<br>
+          ✓ Universitas<br>
+          ✓ Jurusan<br><br>
+          Cek langsung di: <b>pddikti.kemdikbud.go.id</b>
+        </div>
+        <div class="info-box">Matchu juga mewajibkan upload screenshot PDDIKTI saat pendaftaran sebagai verifikasi awal. Verifikasi mandiri adalah lapisan keamanan tambahan untuk Anda.</div>
+      </div>
+      <div class="col-vis">
+        <div class="pddikti-wrap">
+          <div class="pddikti-header">
+            <div>
+              <div class="pddikti-logo">PDDikti</div>
+              <div class="pddikti-gov">Kemdikbudristek</div>
+            </div>
+            <div style="font-size:10px;opacity:.8;text-align:right">Pangkalan Data<br>Pendidikan Tinggi</div>
+          </div>
+          <div class="pddikti-search">
+            <div class="pddikti-field">Amanda Setiawan</div>
+            <button class="pddikti-btn">Cari</button>
+          </div>
+          <div class="pddikti-result">
+            <div class="pddikti-result-name">Amanda Setiawan</div>
+            <div class="pddikti-result-row">📚 Institut Teknologi Bandung</div>
+            <div class="pddikti-result-row">🎓 S1 Teknik Informatika</div>
+            <div class="pddikti-result-row">📅 Angkatan 2020 · Aktif</div>
+            <div class="verified-badge">✓ Data Terverifikasi</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- STEP 10 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">10</div>
+      <div class="step-title">Lanjutkan di Luar Matchu</div>
+    </div>
+    <div class="step-desc">Matchu adalah tempat memulai perkenalan, bukan aplikasi chat permanen. Setelah cocok, lanjutkan komunikasi di platform favorit Anda.</div>
+    <div class="timing-grid">
+      <div class="timing-card">
+        <div class="timing-icon">⏱</div>
+        <div class="timing-label">Reguler</div>
+        <div class="timing-desc">Chat aktif <b>5 hari</b></div>
+      </div>
+      <div class="timing-card premium">
+        <div class="timing-icon">⭐</div>
+        <div class="timing-label">Premium</div>
+        <div class="timing-desc">Chat aktif <b>14 hari</b></div>
+      </div>
+      <div class="timing-card" style="text-align:left">
+        <div class="timing-label" style="margin-bottom:8px">Lanjutkan via</div>
+        <div class="platform-row">💬 WhatsApp</div>
+        <div class="platform-row">📸 Instagram</div>
+        <div class="platform-row">✈️ Telegram</div>
+      </div>
+    </div>
+    <div class="info-box" style="margin-top:16px">Untuk menjaga privasi, riwayat chat dan data Mutual Interest dihapus otomatis setelah masa aktif berakhir.</div>
+  </div>
+
+  <hr class="div">
+
+  <!-- STEP 11 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">11</div>
+      <div class="step-title">Keamanan &amp; Privasi</div>
+    </div>
+    <div class="step-desc">Keamanan pengguna adalah prioritas utama Matchu. Gunakan tombol Report kapan saja bila ada hal mencurigakan.</div>
+    <ul class="sec-list">
+      <li><span class="sec-icon">🛡</span>Koneksi langsung dihentikan saat laporan dikirim</li>
+      <li><span class="sec-icon">🚫</span>Pengguna dilaporkan tidak bisa menghubungi Anda lagi</li>
+      <li><span class="sec-icon">🔍</span>Verifikasi mandiri via PDDIKTI tersedia setelah nama lengkap terbuka</li>
+      <li><span class="sec-icon">🗑</span>Riwayat chat dihapus otomatis setelah masa aktif berakhir</li>
+      <li><span class="sec-icon">🔒</span>Dokumen verifikasi tidak ditampilkan ke pengguna lain dan tidak diperjualbelikan</li>
+    </ul>
+  </div>
+
+  <!-- FINAL -->
+  <div class="final-box">
+    <div class="logo">MATCHU</div>
+    <div class="quote">"Meaningful connections begin with understanding, not appearance."</div>
+    <p>Matchu hadir untuk membantu Anda menemukan seseorang yang menghargai karakter, tujuan hidup, dan nilai-nilai yang Anda miliki — bukan sekadar penampilan fisik.</p>
+  </div>
+
+</div>
+</body>
+</html>

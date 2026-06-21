@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Premium Matchu</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+/* =======================
+PAYMENT MODAL
+======================= */
+
+.modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+
+background:rgba(0,0,0,.5);
+
+display:none;
+
+justify-content:center;
+align-items:center;
+
+z-index:9999;
+}
+
+.modal.show{
+display:flex;
+}
+
+.modal-content{
+
+width:500px;
+max-width:90%;
+
+background:white;
+
+padding:35px;
+
+border-radius:30px;
+
+text-align:center;
+
+}
+
+.modal-content h2{
+
+font-family:'Playfair Display',serif;
+
+font-size:34px;
+
+margin-bottom:15px;
+
+color:#7A2236;
+
+}
+
+.modal-content p{
+
+line-height:1.8;
+
+color:#666;
+
+margin-bottom:20px;
+
+}
+
+.qris-box{
+
+width:250px;
+height:250px;
+
+margin:20px auto;
+
+border:2px dashed #ddd;
+
+border-radius:20px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+color:#777;
+
+font-size:14px;
+
+}
+
+.payment-detail{
+
+background:#faf7f8;
+
+padding:18px;
+
+border-radius:16px;
+
+margin-bottom:20px;
+
+text-align:left;
+
+}
+
+.payment-detail div{
+
+margin-bottom:10px;
+
+}
+
+.close-btn{
+
+width:100%;
+
+height:50px;
+
+border:none;
+
+border-radius:14px;
+
+background:#7A2236;
+
+color:white;
+
+font-weight:600;
+
+cursor:pointer;
+
+margin-top:10px;
+
+}
+
+/* =======================
+RESPONSIVE
+======================= */
+
+@media(max-width:1100px){
+
+.benefit-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+.package-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+@media(max-width:900px){
+
+.sidebar{
+transform:translateX(-100%);
+}
+
+.sidebar.show{
+transform:translateX(0);
+}
+
+.main-content{
+margin-left:0;
+}
+
+.page{
+padding:20px;
+}
+
+.benefit-grid{
+grid-template-columns:1fr;
+}
+
+.package-grid{
+grid-template-columns:1fr;
+}
+
+.comparison-card{
+overflow-x:auto;
+}
+
+.premium-hero h1{
+font-size:38px;
+}
+
+}
+
+<style>
+
+:root{
+--primary:#7A2236;
+--primary-dark:#5E192A;
+--bg:#F6F3F1;
+--white:#FFFFFF;
+--border:#E8E4E1;
+--text:#222;
+--muted:#777;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Inter',sans-serif;
+background:var(--bg);
+color:var(--text);
+}
+
+/* =======================
+SIDEBAR
+======================= */
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:260px;
+height:100vh;
+background:white;
+border-right:1px solid var(--border);
+transition:.3s;
+overflow:hidden;
+z-index:999;
+}
+
+.sidebar.collapsed{
+width:80px;
+}
+
+.sidebar-logo{
+height:80px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-family:'Playfair Display',serif;
+font-size:30px;
+font-weight:700;
+color:#7A2236;
+border-bottom:1px solid var(--border);
+}
+
+.sidebar-nav{
+padding:20px 0;
+}
+
+.menu-item{
+display:flex;
+align-items:center;
+height:54px;
+padding:0 28px;
+text-decoration:none;
+color:#444;
+font-weight:500;
+}
+
+.menu-item:hover{
+background:#f8f3f4;
+}
+
+.menu-item.active{
+background:#f7eef1;
+border-left:4px solid #7A2236;
+color:#7A2236;
+font-weight:600;
+}
+
+.sidebar.collapsed .menu-item span{
+display:none;
+}
+
+/* =======================
+MAIN
+======================= */
+
+.main-content{
+margin-left:260px;
+transition:.3s;
+}
+
+.main-content.expand{
+margin-left:80px;
+}
+
+.topbar{
+height:80px;
+background:white;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 30px;
+border-bottom:1px solid var(--border);
+}
+
+.toggle-btn{
+width:46px;
+height:46px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+background:#f5f5f5;
+font-size:18px;
+}
+
+.user-box{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.avatar{
+width:42px;
+height:42px;
+border-radius:50%;
+background:#7A2236;
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:600;
+}
+
+.page{
+padding:40px;
+}
+
+/* =======================
+HERO
+======================= */
+
+.premium-hero{
+background:linear-gradient(
+135deg,
+#7A2236,
+#A32F4D
+);
+
+color:white;
+
+padding:50px;
+
+border-radius:30px;
+
+margin-bottom:30px;
+}
+
+.status-badge{
+
+display:inline-block;
+
+padding:8px 14px;
+
+background:rgba(255,255,255,.15);
+
+border-radius:999px;
+
+font-size:12px;
+
+margin-bottom:20px;
+
+}
+
+.premium-hero h1{
+
+font-size:48px;
+
+font-family:'Playfair Display',serif;
+
+margin-bottom:15px;
+
+}
+
+.premium-hero p{
+
+max-width:650px;
+
+line-height:1.8;
+
+opacity:.9;
+
+}
+
+.upgrade-btn{
+
+margin-top:25px;
+
+padding:14px 28px;
+
+border:none;
+
+border-radius:999px;
+
+background:white;
+
+color:#7A2236;
+
+font-weight:700;
+
+cursor:pointer;
+
+}
+
+</style>
+
+</head>
+<script>
+
+/* =======================
+SIDEBAR
+======================= */
+
+const sidebar =
+document.getElementById("sidebar");
+
+const mainContent =
+document.getElementById("mainContent");
+
+const toggleSidebar =
+document.getElementById("toggleSidebar");
+
+toggleSidebar.addEventListener("click",()=>{
+
+if(window.innerWidth <= 900){
+
+sidebar.classList.toggle("show");
+
+}else{
+
+sidebar.classList.toggle("collapsed");
+
+mainContent.classList.toggle("expand");
+
+}
+
+});
+
+/* =======================
+PAYMENT MODAL
+======================= */
+
+const modal =
+document.getElementById("paymentModal");
+
+const closeModal =
+document.getElementById("closeModal");
+
+const packageButtons =
+document.querySelectorAll(".package-btn");
+
+const selectedPackage =
+document.getElementById("selectedPackage");
+
+const selectedPrice =
+document.getElementById("selectedPrice");
+
+packageButtons.forEach(btn=>{
+
+btn.addEventListener("click",()=>{
+
+const card =
+btn.closest(".package-card");
+
+const packageName =
+card.querySelector("h3").innerText;
+
+const packagePrice =
+card.querySelector(".price-desc").innerText;
+
+selectedPackage.innerText =
+packageName;
+
+selectedPrice.innerText =
+packagePrice;
+
+modal.classList.add("show");
+
+});
+
+});
+
+closeModal.addEventListener("click",()=>{
+
+modal.classList.remove("show");
+
+});
+
+window.addEventListener("click",(e)=>{
+
+if(e.target === modal){
+
+modal.classList.remove("show");
+
+}
+
+});
+
+</script>
+
+</div>
+
+</body>
+</html>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar" id="sidebar">
+
+<div class="sidebar-logo">
+MATCHU
+</div>
+
+<nav class="sidebar-nav">
+
+<a href="dashboard.html" class="menu-item">
+<span>Dashboard</span>
+</a>
+
+<a href="profil.html" class="menu-item">
+<span>Profil Saya</span>
+</a>
+
+<a href="kandidat.html" class="menu-item">
+<span>Kandidat</span>
+</a>
+
+<a href="permintaan-perkenalan.html" class="menu-item">
+<span>Permintaan Perkenalan</span>
+</a>
+
+<a href="chat.html" class="menu-item">
+<span>Chat</span>
+</a>
+
+<a href="notifikasi.html" class="menu-item">
+<span>Notifikasi</span>
+</a>
+
+<a href="premium.html" class="menu-item active">
+<span>Premium</span>
+</a>
+
+<a href="pengaturan.html" class="menu-item">
+<span>Pengaturan</span>
+</a>
+
+<a href="logout.html" class="menu-item">
+<span>Keluar</span>
+</a>
+
+</nav>
+
+</aside>
+
+<!-- MAIN -->
+
+<div class="main-content" id="mainContent">
+
+<header class="topbar">
+
+<button class="toggle-btn" id="toggleSidebar">
+☰
+</button>
+
+<div class="user-box">
+
+<div class="avatar">
+A
+</div>
+
+<div>
+Ayu
+</div>
+
+</div>
+
+</header>
+
+<div class="page">
+
+<!-- HERO -->
+
+<section class="premium-hero">
+
+<span class="status-badge">
+AKUN REGULER
+</span>
+
+<h1>
+Premium Matchu
+</h1>
+
+<p>
+Perluas peluang menemukan pasangan yang sesuai
+melalui rekomendasi tambahan, pencarian kandidat,
+dan filter lanjutan yang lebih lengkap.
+</p>
+
+<button class="upgrade-btn">
+Daftar Premium
+</button>
+
+</section>
+
+<!-- COMPARISON -->
+
+<div class="comparison-card">
+
+<h2>
+Perbandingan Fitur
+</h2>
+
+<table>
+
+<tr>
+<th>Fitur</th>
+<th>Reguler</th>
+<th>Premium</th>
+</tr>
+
+<tr>
+<td>Kandidat Rekomendasi</td>
+<td>3 / Minggu</td>
+<td>5 / Minggu</td>
+</tr>
+
+<tr>
+<td>Pencarian Kandidat</td>
+<td>Tidak</td>
+<td>Ya</td>
+</tr>
+
+<tr>
+<td>Filter Universitas</td>
+<td>Tidak</td>
+<td>Ya</td>
+</tr>
+
+<tr>
+<td>Filter Profesi</td>
+<td>Tidak</td>
+<td>Ya</td>
+</tr>
+
+<tr>
+<td>Filter Daerah</td>
+<td>Tidak</td>
+<td>Ya</td>
+</tr>
+
+<tr>
+<td>Filter Target Menikah</td>
+<td>Tidak</td>
+<td>Ya</td>
+</tr>
+
+<tr>
+<td>Masa Chat</td>
+<td>2 Hari</td>
+<td>7 Hari</td>
+</tr>
+
+</table>
+
+</div>
+
+<!-- BENEFIT -->
+
+<div class="benefit-grid">
+
+<div class="benefit-card">
+
+<h3>
+5 Kandidat per Minggu
+</h3>
+
+<p>
+Mendapatkan rekomendasi kandidat baru setiap minggu.
+</p>
+
+</div>
+
+<div class="benefit-card">
+
+<h3>
+Cari Kandidat Sendiri
+</h3>
+
+<p>
+Telusuri kandidat berdasarkan preferensi Anda.
+</p>
+
+</div>
+
+<div class="benefit-card">
+
+<h3>
+Filter Lengkap
+</h3>
+
+<p>
+Universitas, profesi, daerah, usia, dan kriteria lainnya.
+</p>
+
+</div>
+
+<div class="benefit-card">
+
+<h3>
+Chat 7 Hari
+</h3>
+
+<p>
+Waktu komunikasi lebih panjang setelah perkenalan diterima.
+</p>
+
+</div>
+
+</div>
+<!-- PACKAGE -->
+
+<section class="package-section">
+
+<h2 class="package-title">
+Pilih Paket Premium
+</h2>
+
+<div class="package-grid">
+
+<div class="package-card">
+
+<h3>
+7 Hari
+</h3>
+
+<div class="price">
+40K
+</div>
+
+<div class="price-desc">
+Rp 40.000
+</div>
+
+<button class="package-btn">
+Pilih Paket
+</button>
+
+</div>
+
+<div class="package-card">
+
+<h3>
+14 Hari
+</h3>
+
+<div class="price">
+50K
+</div>
+
+<div class="price-desc">
+Rp 50.000
+</div>
+
+<button class="package-btn">
+Pilih Paket
+</button>
+
+</div>
+
+<div class="package-card popular">
+
+<div class="popular-label">
+PALING POPULER
+</div>
+
+<h3>
+21 Hari
+</h3>
+
+<div class="price">
+60K
+</div>
+
+<div class="price-desc">
+Rp 60.000
+</div>
+
+<button class="package-btn">
+Pilih Paket
+</button>
+
+</div>
+
+<div class="package-card">
+
+<h3>
+30 Hari
+</h3>
+
+<div class="price">
+80K
+</div>
+
+<div class="price-desc">
+Rp 80.000
+</div>
+
+<button class="package-btn">
+Pilih Paket
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- PAYMENT MODAL -->
+
+<div class="modal" id="paymentModal">
+
+<div class="modal-content">
+
+<h2>
+Pembayaran Premium
+</h2>
+
+<p>
+Silakan lakukan pembayaran menggunakan QRIS.
+</p>
+
+<div class="payment-detail">
+
+<div>
+<b>Paket:</b>
+<span id="selectedPackage">
+21 Hari
+</span>
+</div>
+
+<div>
+<b>Harga:</b>
+<span id="selectedPrice">
+Rp 60.000
+</span>
+</div>
+
+<div>
+<b>Metode:</b>
+QRIS
+</div>
+
+</div>
+
+<div class="qris-box">
+
+TEMPAT QRIS
+
+</div>
+
+<p>
+Setelah pembayaran berhasil,
+status premium akan aktif secara otomatis.
+</p>
+
+<button class="close-btn" id="closeModal">
+Tutup
+</button>
+
+</div>
+
+</div>

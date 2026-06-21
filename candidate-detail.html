@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Profil Kandidat | Matchu</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--primary:#7A2236;
+--primary-light:#9B3149;
+--bg:#F8F5F2;
+--card:#FFFFFF;
+--text:#222;
+--muted:#6B7280;
+--border:#ECECEC;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Inter',sans-serif;
+background:var(--bg);
+color:var(--text);
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+padding:40px 20px;
+}
+
+.back-btn{
+display:inline-block;
+margin-bottom:25px;
+text-decoration:none;
+color:var(--primary);
+font-weight:600;
+}
+
+.profile-card{
+background:white;
+border-radius:28px;
+overflow:hidden;
+box-shadow:0 20px 50px rgba(0,0,0,.05);
+}
+
+.photo-section{
+position:relative;
+height:450px;
+overflow:hidden;
+}
+
+.photo-section img{
+width:100%;
+height:100%;
+object-fit:cover;
+filter:blur(18px);
+transform:scale(1.08);
+}
+
+.photo-overlay{
+position:absolute;
+inset:0;
+display:flex;
+align-items:center;
+justify-content:center;
+background:rgba(0,0,0,.25);
+color:white;
+font-size:24px;
+font-weight:600;
+backdrop-filter:blur(2px);
+}
+
+.content{
+padding:40px;
+}
+
+.name{
+font-family:'Playfair Display',serif;
+font-size:42px;
+color:var(--primary);
+margin-bottom:10px;
+}
+
+.tag{
+display:inline-block;
+background:#f9f4f5;
+color:var(--primary);
+padding:8px 14px;
+border-radius:999px;
+font-size:13px;
+font-weight:600;
+margin-bottom:25px;
+}
+
+.info-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:18px;
+margin-bottom:30px;
+}
+
+.info-card{
+background:#fafafa;
+padding:18px;
+border-radius:14px;
+}
+
+.info-label{
+font-size:13px;
+color:var(--muted);
+margin-bottom:5px;
+}
+
+.info-value{
+font-weight:600;
+}
+
+.section{
+margin-top:30px;
+}
+
+.section-title{
+font-family:'Playfair Display',serif;
+font-size:26px;
+margin-bottom:12px;
+}
+
+.bio{
+line-height:1.8;
+color:#444;
+}
+
+.trust-box{
+margin-top:25px;
+background:#f9f4f5;
+padding:20px;
+border-radius:14px;
+}
+
+.trust-score{
+font-size:28px;
+font-weight:700;
+color:var(--primary);
+margin-top:8px;
+}
+
+.privacy-box{
+margin-top:20px;
+background:#fff8ec;
+border-left:4px solid #F0B429;
+padding:18px;
+border-radius:12px;
+line-height:1.8;
+}
+
+.interest-btn{
+width:100%;
+margin-top:30px;
+padding:18px;
+background:var(--primary);
+color:white;
+border:none;
+border-radius:14px;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+transition:.2s;
+}
+
+.interest-btn:hover{
+background:var(--primary-light);
+}
+
+.status-box{
+display:none;
+margin-top:20px;
+padding:18px;
+background:#f0fff4;
+border-left:4px solid #38a169;
+border-radius:12px;
+line-height:1.8;
+}
+
+@media(max-width:768px){
+
+.photo-section{
+height:300px;
+}
+
+.name{
+font-size:32px;
+}
+
+.info-grid{
+grid-template-columns:1fr;
+}
+
+.content{
+padding:25px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<a href="candidates.html" class="back-btn">
+← Kembali ke Kandidat
+</a>
+
+<div class="profile-card">
+
+<div class="photo-section">
+
+<img
+src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=1200"
+alt="Foto Profil">
+
+<div class="photo-overlay">
+
+Foto akan terbuka setelah
+Mutual Interest
+
+</div>
+
+</div>
+<div class="content">
+
+<div class="name">
+Ayu
+</div>
+
+<div class="tag">
+Terverifikasi • Trust Score Tinggi
+</div>
+
+<div class="info-grid">
+
+<div class="info-card">
+<div class="info-label">
+Usia
+</div>
+<div class="info-value">
+28 Tahun
+</div>
+</div>
+
+<div class="info-card">
+<div class="info-label">
+Domisili
+</div>
+<div class="info-value">
+Matsuyama
+</div>
+</div>
+
+<div class="info-card">
+<div class="info-label">
+Kampus
+</div>
+<div class="info-value">
+Ehime University
+</div>
+</div>
+
+<div class="info-card">
+<div class="info-label">
+Jurusan
+</div>
+<div class="info-value">
+S2 Informatika
+</div>
+</div>
+
+</div>
+
+<div class="section">
+
+<div class="section-title">
+Tentang Saya
+</div>
+
+<div class="bio">
+
+Saya senang belajar hal baru,
+traveling, membaca buku,
+dan berdiskusi mengenai teknologi,
+pendidikan, serta pengembangan diri.
+
+Saat ini saya mencari pasangan
+yang serius untuk membangun
+keluarga dan bertumbuh bersama.
+
+</div>
+
+</div>
+
+<div class="section">
+
+<div class="section-title">
+Pendidikan
+</div>
+
+<div class="bio">
+
+Ehime University
+
+<br><br>
+
+Magister Informatika
+
+<br><br>
+
+Mahasiswa Pascasarjana
+
+</div>
+
+</div>
+
+<div class="section">
+
+<div class="section-title">
+Pekerjaan
+</div>
+
+<div class="bio">
+
+Peneliti
+
+<br><br>
+
+Bidang:
+Meteorologi dan Kecerdasan Buatan
+
+</div>
+
+</div>
+
+<div class="trust-box">
+
+<b>Trust Score</b>
+
+<div class="trust-score">
+90 / 100
+</div>
+
+<br>
+
+✓ Email Terverifikasi
+
+<br>
+
+✓ Pendidikan Terverifikasi
+
+<br>
+
+✓ Profil Lengkap
+
+<br>
+
+✓ Foto Profil Diverifikasi
+
+</div>
+
+<div class="privacy-box">
+
+<b>Privasi Profil Matchu</b>
+
+<br><br>
+
+Saat ini yang ditampilkan hanya:
+
+<ul style="margin-top:10px;margin-left:20px;">
+
+<li>Nama Panggilan</li>
+
+<li>Usia</li>
+
+<li>Kampus</li>
+
+<li>Jurusan</li>
+
+<li>Domisili</li>
+
+</ul>
+
+<br>
+
+Nama lengkap, Instagram,
+dan foto profil asli akan terbuka
+setelah kedua pihak
+menunjukkan ketertarikan.
+
+<br><br>
+
+Kami mendorong pengguna
+untuk mengenal karakter,
+pendidikan, tujuan hidup,
+dan nilai-nilai terlebih dahulu
+sebelum menilai berdasarkan foto.
+
+</div>
+
+<button
+class="interest-btn"
+onclick="sendInterest()">
+
+Express Interest
+
+</button>
+
+<div
+id="statusBox"
+class="status-box">
+
+Interest berhasil dikirim.
+
+<br><br>
+
+Menunggu respons dari Ayu.
+
+</div>
+
+</div>
+<script>
+
+let interestSent = false;
+let mutualInterest = false;
+
+function sendInterest(){
+
+if(interestSent){
+return;
+}
+
+interestSent = true;
+
+document.getElementById("statusBox").style.display = "block";
+
+document.querySelector(".interest-btn").innerHTML =
+"Interest Sent";
+
+document.querySelector(".interest-btn").disabled = true;
+
+}
+
+/*
+
+NANTI SAAT SUDAH TERHUBUNG KE DATABASE
+
+Jika kedua user saling Express Interest:
+
+mutualInterest = true;
+
+Maka jalankan:
+
+showMutualInterest();
+
+*/
+
+function showMutualInterest(){
+
+document.querySelector(".photo-section img").style.filter =
+"blur(0px)";
+
+document.querySelector(".photo-section img").style.transform =
+"scale(1)";
+
+document.querySelector(".photo-overlay").innerHTML =
+"Mutual Interest Confirmed";
+
+document.querySelector(".name").innerHTML =
+"Ayu Septya Andini";
+
+document.querySelector(".privacy-box").innerHTML = `
+
+<b>Mutual Interest Confirmed</b>
+
+<br><br>
+
+Foto profil, nama lengkap,
+dan Instagram kini tersedia.
+
+<br><br>
+
+Instagram:
+@ayuseptya
+
+`;
+
+document.getElementById("statusBox").innerHTML = `
+
+<b>Mutual Interest Confirmed</b>
+
+<br><br>
+
+Kedua pihak telah menunjukkan
+ketertarikan.
+
+<br><br>
+
+Foto profil dan identitas
+telah dibuka.
+
+`;
+
+}
+
+/*
+
+UNTUK TESTING
+
+Buka Console Browser
+
+Lalu jalankan:
+
+showMutualInterest()
+
+*/
+
+</script>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+
+</html>
