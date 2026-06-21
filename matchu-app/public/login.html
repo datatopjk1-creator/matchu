@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Masuk | Matchu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#7A2236;
+  --bg:#F8F5F2;
+  --muted:#6B7280;
+}
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  padding:20px;
+}
+.card{
+  width:100%;
+  max-width:500px;
+  background:white;
+  padding:50px;
+  border-radius:28px;
+  box-shadow:0 20px 40px rgba(0,0,0,.05);
+}
+.logo{
+  text-align:center;
+  font-family:'Playfair Display',serif;
+  font-size:56px;
+  color:var(--primary);
+  margin-bottom:10px;
+}
+.desc{
+  text-align:center;
+  color:var(--muted);
+  margin-bottom:35px;
+}
+.form-group{ margin-bottom:20px; }
+label{ display:block; margin-bottom:8px; font-weight:600; }
+input{
+  width:100%;
+  padding:14px;
+  border:1px solid #ddd;
+  border-radius:12px;
+  font-size:15px;
+}
+.btn{
+  width:100%;
+  padding:16px;
+  background:var(--primary);
+  color:white;
+  border:none;
+  border-radius:14px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  margin-top:10px;
+}
+.btn:hover{ opacity:.9; }
+.btn:disabled{ opacity:.6; cursor:not-allowed; }
+.register-link{ text-align:center; margin-top:20px; }
+.register-link a{ color:var(--primary); text-decoration:none; font-weight:600; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo">MATCHU</div>
+  <div class="desc">Masuk ke akun Matchu Anda</div>
+
+  <form id="loginForm">
+    <div class="form-group">
+      <label>Email atau Username</label>
+      <input type="text" id="identifier" required>
+    </div>
+
+    <div class="form-group">
+      <label>Kata Sandi</label>
+      <input type="password" id="password" required>
+    </div>
+
+    <button type="submit" class="btn" id="btnSubmit">Masuk</button>
+  </form>
+
+  <div class="register-link">
+    Belum punya akun? <a href="register.html">Daftar</a>
+  </div>
+</div>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const btn = document.getElementById("btnSubmit");
+  const identifier = document.getElementById("identifier").value;
+  const password = document.getElementById("password").value;
+
+  btn.disabled = true;
+  btn.textContent = "Memproses...";
+
+  try {
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ identifier, password })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      localStorage.setItem("matchu_user_id", data.user.id);
+      localStorage.setItem("matchu_user", JSON.stringify(data.user));
+      localStorage.setItem("matchu_token", data.access_token || "");
+      window.location.href = "dashboard.html";
+    } else {
+      alert(data.error || "Email/username atau password salah");
+      btn.disabled = false;
+      btn.textContent = "Masuk";
+    }
+  } catch (err) {
+    alert("Terjadi kesalahan. Coba lagi.");
+    btn.disabled = false;
+    btn.textContent = "Masuk";
+  }
+});
+</script>
+
+</body>
+</html>
