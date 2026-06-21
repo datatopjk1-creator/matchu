@@ -3,860 +3,1452 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Matchu | Verified Matchmaking Platform</title>
+<title>Matchu — Beyond Matching. Toward Marriage.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* ===== RESET ===== */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --primary: #7A2236;
-  --primary-dark: #5C1728;
-  --accent: #C28B7C;
-  --bg: #F5F2EF;
-  --white: #FFFFFF;
-  --text: #2B2B2B;
-  --muted: #6B7280;
-  --border: #E5E7EB;
-}
 html { scroll-behavior: smooth; }
-body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-h1, h2, h3 { font-family: 'Playfair Display', serif; }
-a { text-decoration: none; }
-img { max-width: 100%; }
-.container { width: 90%; max-width: 1200px; margin: auto; }
-section { padding: 80px 0; }
+body { font-family: 'Inter', sans-serif; background: #FAF8F5; color: #1C1C1E; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
 
-/* ── NAVBAR ── */
-.navbar { position: fixed; top: 0; left: 0; width: 100%; background: var(--primary); z-index: 999; }
-.nav-wrapper { height: 68px; display: flex; align-items: center; justify-content: space-between; }
-.logo { font-size: 24px; font-weight: 800; color: #F5F0EB; display: flex; align-items: center; gap: 10px; }
-.logo-img { height: 42px; width: auto; object-fit: contain; }
-.nav-menu { display: flex; gap: 28px; list-style: none; }
-.nav-menu a { color: rgba(245,240,235,.8); font-weight: 500; font-size: 14px; transition: .2s; }
-.nav-menu a:hover { color: #F5F0EB; }
-.nav-right { display: flex; align-items: center; gap: 10px; }
-.lang-toggle { display: flex; background: rgba(255,255,255,.15); border-radius: 50px; padding: 3px; border: 1px solid rgba(255,255,255,.25); gap: 2px; }
-.lang-btn { padding: 5px 12px; border-radius: 50px; border: none; background: transparent; font-size: 12px; font-weight: 600; color: rgba(245,240,235,.7); cursor: pointer; transition: .2s; font-family: 'Inter', sans-serif; }
-.lang-btn.active { background: #F5F0EB; color: var(--primary); }
-.nav-btn { padding: 10px 22px; border-radius: 50px; background: #F5F0EB; color: var(--primary); font-weight: 600; font-size: 13px; transition: .3s; white-space: nowrap; }
-.nav-btn:hover { background: #fff; }
-.nav-btn-outline { padding: 10px 22px; border-radius: 50px; background: transparent; color: #F5F0EB; font-weight: 600; font-size: 13px; transition: .3s; white-space: nowrap; border: 1.5px solid rgba(245,240,235,.5); }
-.nav-btn-outline:hover { background: rgba(255,255,255,.1); border-color: #F5F0EB; }
-.nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; flex-direction: column; gap: 5px; }
-.nav-hamburger span { display: block; width: 22px; height: 2px; background: #F5F0EB; border-radius: 2px; }
+/* ===== TOKENS ===== */
+:root {
+  --brand: #7A2236;
+  --brand-dk: #4E1522;
+  --brand-light: #F3E5E8;
+  --rose: #C4677E;
+  --cream: #FAF8F5;
+  --warm: #F5F0EB;
+  --text: #1C1C1E;
+  --muted: #6B7280;
+  --border: #E8E3DE;
+  --white: #FFFFFF;
 
-/* ── HERO ── */
+  /* Gradient palette — the signature */
+  --g1: linear-gradient(135deg, #7A2236 0%, #9E304D 45%, #C4677E 100%);
+  --g2: linear-gradient(145deg, #4E1522 0%, #7A2236 50%, #9E304D 100%);
+  --g3: linear-gradient(160deg, #2A0D14 0%, #5C1A28 40%, #7A2236 80%, #a3354f 100%);
+
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
+  --shadow-sm: 0 2px 12px rgba(0,0,0,0.06);
+  --shadow-md: 0 8px 32px rgba(0,0,0,0.09);
+  --shadow-lg: 0 20px 60px rgba(122,34,54,0.15);
+}
+
+.container { width: 90%; max-width: 1140px; margin: auto; }
+section { padding: 96px 0; }
+
+/* ===== NAVBAR ===== */
+.navbar {
+  position: fixed; top: 0; left: 0; width: 100%; z-index: 999;
+  background: var(--g2);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.nav-inner {
+  height: 68px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px;
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px; font-weight: 700;
+  color: #F5EDE8; letter-spacing: 2px;
+}
+.nav-links {
+  display: flex; gap: 6px; list-style: none;
+}
+.nav-links a {
+  color: rgba(245,237,232,0.75); font-size: 13.5px; font-weight: 500;
+  padding: 7px 14px; border-radius: 50px;
+  transition: background .18s, color .18s;
+}
+.nav-links a:hover { background: rgba(255,255,255,0.1); color: #F5EDE8; }
+.nav-right {
+  display: flex; align-items: center; gap: 8px;
+}
+/* Language toggle */
+.lang-switch {
+  display: flex; background: rgba(255,255,255,0.1);
+  border-radius: 50px; padding: 3px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.lang-btn {
+  padding: 5px 13px; border-radius: 50px; border: none;
+  background: transparent; font-size: 12px; font-weight: 600;
+  color: rgba(245,237,232,0.65); cursor: pointer;
+  font-family: 'Inter', sans-serif; transition: all .18s;
+}
+.lang-btn.active { background: #F5EDE8; color: var(--brand); }
+.nav-login {
+  padding: 9px 20px; border-radius: 50px;
+  border: 1.5px solid rgba(245,237,232,0.4);
+  color: #F5EDE8; font-size: 13px; font-weight: 600;
+  transition: all .2s; white-space: nowrap;
+}
+.nav-login:hover { background: rgba(255,255,255,0.1); border-color: rgba(245,237,232,0.7); }
+.nav-register {
+  padding: 9px 22px; border-radius: 50px;
+  background: #F5EDE8; color: var(--brand);
+  font-size: 13px; font-weight: 700;
+  transition: all .2s; white-space: nowrap;
+}
+.nav-register:hover { background: #fff; }
+
+/* Hamburger */
+.hamburger {
+  display: none; background: none; border: none;
+  cursor: pointer; padding: 4px; flex-direction: column; gap: 5px;
+}
+.hamburger span { display: block; width: 22px; height: 2px; background: #F5EDE8; border-radius: 2px; transition: all .25s; }
+
+/* Mobile menu */
+.mobile-menu {
+  display: none; flex-direction: column;
+  background: var(--brand-dk);
+  padding: 20px 5%; gap: 4px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  color: rgba(245,237,232,0.85); font-size: 15px; font-weight: 500;
+  padding: 12px 16px; border-radius: var(--radius-sm);
+  transition: background .18s;
+}
+.mobile-menu a:hover { background: rgba(255,255,255,0.08); }
+.mobile-menu-bottom {
+  display: flex; gap: 10px; margin-top: 8px; padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.mobile-menu-bottom a { flex: 1; text-align: center; padding: 11px; border-radius: 50px; font-weight: 600; font-size: 14px; }
+.mm-login { border: 1.5px solid rgba(245,237,232,0.4); color: #F5EDE8; }
+.mm-reg { background: #F5EDE8; color: var(--brand); }
+
+/* ===== HERO ===== */
 .hero {
   min-height: 100vh;
   display: flex; align-items: center;
-  position: relative;
+  background: var(--g3);
+  position: relative; overflow: hidden;
   padding-top: 68px;
-  background: #FAF7F4;
-  overflow: hidden;
 }
-.hero-pattern {
-  position: absolute; inset: 0;
-  background-image: radial-gradient(circle, rgba(122,34,54,.08) 1.5px, transparent 1.5px);
-  background-size: 28px 28px;
-  pointer-events: none;
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,.6) 0%, transparent 85%);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.6) 0%, transparent 85%);
-}
-.hero-glow { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(122,34,54,.06), transparent 70%); top: -150px; right: -100px; pointer-events: none; }
-.hero-content { text-align: center; width: 100%; position: relative; z-index: 1; padding: 48px 0 56px; }
 
-/* Eyebrow pill */
+/* Decorative rings */
+.hero-ring {
+  position: absolute; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.07);
+  pointer-events: none;
+}
+.hero-ring-1 { width: 700px; height: 700px; top: -200px; right: -200px; }
+.hero-ring-2 { width: 400px; height: 400px; top: -50px; right: 50px; }
+.hero-ring-3 { width: 900px; height: 900px; bottom: -400px; left: -300px; border-color: rgba(255,255,255,0.04); }
+
+/* Dot grid */
+.hero-dots {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.09) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,0,0,0.5) 0%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,0,0,0.5) 0%, transparent 100%);
+}
+
+.hero-inner {
+  position: relative; z-index: 2;
+  display: grid; grid-template-columns: 1fr 1fr;
+  align-items: center; gap: 64px;
+  padding: 80px 0;
+}
+.hero-left {}
+
 .hero-eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
-  background: #F3E5E8; color: var(--primary);
-  font-size: 13px; font-weight: 600;
-  padding: 8px 20px; border-radius: 999px;
-  margin-bottom: 24px; white-space: nowrap;
-  letter-spacing: .02em;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(245,237,232,0.9);
+  font-size: 12px; font-weight: 600; letter-spacing: 0.06em;
+  padding: 7px 18px; border-radius: 50px; margin-bottom: 28px;
 }
-.eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--primary); flex-shrink: 0; }
+.eyebrow-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #F5C8C8; flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.8); }
+}
 
-/* Title */
-.hero h1 {
-  font-size: clamp(64px, 12vw, 120px);
-  line-height: .95; letter-spacing: .06em;
-  color: var(--text); margin: 0 auto 12px;
+.hero-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(72px, 10vw, 110px);
+  font-weight: 700; letter-spacing: 8px;
+  color: #F5EDE8; line-height: 1;
+  margin-bottom: 6px;
 }
 .hero-tagline {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(17px, 2.2vw, 26px);
-  color: var(--primary); font-style: italic;
-  margin-bottom: 16px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(18px, 2.2vw, 24px);
+  font-weight: 400; font-style: italic;
+  color: rgba(245,237,232,0.65);
+  margin-bottom: 24px; letter-spacing: 0.02em;
 }
 .hero-desc {
-  max-width: 460px; margin: 0 auto 36px;
-  font-size: clamp(14px, 1.5vw, 16px);
-  line-height: 1.75; color: var(--muted);
+  font-size: 16px; line-height: 1.8;
+  color: rgba(245,237,232,0.72);
+  max-width: 440px; margin-bottom: 36px;
 }
+.hero-cta {
+  display: flex; gap: 12px; flex-wrap: wrap;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 30px; border-radius: 50px;
+  background: #F5EDE8; color: var(--brand);
+  font-size: 14px; font-weight: 700;
+  transition: all .22s; white-space: nowrap;
+}
+.btn-primary:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+.btn-outline-white {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 28px; border-radius: 50px;
+  border: 1.5px solid rgba(245,237,232,0.45);
+  color: rgba(245,237,232,0.9);
+  font-size: 14px; font-weight: 600;
+  transition: all .22s; white-space: nowrap;
+}
+.btn-outline-white:hover { background: rgba(255,255,255,0.1); border-color: rgba(245,237,232,0.8); }
 
-/* Feature strip (3 icons + 2 buttons) */
-.hero-feature-box {
-  background: white;
-  border-radius: 22px;
-  padding: 24px 32px;
-  max-width: 620px;
-  margin: 0 auto 32px;
-  box-shadow: 0 8px 40px rgba(0,0,0,.08);
-  display: flex;
-  align-items: center;
-  gap: 0;
-}
-.hero-features {
-  display: flex;
-  gap: 0;
-  flex: 1;
-}
-.hero-feature {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 0 16px;
-  border-right: 1px solid var(--border);
-  text-align: center;
-}
-.hero-feature:last-of-type { border-right: none; }
-.feat-icon {
-  width: 40px; height: 40px;
-  background: #F3E5E8;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-}
-.feat-icon svg { width: 20px; height: 20px; color: var(--primary); }
-.feat-label { font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.3; }
-.hero-cta-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-left: 24px;
-  flex-shrink: 0;
-}
-.btn-hero-primary {
-  padding: 12px 24px; background: var(--primary);
-  color: white; border-radius: 50px;
-  font-weight: 600; font-size: 14px;
-  white-space: nowrap; transition: .3s;
-  text-align: center;
-}
-.btn-hero-primary:hover { background: var(--primary-dark); }
-.btn-hero-outline {
-  padding: 11px 24px;
-  border: 1.5px solid var(--primary);
-  color: var(--primary); border-radius: 50px;
-  font-weight: 600; font-size: 14px;
-  white-space: nowrap; transition: .3s;
-  text-align: center;
-}
-.btn-hero-outline:hover { background: #F3E5E8; }
-
-/* Stats row */
+/* Hero stats */
 .hero-stats {
-  display: flex;
-  justify-content: center;
-  gap: 0;
-  max-width: 560px;
-  margin: 0 auto;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0,0,0,.06);
+  display: flex; gap: 0;
+  margin-top: 44px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius-md);
   overflow: hidden;
 }
-.hero-stat {
-  flex: 1;
-  padding: 18px 16px;
-  text-align: center;
-  border-right: 1px solid var(--border);
-  display: flex; align-items: center; gap: 12px;
-  justify-content: center;
+.hstat {
+  flex: 1; padding: 18px 16px; text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.1);
 }
-.hero-stat:last-child { border-right: none; }
-.stat-icon {
-  width: 32px; height: 32px;
-  background: #F3E5E8;
-  border-radius: 8px;
+.hstat:last-child { border-right: none; }
+.hstat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 700;
+  color: #F5EDE8; line-height: 1; margin-bottom: 3px;
+}
+.hstat-label { font-size: 11px; color: rgba(245,237,232,0.55); line-height: 1.3; }
+
+/* Hero right — phone mockup */
+.hero-right { display: flex; justify-content: center; align-items: center; }
+.phone-frame {
+  width: 280px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 36px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.phone-top {
+  background: rgba(255,255,255,0.08);
+  padding: 14px 18px 10px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.phone-logo { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 700; color: #F5EDE8; letter-spacing: 2px; }
+.phone-body { padding: 16px; }
+.phone-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 18px; overflow: hidden;
+  margin-bottom: 12px;
+}
+.phone-card-photo {
+  height: 130px;
+  background: repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0, rgba(255,255,255,0.06) 4px, rgba(255,255,255,0.03) 4px, rgba(255,255,255,0.03) 8px);
   display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
+  position: relative;
 }
-.stat-icon svg { width: 16px; height: 16px; color: var(--primary); }
-.stat-text { text-align: left; }
-.stat-num { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600; color: var(--primary); line-height: 1; }
-.stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.2; }
-
-/* ── SECTION COMMONS ── */
-.section-tag { display: inline-block; padding: 8px 16px; border-radius: 50px; background: #F3E5E8; color: var(--primary); font-size: 12px; font-weight: 600; margin-bottom: 14px; letter-spacing: .06em; }
-.section-header { text-align: center; max-width: 680px; margin: 0 auto 40px; }
-.section-header h2 { font-size: clamp(26px, 3.5vw, 42px); margin-bottom: 12px; line-height: 1.15; }
-.section-header p { font-size: clamp(14px, 1.5vw, 16px); color: var(--muted); line-height: 1.75; }
-
-/* ── KENAPA MATCHU ── */
-.why-label {
-  display: flex; align-items: center; justify-content: center; gap: 16px;
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(22px, 3vw, 32px); font-weight: 600;
-  color: var(--primary); text-align: center; margin-bottom: 32px;
+.photo-blur-text { font-size: 10px; color: rgba(255,255,255,0.4); font-weight: 600; letter-spacing: 1px; }
+.phone-card-body { padding: 12px; }
+.phone-card-name { font-size: 14px; font-weight: 700; color: #F5EDE8; margin-bottom: 2px; }
+.phone-card-info { font-size: 11px; color: rgba(245,237,232,0.55); line-height: 1.6; }
+.phone-card-badge {
+  display: inline-block; background: rgba(46,125,50,0.3);
+  color: #88D98C; font-size: 9px; font-weight: 700;
+  padding: 2px 8px; border-radius: 20px; margin: 6px 0;
+  border: 1px solid rgba(136,217,140,0.3);
 }
-.why-label::before, .why-label::after { content: ""; width: 60px; height: 1px; background: rgba(122,34,54,.3); }
-.problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 40px; }
-.problem-card { background: white; border-radius: 20px; padding: 24px; border: 1px solid rgba(122,34,54,.1); box-shadow: 0 4px 20px rgba(0,0,0,.04); transition: .3s; overflow: hidden; }
-.problem-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(122,34,54,.1); }
-.problem-image { width: 100%; height: 180px; object-fit: cover; border-radius: 14px; margin: 12px 0 16px; transition: .3s; }
-.problem-card:hover .problem-image { transform: scale(1.03); }
-.problem-num { font-size: 11px; font-weight: 700; color: var(--primary); letter-spacing: .1em; margin-bottom: 8px; }
-.problem-card h3 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 10px; color: #222; }
-.problem-card p { font-size: 14px; color: var(--muted); line-height: 1.7; }
-.solution-strip { background: var(--primary); border-radius: 20px; padding: 36px 40px; text-align: center; }
-.solution-title { font-family: 'Playfair Display', serif; font-size: clamp(16px, 2vw, 22px); font-weight: 600; color: white; font-style: italic; margin-bottom: 20px; }
-.solution-tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-.stag { padding: 7px 16px; background: rgba(255,255,255,.15); color: white; border-radius: 50px; font-size: 13px; font-weight: 500; border: 1px solid rgba(255,255,255,.25); transition: .2s; }
-.stag:hover { background: rgba(255,255,255,.25); }
+.phone-match {
+  display: flex; align-items: center; justify-content: space-between; margin-top: 8px;
+}
+.match-pct {
+  background: rgba(245,200,200,0.2);
+  color: #F5C8C8; font-size: 11px; font-weight: 700;
+  padding: 3px 10px; border-radius: 20px;
+  border: 1px solid rgba(245,200,200,0.3);
+}
+.phone-btn {
+  background: rgba(245,237,232,0.15); color: #F5EDE8;
+  font-size: 11px; font-weight: 600; padding: 6px 14px;
+  border-radius: 20px; border: 1px solid rgba(245,237,232,0.25);
+}
+.phone-info-row {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; padding: 11px 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.pi-dot { width: 6px; height: 6px; border-radius: 50%; background: #88D98C; flex-shrink: 0; }
+.pi-text { font-size: 11px; color: rgba(245,237,232,0.65); line-height: 1.4; }
 
-/* ── KEUNGGULAN ── */
-.keunggulan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
-.keunggulan-card { background: var(--bg); border-radius: 18px; padding: 22px 20px; border: 1px solid var(--border); transition: .3s; position: relative; }
-.keunggulan-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.07); }
-.featured-card { background: white; border: 2px solid var(--primary); }
-.k-badge { display: inline-block; background: var(--primary); color: white; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 50px; letter-spacing: .08em; margin-bottom: 10px; }
-.k-badge-dark { background: #1a1a2e; }
-.k-num { font-size: 11px; font-weight: 700; color: var(--primary); letter-spacing: .1em; margin-bottom: 8px; }
-.keunggulan-card h3 { font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif; color: var(--text); margin-bottom: 8px; }
-.keunggulan-card p { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
-.k-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.k-tag { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 50px; background: #F3E5E8; color: var(--primary); border: 1px solid rgba(122,34,54,.15); }
+/* ===== SECTION COMMONS ===== */
+.tag {
+  display: inline-block; padding: 7px 16px; border-radius: 50px;
+  background: var(--brand-light); color: var(--brand);
+  font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; margin-bottom: 16px;
+}
+.sec-head { text-align: center; max-width: 680px; margin: 0 auto 56px; }
+.sec-head h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 4vw, 50px); font-weight: 700;
+  line-height: 1.1; margin-bottom: 14px; color: var(--text);
+}
+.sec-head p { font-size: 16px; color: var(--muted); line-height: 1.8; }
 
-/* Safety */
-.safety-notice { background: linear-gradient(135deg, #7A2236 0%, #9B2D47 100%); border-radius: 18px; padding: 28px 32px; margin-bottom: 14px; }
-.safety-left { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 20px; }
-.safety-icon { font-size: 26px; flex-shrink: 0; }
-.safety-title { font-size: 16px; font-weight: 600; color: white; margin-bottom: 5px; font-family: 'Playfair Display', serif; }
-.safety-desc { font-size: 13px; color: rgba(255,255,255,.75); line-height: 1.7; }
+/* ===== WHY MATCHU ===== */
+.why-section { background: var(--white); }
+.problem-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px; margin-bottom: 40px;
+}
+.problem-card {
+  background: var(--cream); border-radius: var(--radius-md);
+  padding: 26px; border: 1px solid var(--border);
+  transition: all .28s;
+}
+.problem-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: rgba(122,34,54,0.2); }
+.prob-icon { font-size: 28px; margin-bottom: 14px; }
+.problem-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--text);
+}
+.problem-card p { font-size: 14px; color: var(--muted); line-height: 1.75; }
+
+/* Solution strip */
+.solution-strip {
+  background: var(--g1);
+  border-radius: var(--radius-lg);
+  padding: 40px 44px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.solution-strip::before {
+  content: '';
+  position: absolute; top: -60px; right: -60px;
+  width: 240px; height: 240px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+}
+.solution-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(18px, 2.2vw, 24px); font-weight: 600; font-style: italic;
+  color: rgba(245,237,232,0.9); margin-bottom: 22px;
+  position: relative; z-index: 1;
+}
+.solution-tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; position: relative; z-index: 1; }
+.stag {
+  padding: 8px 18px;
+  background: rgba(255,255,255,0.13);
+  color: rgba(245,237,232,0.9);
+  border-radius: 50px; font-size: 13px; font-weight: 500;
+  border: 1px solid rgba(255,255,255,0.22);
+  transition: background .18s;
+}
+.stag:hover { background: rgba(255,255,255,0.22); }
+
+/* ===== KEUNGGULAN ===== */
+.keunggulan-section { background: var(--cream); }
+.keunggulan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px; margin-bottom: 28px;
+}
+.k-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 24px; border: 1px solid var(--border);
+  transition: all .25s; position: relative;
+}
+.k-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.k-card.featured { border: 2px solid var(--brand); }
+.k-pill {
+  display: inline-block; padding: 3px 10px;
+  border-radius: 50px; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.08em; margin-bottom: 12px;
+}
+.k-pill-brand { background: var(--brand); color: white; }
+.k-pill-dark { background: #1a1a2e; color: white; }
+.k-card h3 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.k-card p { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 12px; }
+.k-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.k-tag {
+  font-size: 11px; font-weight: 500; padding: 3px 9px;
+  border-radius: 50px; background: var(--brand-light);
+  color: var(--brand); border: 1px solid rgba(122,34,54,0.12);
+}
+
+/* Safety box */
+.safety-box {
+  background: var(--g2);
+  border-radius: var(--radius-lg);
+  padding: 32px 36px; margin-bottom: 14px;
+  position: relative; overflow: hidden;
+}
+.safety-box::after {
+  content: '';
+  position: absolute; right: -40px; bottom: -40px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.safety-top { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 22px; }
+.safety-emoji { font-size: 28px; flex-shrink: 0; }
+.safety-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; color: white; margin-bottom: 5px; }
+.safety-desc { font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.7; }
 .safety-desc strong { color: white; }
 .safety-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.safety-step { background: rgba(255,255,255,.12); border-radius: 12px; padding: 14px; text-align: center; border: 1px solid rgba(255,255,255,.2); }
-.sstep-num { font-size: 20px; font-weight: 700; color: white; font-family: 'Playfair Display', serif; margin-bottom: 4px; }
-.sstep-text { font-size: 12px; color: rgba(255,255,255,.75); line-height: 1.4; }
-.sstep-text.red { color: #ffb3b3; font-weight: 600; }
+.sstep {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: var(--radius-sm);
+  padding: 14px; text-align: center;
+}
+.sstep-n { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: white; margin-bottom: 4px; }
+.sstep-t { font-size: 12px; color: rgba(255,255,255,0.7); line-height: 1.4; }
+.sstep-t.danger { color: #ffb3b3; font-weight: 600; }
 
 /* Age notice */
-.age-notice { display: flex; align-items: flex-start; gap: 14px; background: #FFF8E7; border: 1px solid #F5C842; border-radius: 14px; padding: 18px 22px; margin-top: 14px; }
-.age-icon { font-size: 22px; flex-shrink: 0; }
-.age-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-.age-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
-.age-desc strong { color: var(--text); }
+.age-box {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: #FFFBEC; border: 1px solid #F5C842;
+  border-radius: var(--radius-md); padding: 18px 22px; margin-top: 14px;
+}
+.age-box-icon { font-size: 22px; flex-shrink: 0; }
+.age-box-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.age-box-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+.age-box-desc strong { color: var(--text); }
 
-/* ── TIMELINE ── */
-.timeline { max-width: 600px; margin: 0 auto; }
-.tl-item { display: flex; align-items: flex-start; }
-.tl-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 46px; }
-.tl-dot { width: 42px; height: 42px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; z-index: 1; }
-.tl-line { width: 2px; flex: 1; min-height: 24px; background: repeating-linear-gradient(to bottom, var(--accent) 0, var(--accent) 6px, transparent 6px, transparent 12px); margin: 3px auto; }
-.tl-content { flex: 1; padding: 8px 0 24px 18px; }
-.tl-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
-.tl-desc { font-size: 14px; color: var(--muted); line-height: 1.7; }
-.tl-warn { display: inline-block; margin-top: 8px; background: #FFF3CD; color: #856404; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 50px; border: 1px solid #ffc107; }
+/* ===== CARA KERJA (HOW IT WORKS) ===== */
+.how-section { background: var(--white); }
+.steps-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20px; margin-bottom: 40px;
+}
+.step-card {
+  display: flex; gap: 18px; align-items: flex-start;
+  background: var(--cream); border-radius: var(--radius-md);
+  padding: 24px; border: 1px solid var(--border);
+  transition: all .25s;
+}
+.step-card:hover { border-color: rgba(122,34,54,0.25); box-shadow: var(--shadow-sm); }
+.step-num-badge {
+  width: 40px; height: 40px; min-width: 40px;
+  border-radius: 50%; background: var(--g1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: white;
+  flex-shrink: 0;
+}
+.step-card h3 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.step-card p { font-size: 13px; color: var(--muted); line-height: 1.7; }
+.step-note {
+  display: inline-block; margin-top: 8px;
+  background: #FFF3CD; color: #856404;
+  font-size: 11px; font-weight: 600;
+  padding: 4px 12px; border-radius: 50px;
+  border: 1px solid #ffc107;
+}
+.step-note.green {
+  background: #e8f5e9; color: #2e7d32;
+  border-color: #88D98C;
+}
 
-/* ── LETTER ── */
-.letter-demo-wrap { max-width: 660px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
-.letter-candidate { background: var(--bg); border-radius: 18px; padding: 20px 24px; border: 1px solid var(--border); }
-.lc-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
-.avatar { width: 46px; height: 46px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; flex-shrink: 0; }
-.lc-name { font-size: 15px; font-weight: 600; color: var(--text); }
-.lc-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.lc-compat { margin-left: auto; font-size: 20px; font-weight: 700; color: var(--primary); font-family: 'Playfair Display', serif; text-align: center; line-height: 1; }
-.lc-compat span { display: block; font-size: 10px; font-family: 'Inter', sans-serif; color: var(--muted); font-weight: 400; }
-.lc-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.lc-tag { font-size: 11px; padding: 4px 10px; background: white; border-radius: 50px; border: 1px solid var(--border); color: var(--muted); }
-.letter-arrow { text-align: center; font-size: 13px; color: var(--muted); font-weight: 500; }
-.letter-card { background: white; border-radius: 20px; padding: 28px 32px; box-shadow: 0 8px 32px rgba(0,0,0,.07); border: 1px solid var(--border); }
-.letter-from { font-size: 11px; font-weight: 700; color: var(--primary); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 14px; }
-.letter-body { font-size: 15px; line-height: 1.8; color: var(--text); font-style: italic; background: var(--bg); border-radius: 12px; padding: 16px 20px; margin-bottom: 10px; border-left: 3px solid var(--primary); }
-.letter-counter { font-size: 11px; color: var(--muted); text-align: right; margin-bottom: 14px; }
-.letter-buttons { display: flex; gap: 10px; }
-.accept-btn { flex: 1; padding: 12px; background: var(--primary); border: none; color: white; border-radius: 50px; font-size: 14px; font-weight: 600; cursor: pointer; transition: .3s; }
-.accept-btn:hover { background: var(--primary-dark); }
-.decline-btn { flex: 1; padding: 12px; border: 1px solid var(--border); background: white; border-radius: 50px; cursor: pointer; font-size: 14px; transition: .3s; }
-.decline-btn:hover { border-color: var(--primary); }
-.letter-note { font-size: 12px; color: var(--muted); margin-top: 12px; text-align: center; }
-.letter-warn { display: inline-block; margin-top: 6px; background: #fff3cd; color: #856404; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 50px; border: 1px solid #ffc107; }
+/* Interest flow */
+.interest-flow {
+  background: var(--g1); border-radius: var(--radius-lg);
+  padding: 36px 40px; color: white; text-align: center;
+}
+.flow-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 600; font-style: italic;
+  margin-bottom: 24px; color: rgba(245,237,232,0.9);
+}
+.flow-steps {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; flex-wrap: wrap;
+}
+.flow-step {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: var(--radius-sm);
+  padding: 14px 20px; text-align: center; min-width: 130px;
+}
+.flow-step-icon { font-size: 22px; margin-bottom: 6px; }
+.flow-step-label { font-size: 12px; color: rgba(245,237,232,0.85); font-weight: 500; line-height: 1.4; }
+.flow-arrow {
+  color: rgba(245,237,232,0.4); font-size: 20px; padding: 0 10px;
+}
 
-/* ── SECURITY ── */
-.security-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-.security-card { background: white; padding: 26px 20px; border-radius: 18px; box-shadow: 0 2px 16px rgba(0,0,0,.04); transition: .3s; }
-.security-card:hover { transform: translateY(-3px); }
-.security-icon { font-size: 30px; margin-bottom: 12px; }
-.security-card h3 { font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif; margin-bottom: 8px; }
-.security-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+/* ===== KEAMANAN ===== */
+.security-section { background: var(--cream); }
+.security-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+}
+.sec-card {
+  background: var(--white); border-radius: var(--radius-md);
+  padding: 26px 22px; border: 1px solid var(--border);
+  transition: all .25s; text-align: center;
+}
+.sec-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.sec-icon { font-size: 32px; margin-bottom: 14px; }
+.sec-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+.sec-card p { font-size: 13px; color: var(--muted); line-height: 1.65; }
 
-/* ── PRICING ── */
-.pricing-wrapper { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
-.pricing-card { background: white; padding: 36px 30px; border-radius: 24px; width: 340px; position: relative; box-shadow: 0 4px 24px rgba(0,0,0,.06); border: 1px solid var(--border); }
-.pricing-card h3 { font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: 'Inter', sans-serif; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-.pricing-card h1 { font-size: 44px; color: var(--primary); margin-bottom: 4px; }
-.pricing-sub { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
-.pricing-divider { height: 1px; background: var(--border); margin: 14px 0; }
-.pricing-card ul { list-style: none; }
-.pricing-card li { padding: 9px 0; font-size: 14px; color: var(--text); border-bottom: 1px solid var(--border); line-height: 1.4; }
-.pricing-card li:last-child { border-bottom: none; }
-.li-limit { color: var(--muted) !important; }
-.li-limit em { font-style: normal; font-size: 11px; color: #aaa; display: block; margin-top: 2px; }
-.pricing-btn-primary { display: block; text-align: center; padding: 14px; background: var(--primary); color: white; border-radius: 50px; font-weight: 600; font-size: 14px; transition: .3s; margin-top: 18px; }
-.pricing-btn-primary:hover { background: var(--primary-dark); }
-.pricing-btn-outline { display: block; text-align: center; padding: 13px; background: transparent; color: var(--primary); border-radius: 50px; font-weight: 600; font-size: 14px; transition: .3s; margin-top: 18px; border: 1.5px solid var(--primary); }
-.pricing-btn-outline:hover { background: #F3E5E8; }
-.pricing-card.featured { border: 2px solid var(--primary); }
-.popular-badge { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); padding: 5px 18px; background: var(--primary); color: white; border-radius: 50px; font-size: 11px; font-weight: 700; white-space: nowrap; letter-spacing: .06em; }
-.pricing-note { text-align: center; margin-top: 24px; font-size: 13px; color: var(--muted); padding: 14px; background: white; border-radius: 12px; }
+/* ===== PRICING ===== */
+.pricing-section { background: var(--white); }
+.pricing-wrap { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
+.price-card {
+  width: 340px; background: var(--white);
+  border-radius: var(--radius-lg); padding: 38px 32px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm); position: relative;
+}
+.price-card.featured {
+  border: 2px solid var(--brand);
+  box-shadow: var(--shadow-lg);
+}
+.popular-tag {
+  position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+  background: var(--g1); color: white;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  padding: 5px 18px; border-radius: 50px; white-space: nowrap;
+}
+.price-tier {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+}
+.price-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 48px; font-weight: 700; color: var(--brand);
+  line-height: 1; margin-bottom: 4px;
+}
+.price-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+.price-divider { height: 1px; background: var(--border); margin: 16px 0; }
+.price-list { list-style: none; }
+.price-list li { padding: 9px 0; font-size: 14px; color: var(--text); border-bottom: 1px solid var(--border); line-height: 1.4; }
+.price-list li:last-child { border-bottom: none; }
+.price-list .dim { color: var(--muted); }
+.price-list .dim em { display: block; font-style: normal; font-size: 11px; color: #aaa; margin-top: 2px; }
+.price-btn-primary {
+  display: block; text-align: center; padding: 14px;
+  background: var(--g1); color: white;
+  border-radius: 50px; font-weight: 700; font-size: 14px;
+  transition: all .2s; margin-top: 20px;
+}
+.price-btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+.price-btn-outline {
+  display: block; text-align: center; padding: 13px;
+  border: 1.5px solid var(--brand); color: var(--brand);
+  border-radius: 50px; font-weight: 600; font-size: 14px;
+  transition: all .2s; margin-top: 20px;
+}
+.price-btn-outline:hover { background: var(--brand-light); }
+.pricing-note {
+  text-align: center; margin-top: 28px; font-size: 13px; color: var(--muted);
+  background: var(--cream); padding: 14px; border-radius: var(--radius-sm);
+}
 
-/* ── WAITLIST ── */
-.waitlist-box { background: var(--primary); padding: 56px 48px; border-radius: 28px; text-align: center; color: white; }
-.waitlist-box h2 { font-size: clamp(28px, 4vw, 44px); margin-bottom: 12px; color: white; }
-.waitlist-box p { margin-bottom: 32px; opacity: .8; font-size: 16px; }
-.waitlist-cta-btn { display: inline-block; padding: 16px 48px; background: white; color: var(--primary); font-weight: 700; font-size: 16px; border: none; border-radius: 50px; cursor: pointer; transition: .3s; font-family: 'Inter', sans-serif; }
-.waitlist-cta-btn:hover { background: #F3E5E8; }
+/* ===== CTA WAITLIST ===== */
+.cta-section { background: var(--cream); }
+.cta-box {
+  background: var(--g3);
+  border-radius: var(--radius-lg); padding: 64px 56px;
+  text-align: center; position: relative; overflow: hidden;
+}
+.cta-box::before {
+  content: '';
+  position: absolute; right: -80px; top: -80px;
+  width: 350px; height: 350px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.07);
+}
+.cta-box::after {
+  content: '';
+  position: absolute; left: -60px; bottom: -60px;
+  width: 250px; height: 250px; border-radius: 50%;
+  background: rgba(255,255,255,0.03);
+}
+.cta-box h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(30px, 4.5vw, 48px); font-weight: 700;
+  color: #F5EDE8; line-height: 1.15; margin-bottom: 14px;
+  position: relative; z-index: 1;
+}
+.cta-box p {
+  font-size: 16px; color: rgba(245,237,232,0.72);
+  margin-bottom: 36px; position: relative; z-index: 1;
+}
+.cta-btn {
+  display: inline-block; padding: 16px 52px;
+  background: #F5EDE8; color: var(--brand);
+  font-weight: 700; font-size: 16px; border-radius: 50px;
+  transition: all .22s; position: relative; z-index: 1;
+}
+.cta-btn:hover { background: white; transform: translateY(-3px); box-shadow: 0 12px 36px rgba(0,0,0,0.2); }
 
-/* ── FOOTER ── */
-footer { padding: 56px 0; border-top: 1px solid var(--border); }
-.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
-.footer-grid h2 { color: var(--primary); margin-bottom: 12px; font-size: 24px; }
-.footer-grid p { color: var(--muted); line-height: 1.8; font-size: 14px; }
-.footer-grid h4 { margin-bottom: 12px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; }
-.footer-grid a { display: block; margin-bottom: 8px; color: var(--muted); font-size: 14px; transition: .2s; }
-.footer-grid a:hover { color: var(--primary); }
-.footer-copy { text-align: center; margin-top: 40px; color: var(--muted); font-size: 13px; }
+/* ===== FOOTER ===== */
+footer { background: #0F0609; padding: 56px 0 32px; border-top: 1px solid rgba(255,255,255,0.05); }
+.footer-grid { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+.footer-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px; font-weight: 700; letter-spacing: 2px;
+  color: #F5EDE8; margin-bottom: 10px;
+}
+.footer-tagline { font-style: italic; font-size: 13px; color: rgba(245,237,232,0.45); margin-bottom: 12px; }
+.footer-desc { font-size: 13px; color: rgba(245,237,232,0.45); line-height: 1.8; }
+.footer-col h4 { font-size: 13px; font-weight: 600; color: rgba(245,237,232,0.85); margin-bottom: 14px; letter-spacing: 0.04em; }
+.footer-col a { display: block; font-size: 13px; color: rgba(245,237,232,0.45); margin-bottom: 9px; transition: color .18s; }
+.footer-col a:hover { color: rgba(245,237,232,0.85); }
+.footer-copy { text-align: center; font-size: 12px; color: rgba(245,237,232,0.3); padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.06); }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 900px) {
-  .nav-menu { display: none; }
-  .nav-hamburger { display: flex; }
-  .nav-menu.open { display: flex; flex-direction: column; position: absolute; top: 68px; left: 0; right: 0; background: var(--primary); padding: 20px 5%; gap: 16px; border-top: 1px solid rgba(255,255,255,.1); }
-  .hero-feature-box { flex-direction: column; padding: 20px; }
-  .hero-features { width: 100%; }
-  .hero-cta-group { flex-direction: row; padding-left: 0; padding-top: 16px; width: 100%; }
-  .hero-cta-group a { flex: 1; }
-  .security-grid { grid-template-columns: repeat(2, 1fr); }
+/* ===== SCROLL REVEAL ===== */
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity .55s ease, transform .55s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 960px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .nav-login, .nav-register { display: none; }
+  .hero-inner { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+  .hero-right { order: -1; }
+  .hero-desc { margin: 0 auto 36px; }
+  .hero-cta { justify-content: center; }
+  .hero-stats { max-width: 400px; margin: 44px auto 0; }
   .problem-grid { grid-template-columns: repeat(2, 1fr); }
   .keunggulan-grid { grid-template-columns: repeat(2, 1fr); }
-  .safety-steps { grid-template-columns: 1fr; }
-  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .steps-grid { grid-template-columns: 1fr; }
+  .security-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
 }
 @media (max-width: 600px) {
-  section { padding: 52px 0; }
-  .hero h1 { font-size: 58px; }
-  .hero-feature-box { padding: 16px; }
-  .hero-features { flex-direction: column; gap: 12px; }
-  .hero-feature { border-right: none; border-bottom: 1px solid var(--border); padding: 0 0 12px; flex-direction: row; justify-content: flex-start; }
-  .hero-feature:last-of-type { border-bottom: none; }
-  .hero-stats { flex-direction: column; border-radius: 12px; }
-  .hero-stat { border-right: none; border-bottom: 1px solid var(--border); }
-  .hero-stat:last-child { border-bottom: none; }
+  section { padding: 64px 0; }
   .problem-grid { grid-template-columns: 1fr; }
   .keunggulan-grid { grid-template-columns: 1fr; }
+  .safety-steps { grid-template-columns: 1fr; }
+  .flow-steps { flex-direction: column; gap: 8px; }
+  .flow-arrow { transform: rotate(90deg); }
   .security-grid { grid-template-columns: 1fr 1fr; }
-  .solution-strip { padding: 28px 20px; }
-  .safety-notice { padding: 22px 18px; }
-  .waitlist-box { padding: 36px 20px; }
-  .letter-card { padding: 20px 16px; }
-  .pricing-card { width: 100%; padding: 28px 22px; }
+  .price-card { width: 100%; padding: 30px 22px; }
+  .cta-box { padding: 40px 24px; }
   .footer-grid { grid-template-columns: 1fr; gap: 24px; }
-  .nav-btn, .nav-btn-outline { display: none; }
-  .tl-content { padding-left: 14px; }
+  .phone-frame { width: 240px; }
+  .hero-logo { font-size: 64px; }
 }
 </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-  <div class="container nav-wrapper">
-    <div class="logo">
-      <img src="assets/logo.png" alt="Matchu logo" class="logo-img" />
-      Matchu
-    </div>
-    <ul class="nav-menu" id="navMenu">
-      <li><a href="#about">Tentang</a></li>
-      <li><a href="#keunggulan">Keunggulan</a></li>
-      <li><a href="#how">Cara Kerja</a></li>
-      <li><a href="#premium">Paket</a></li>
-      <li><a href="register.html">Daftar</a></li>
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">MATCHU</a>
+    <ul class="nav-links">
+      <li><a href="#about" data-i18n="nav-about">Tentang</a></li>
+      <li><a href="#keunggulan" data-i18n="nav-features">Keunggulan</a></li>
+      <li><a href="#cara-kerja" data-i18n="nav-how">Cara Kerja</a></li>
+      <li><a href="#premium" data-i18n="nav-pricing">Paket</a></li>
     </ul>
     <div class="nav-right">
-      <div class="lang-toggle">
-        <button class="lang-btn active" onclick="setLang('id')">ID</button>
-        <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <div class="lang-switch">
+        <button class="lang-btn active" data-lang="id" onclick="setLang('id')">ID</button>
+        <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
       </div>
-      <a href="login.html" class="nav-btn-outline">Masuk</a>
-      <a href="register.html" class="nav-btn">Daftar</a>
-      <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <a href="login.html" class="nav-login" data-i18n="nav-login">Masuk</a>
+      <a href="register.html" class="nav-register" data-i18n="nav-register">Daftar</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
     </div>
   </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about" data-i18n="nav-about">Tentang</a>
+    <a href="#keunggulan" data-i18n="nav-features">Keunggulan</a>
+    <a href="#cara-kerja" data-i18n="nav-how">Cara Kerja</a>
+    <a href="#premium" data-i18n="nav-pricing">Paket</a>
+    <div class="mobile-menu-bottom">
+      <a href="login.html" class="mm-login" data-i18n="nav-login">Masuk</a>
+      <a href="register.html" class="mm-reg" data-i18n="nav-register">Daftar</a>
+    </div>
+  </div>
 </nav>
 
-<!-- HERO -->
+<!-- ===== HERO ===== -->
 <section class="hero">
-  <div class="hero-pattern"></div>
-  <div class="hero-glow"></div>
-  <div class="container hero-content">
-
-    <!-- Eyebrow -->
-    <div class="hero-eyebrow">
-      <span class="eyebrow-dot"></span>
-      Curated Matchmaking for Professionals
-    </div>
-
-    <!-- Title -->
-    <h1>MATCHU</h1>
-    <div class="hero-tagline">Beyond Matching. Toward Marriage.</div>
-    <p class="hero-desc">Temukan orang yang memiliki tujuan, nilai hidup, dan arah masa depan yang sejalan.</p>
-
-    <!-- Feature box: 3 icons + 2 buttons -->
-    <div class="hero-feature-box">
-      <div class="hero-features">
-        <div class="hero-feature">
-          <div class="feat-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          </div>
-          <div class="feat-label">Verified<br>Identities</div>
-        </div>
-        <div class="hero-feature">
-          <div class="feat-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          </div>
-          <div class="feat-label">Professionals<br>&amp; Alumni</div>
-        </div>
-        <div class="hero-feature">
-          <div class="feat-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-          </div>
-          <div class="feat-label">Meaningful<br>Relationships</div>
-        </div>
+  <div class="hero-dots"></div>
+  <div class="hero-ring hero-ring-1"></div>
+  <div class="hero-ring hero-ring-2"></div>
+  <div class="hero-ring hero-ring-3"></div>
+  <div class="container hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-dot"></span>
+        <span data-i18n="hero-eyebrow">Platform Matchmaking untuk Profesional</span>
       </div>
-      <div class="hero-cta-group">
-        <a href="register.html" class="btn-hero-primary">Daftar</a>
-        <a href="#how" class="btn-hero-outline">How It Works</a>
+      <div class="hero-logo">MATCHU</div>
+      <div class="hero-tagline">Beyond Matching. Toward Marriage.</div>
+      <p class="hero-desc" data-i18n="hero-desc">Temukan orang yang memiliki tujuan, nilai hidup, dan arah masa depan yang sejalan denganmu.</p>
+      <div class="hero-cta">
+        <a href="register.html" class="btn-primary">
+          <span data-i18n="hero-btn-join">Daftar Sekarang</span>
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#cara-kerja" class="btn-outline-white" data-i18n="hero-btn-how">Cara Kerja</a>
       </div>
-    </div>
-
-    <!-- Stats row -->
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <div class="stat-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      <div class="hero-stats">
+        <div class="hstat">
+          <div class="hstat-num">10.000+</div>
+          <div class="hstat-label" data-i18n="stat-members">Member Terverifikasi</div>
         </div>
-        <div class="stat-text">
-          <div class="stat-num">10.000+</div>
-          <div class="stat-label">Verified Members</div>
+        <div class="hstat">
+          <div class="hstat-num">500+</div>
+          <div class="hstat-label" data-i18n="stat-universities">Universitas</div>
         </div>
-      </div>
-      <div class="hero-stat">
-        <div class="stat-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-        </div>
-        <div class="stat-text">
-          <div class="stat-num">500+</div>
-          <div class="stat-label">Universities</div>
-        </div>
-      </div>
-      <div class="hero-stat">
-        <div class="stat-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        </div>
-        <div class="stat-text">
-          <div class="stat-num">100%</div>
-          <div class="stat-label">Identity Verified</div>
+        <div class="hstat">
+          <div class="hstat-num">100%</div>
+          <div class="hstat-label" data-i18n="stat-verified">Identitas Diverifikasi</div>
         </div>
       </div>
     </div>
-
+    <div class="hero-right">
+      <div class="phone-frame">
+        <div class="phone-top">
+          <span class="phone-logo">MATCHU</span>
+          <span style="font-size:10px;color:rgba(245,237,232,0.5)" data-i18n="phone-candidates">Kandidat Minggu Ini</span>
+        </div>
+        <div class="phone-body">
+          <div class="phone-card">
+            <div class="phone-card-photo">
+              <span class="photo-blur-text" data-i18n="phone-blur">FOTO DISAMARKAN</span>
+            </div>
+            <div class="phone-card-body">
+              <div class="phone-card-name">Manda</div>
+              <div class="phone-card-info">Institut Teknologi Bandung<br>S1 Teknik Informatika · Bandung</div>
+              <div class="phone-card-badge" data-i18n="phone-verified">✓ Pendidikan Terverifikasi</div>
+              <div class="phone-match">
+                <span class="match-pct">92% Match</span>
+                <span class="phone-btn" data-i18n="phone-detail">Lihat Profil</span>
+              </div>
+            </div>
+          </div>
+          <div class="phone-info-row">
+            <div class="pi-dot"></div>
+            <div class="pi-text" data-i18n="phone-info">Nama asli & foto terbuka setelah Mutual Interest</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- KENAPA MATCHU -->
-<section id="about">
+<!-- ===== KENAPA MATCHU ===== -->
+<section id="about" class="why-section">
   <div class="container">
-    <div class="section-header">
-      <span class="section-tag">KENAPA MATCHU?</span>
-      <h2>Karena mencari pasangan tidak harus serba kebetulan.</h2>
-      <p>Matchu didirikan untuk membantu kamu yang serius ingin menikah, namun terkendala oleh kesibukan pekerjaan, keterbatasan wilayah, kepribadian introvert, atau minimnya lingkaran sosial.</p>
+    <div class="sec-head reveal">
+      <span class="tag" data-i18n="why-tag">KENAPA MATCHU?</span>
+      <h2 data-i18n="why-title">Karena mencari pasangan tidak harus serba kebetulan.</h2>
+      <p data-i18n="why-desc">Matchu didirikan untuk mereka yang serius ingin menikah, namun terkendala kesibukan, wilayah, kepribadian introvert, atau minimnya lingkaran sosial.</p>
     </div>
-    <div class="why-label">Kendala yang Sering Dihadapi</div>
     <div class="problem-grid">
-      <div class="problem-card">
-        <img src="assets/satu.png" alt="Terlalu sibuk bekerja" class="problem-image">
-        <h3>Terlalu Sibuk Bekerja</h3>
-        <p>Karir yang padat membuat lingkaran sosial menyempit. Tidak ada waktu untuk berkenalan secara alami.</p>
+      <div class="problem-card reveal">
+        <div class="prob-icon">💼</div>
+        <h3 data-i18n="prob-1-title">Terlalu Sibuk Bekerja</h3>
+        <p data-i18n="prob-1-desc">Karir yang padat membuat lingkaran sosial menyempit. Tidak ada waktu untuk berkenalan secara alami.</p>
       </div>
-      <div class="problem-card">
-        <img src="assets/dua.png" alt="Keterbatasan wilayah" class="problem-image">
-        <h3>Keterbatasan Wilayah</h3>
-        <p>Bekerja di kota baru, jauh dari kampung halaman, dan belum membangun jaringan sosial yang luas.</p>
+      <div class="problem-card reveal">
+        <div class="prob-icon">📍</div>
+        <h3 data-i18n="prob-2-title">Keterbatasan Wilayah</h3>
+        <p data-i18n="prob-2-desc">Bekerja di kota baru, jauh dari kampung halaman, dan belum membangun jaringan sosial yang luas.</p>
       </div>
-      <div class="problem-card">
-        <img src="assets/tiga.png" alt="Introvert dan pemalu" class="problem-image">
-        <h3>Introvert &amp; Pemalu</h3>
-        <p>Sulit memulai percakapan secara langsung. Lebih nyaman berkenalan secara tertulis dan terstruktur.</p>
+      <div class="problem-card reveal">
+        <div class="prob-icon">🤫</div>
+        <h3 data-i18n="prob-3-title">Introvert & Pemalu</h3>
+        <p data-i18n="prob-3-desc">Sulit memulai percakapan langsung. Lebih nyaman berkenalan secara tertulis dan terstruktur.</p>
       </div>
-      <div class="problem-card">
-        <img src="assets/empat.png" alt="Lingkaran sosial terbatas" class="problem-image">
-        <h3>Lingkaran Sosial Terbatas</h3>
-        <p>Teman-teman sudah menikah. Tidak ada lagi yang bisa memperkenalkan kenalan baru.</p>
+      <div class="problem-card reveal">
+        <div class="prob-icon">👥</div>
+        <h3 data-i18n="prob-4-title">Lingkaran Sosial Terbatas</h3>
+        <p data-i18n="prob-4-desc">Teman-teman sudah menikah. Tidak ada lagi yang bisa memperkenalkan kenalan baru.</p>
       </div>
-      <div class="problem-card">
-        <img src="assets/lima.png" alt="Lelah dengan aplikasi biasa" class="problem-image">
-        <h3>Lelah dengan Aplikasi Biasa</h3>
-        <p>Bosan dengan swipe tanpa tujuan. Ingin platform yang lebih serius dan terverifikasi.</p>
+      <div class="problem-card reveal">
+        <div class="prob-icon">📱</div>
+        <h3 data-i18n="prob-5-title">Lelah dengan Aplikasi Biasa</h3>
+        <p data-i18n="prob-5-desc">Bosan dengan swipe tanpa tujuan. Ingin platform yang lebih serius dan terverifikasi.</p>
       </div>
-      <div class="problem-card">
-        <img src="assets/enam.png" alt="Sulit menemukan yang setara" class="problem-image">
-        <h3>Sulit Menemukan yang Setara</h3>
-        <p>Ingin pasangan yang sejalan dalam pendidikan, nilai hidup, dan tujuan masa depan.</p>
+      <div class="problem-card reveal">
+        <div class="prob-icon">🎓</div>
+        <h3 data-i18n="prob-6-title">Sulit Menemukan yang Setara</h3>
+        <p data-i18n="prob-6-desc">Ingin pasangan yang sejalan dalam pendidikan, nilai hidup, dan tujuan masa depan.</p>
       </div>
     </div>
-    <div class="solution-strip">
-      <div class="solution-title">Di Matchu, kamu bisa cari seseorang yang <em>match</em> dalam</div>
+    <div class="solution-strip reveal">
+      <div class="solution-title" data-i18n="sol-title">Di Matchu, kamu bisa cari seseorang yang <em>match</em> dalam</div>
       <div class="solution-tags">
-        <span class="stag">Pendidikan &amp; Universitas</span>
-        <span class="stag">Jurusan</span>
-        <span class="stag">Pekerjaan</span>
-        <span class="stag">Kota domisili</span>
-        <span class="stag">Gaya hidup &amp; hobi</span>
-        <span class="stag">Target menikah</span>
-        <span class="stag">Rencana keluarga</span>
-        <span class="stag">Agama &amp; nilai hidup</span>
+        <span class="stag" data-i18n="sol-1">Pendidikan & Universitas</span>
+        <span class="stag" data-i18n="sol-2">Jurusan</span>
+        <span class="stag" data-i18n="sol-3">Pekerjaan</span>
+        <span class="stag" data-i18n="sol-4">Kota Domisili</span>
+        <span class="stag" data-i18n="sol-5">Gaya Hidup & Hobi</span>
+        <span class="stag" data-i18n="sol-6">Target Menikah</span>
+        <span class="stag" data-i18n="sol-7">Rencana Keluarga</span>
+        <span class="stag" data-i18n="sol-8">Agama & Nilai Hidup</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- KEUNGGULAN -->
-<section id="keunggulan" style="background:white;">
+<!-- ===== KEUNGGULAN ===== -->
+<section id="keunggulan" class="keunggulan-section">
   <div class="container">
-    <div class="section-header">
-      <span class="section-tag">KEUNGGULAN MATCHU</span>
-      <h2>Standar tinggi untuk komunitas yang serius.</h2>
-      <p>Setiap anggota Matchu melewati proses verifikasi ketat sebelum bisa berinteraksi dengan kandidat lainnya.</p>
+    <div class="sec-head reveal">
+      <span class="tag" data-i18n="feat-tag">KEUNGGULAN MATCHU</span>
+      <h2 data-i18n="feat-title">Standar tinggi untuk komunitas yang serius.</h2>
+      <p data-i18n="feat-desc">Setiap anggota Matchu melewati proses verifikasi ketat sebelum bisa berinteraksi dengan kandidat lainnya.</p>
     </div>
     <div class="keunggulan-grid">
-      <div class="keunggulan-card featured-card">
-        <div class="k-badge">Wajib</div>
-        <div class="k-num">01</div>
-        <h3>Pendidikan Terverifikasi via PDDikti</h3>
-        <p>Nama &amp; tanggal lahir dicek ke database PDDikti (Kemdikbud) — membuktikan kamu sedang kuliah atau sudah lulus. Tidak perlu upload ijazah.</p>
-        <div class="k-tags"><span class="k-tag">D3</span><span class="k-tag">D4</span><span class="k-tag">S1</span><span class="k-tag">S2</span><span class="k-tag">S3</span><span class="k-tag">Mahasiswa aktif</span></div>
+      <div class="k-card featured reveal">
+        <span class="k-pill k-pill-brand" data-i18n="pill-required">Wajib</span>
+        <h3 data-i18n="k-1-title">Pendidikan Terverifikasi via PDDikti</h3>
+        <p data-i18n="k-1-desc">Nama & tanggal lahir dicek ke database PDDikti (Kemdikbud) — membuktikan kamu sedang kuliah atau sudah lulus. Tidak perlu upload ijazah.</p>
+        <div class="k-tags"><span class="k-tag">D3</span><span class="k-tag">D4</span><span class="k-tag">S1</span><span class="k-tag">S2</span><span class="k-tag">S3</span></div>
       </div>
-      <div class="keunggulan-card featured-card">
-        <div class="k-badge">Wajib</div>
-        <div class="k-num">02</div>
-        <h3>Pekerjaan Terverifikasi</h3>
-        <p>Profesi diverifikasi via dokumen resmi. Data sensitif tidak ditampilkan — hanya nama instansi dan jabatan yang terlihat pengguna lain.</p>
-        <div class="k-tags"><span class="k-tag">Karyawan swasta</span><span class="k-tag">PNS/ASN</span><span class="k-tag">Wirausaha</span><span class="k-tag">Profesional</span></div>
+      <div class="k-card featured reveal">
+        <span class="k-pill k-pill-brand" data-i18n="pill-required">Wajib</span>
+        <h3 data-i18n="k-2-title">Pekerjaan Terverifikasi</h3>
+        <p data-i18n="k-2-desc">Profesi diverifikasi via dokumen resmi. Data sensitif tidak ditampilkan — hanya nama instansi dan jabatan yang terlihat pengguna lain.</p>
+        <div class="k-tags"><span class="k-tag" data-i18n="k-2-t1">Karyawan</span><span class="k-tag">PNS/ASN</span><span class="k-tag" data-i18n="k-2-t2">Wirausaha</span></div>
       </div>
-      <div class="keunggulan-card featured-card">
-        <div class="k-badge">Wajib</div>
-        <div class="k-num">03</div>
-        <h3>Satu Orang, Satu Akun</h3>
-        <p>Akun terikat ke satu nomor HP (OTP) dan PDDikti. Sistem deteksi duplikasi otomatis — tidak bisa buat akun ganda.</p>
-        <div class="k-tags"><span class="k-tag">OTP nomor HP</span><span class="k-tag">PDDikti check</span><span class="k-tag">Anti akun ganda</span></div>
+      <div class="k-card featured reveal">
+        <span class="k-pill k-pill-brand" data-i18n="pill-required">Wajib</span>
+        <h3 data-i18n="k-3-title">Satu Orang, Satu Akun</h3>
+        <p data-i18n="k-3-desc">Akun terikat ke satu nomor HP (OTP) dan PDDikti. Sistem deteksi duplikasi otomatis — tidak bisa buat akun ganda.</p>
+        <div class="k-tags"><span class="k-tag">OTP HP</span><span class="k-tag">PDDikti</span><span class="k-tag" data-i18n="k-3-t1">Anti Ganda</span></div>
       </div>
-      <div class="keunggulan-card">
-        <div class="k-badge k-badge-dark">Keamanan</div>
-        <div class="k-num">04</div>
-        <h3>Sistem Report &amp; Perlindungan</h3>
-        <p>Setiap profil bisa dilaporkan. Tiga laporan valid → akun dinonaktifkan otomatis dan ditinjau dalam 24 jam.</p>
-        <div class="k-tags"><span class="k-tag">Sarkasme</span><span class="k-tag">Penipuan</span><span class="k-tag">Konten tidak pantas</span></div>
+      <div class="k-card reveal">
+        <span class="k-pill k-pill-dark" data-i18n="pill-security">Keamanan</span>
+        <h3 data-i18n="k-4-title">Sistem Report & Perlindungan</h3>
+        <p data-i18n="k-4-desc">Setiap profil bisa dilaporkan. Tiga laporan valid → akun dinonaktifkan otomatis dan ditinjau dalam 24 jam.</p>
+        <div class="k-tags"><span class="k-tag" data-i18n="k-4-t1">Penipuan</span><span class="k-tag" data-i18n="k-4-t2">Konten Tak Pantas</span></div>
       </div>
-      <div class="keunggulan-card">
-        <div class="k-num">05</div>
-        <h3>Filter Match yang Kuat</h3>
-        <p>Cocokkan berdasarkan universitas, jurusan, profesi, kota, agama, hobi, hingga target waktu menikah.</p>
-        <div class="k-tags"><span class="k-tag">University</span><span class="k-tag">Profession</span><span class="k-tag">Location</span><span class="k-tag">Religion</span><span class="k-tag">+more</span></div>
+      <div class="k-card reveal">
+        <h3 data-i18n="k-5-title">Filter Match yang Kuat</h3>
+        <p data-i18n="k-5-desc">Cocokkan berdasarkan universitas, jurusan, profesi, kota, agama, hobi, hingga target waktu menikah.</p>
+        <div class="k-tags"><span class="k-tag" data-i18n="k-5-t1">Universitas</span><span class="k-tag" data-i18n="k-5-t2">Profesi</span><span class="k-tag" data-i18n="k-5-t3">Lokasi</span><span class="k-tag" data-i18n="k-5-t4">Agama</span></div>
       </div>
-      <div class="keunggulan-card">
-        <div class="k-num">06</div>
-        <h3>Kandidat Terpilih per Minggu</h3>
-        <p>Bukan scroll tanpa batas. Sistem memilihkan kandidat paling kompatibel setiap minggu agar kamu fokus.</p>
-        <div class="k-tags"><span class="k-tag">Gratis: 3/minggu</span><span class="k-tag">Premium: 5/minggu</span></div>
+      <div class="k-card reveal">
+        <h3 data-i18n="k-6-title">Kandidat Terpilih per Minggu</h3>
+        <p data-i18n="k-6-desc">Bukan scroll tanpa batas. Sistem memilihkan kandidat paling kompatibel setiap minggu agar kamu bisa fokus.</p>
+        <div class="k-tags"><span class="k-tag" data-i18n="k-6-t1">Gratis: 5/minggu</span><span class="k-tag" data-i18n="k-6-t2">Premium: tak terbatas</span></div>
       </div>
-      <div class="keunggulan-card">
-        <div class="k-num">07</div>
-        <h3>Surat Perkenalan, Bukan Swipe</h3>
-        <p>Tulis surat perkenalan singkat untuk memulai. Chat baru terbuka setelah kandidat menerima suratmu.</p>
-        <div class="k-tags"><span class="k-tag">Niat jelas</span><span class="k-tag">Tanpa swipe</span></div>
+      <div class="k-card reveal">
+        <h3 data-i18n="k-7-title">Surat Perkenalan, Bukan Swipe</h3>
+        <p data-i18n="k-7-desc">Tulis surat perkenalan singkat untuk memulai. Chat baru terbuka setelah kandidat menerima suratmu.</p>
+        <div class="k-tags"><span class="k-tag" data-i18n="k-7-t1">Niat Jelas</span><span class="k-tag" data-i18n="k-7-t2">Tanpa Swipe</span></div>
       </div>
-      <div class="keunggulan-card">
-        <div class="k-num">08</div>
-        <h3>Privasi Terjaga</h3>
-        <p>Foto profil lengkap dan nama asli hanya terlihat setelah surat perkenalan diterima. Anti-stalk.</p>
-        <div class="k-tags"><span class="k-tag">Data aman</span><span class="k-tag">Anti-stalk</span></div>
+      <div class="k-card reveal">
+        <h3 data-i18n="k-8-title">Privasi Terjaga</h3>
+        <p data-i18n="k-8-desc">Foto profil lengkap dan nama asli hanya terlihat setelah Mutual Interest tercapai. Anti-stalker.</p>
+        <div class="k-tags"><span class="k-tag" data-i18n="k-8-t1">Data Aman</span><span class="k-tag">Anti-Stalk</span></div>
       </div>
-      <div class="keunggulan-card">
-        <div class="k-num">09</div>
-        <h3>Siklus Chat Terbatas</h3>
-        <p>Chat aktif <strong>7 hari</strong> (Gratis) atau <strong>30 hari</strong> (Premium). Setelah itu match otomatis berakhir — segera pindah ke WA/sosmed!</p>
-        <div class="k-tags"><span class="k-tag">Gratis: 7 hari</span><span class="k-tag">Premium: 30 hari</span></div>
+      <div class="k-card reveal">
+        <h3 data-i18n="k-9-title">Siklus Chat Terbatas</h3>
+        <p data-i18n="k-9-desc">Chat aktif <strong>5 hari</strong> (Reguler) atau <strong>14 hari</strong> (Premium). Setelah itu match otomatis berakhir — segera pindah ke WA!</p>
+        <div class="k-tags"><span class="k-tag" data-i18n="k-9-t1">Gratis: 5 hari</span><span class="k-tag" data-i18n="k-9-t2">Premium: 14 hari</span></div>
       </div>
     </div>
-    <div class="safety-notice">
-      <div class="safety-left">
-        <div class="safety-icon">🛡️</div>
+    <div class="safety-box reveal">
+      <div class="safety-top">
+        <div class="safety-emoji">🛡️</div>
         <div>
-          <div class="safety-title">Komitmen Keamanan Matchu</div>
-          <div class="safety-desc">Matchu adalah ruang yang aman. Setiap tindakan sarkasme, perundungan, penipuan, atau pelecehan akan ditindak tegas. Gunakan tombol <strong>Report</strong> di profil manapun — tim kami memantau 24/7.</div>
+          <div class="safety-title" data-i18n="safety-title">Komitmen Keamanan Matchu</div>
+          <div class="safety-desc" data-i18n="safety-desc">Matchu adalah ruang yang aman. Setiap tindakan sarkasme, perundungan, penipuan, atau pelecehan akan ditindak tegas. Gunakan tombol <strong>Report</strong> di profil manapun — tim kami memantau 24/7.</div>
         </div>
       </div>
       <div class="safety-steps">
-        <div class="safety-step"><div class="sstep-num">1×</div><div class="sstep-text">Peringatan resmi dikirim</div></div>
-        <div class="safety-step"><div class="sstep-num">2×</div><div class="sstep-text">Akun disuspend sementara</div></div>
-        <div class="safety-step"><div class="sstep-num">3×</div><div class="sstep-text red">Akun dihapus permanen</div></div>
+        <div class="sstep"><div class="sstep-n">1×</div><div class="sstep-t" data-i18n="ss-1">Peringatan resmi dikirim</div></div>
+        <div class="sstep"><div class="sstep-n">2×</div><div class="sstep-t" data-i18n="ss-2">Akun disuspend sementara</div></div>
+        <div class="sstep"><div class="sstep-n">3×</div><div class="sstep-t danger" data-i18n="ss-3">Akun dihapus permanen</div></div>
       </div>
     </div>
-    <div class="age-notice">
-      <div class="age-icon">📋</div>
+    <div class="age-box reveal">
+      <div class="age-box-icon">📋</div>
       <div>
-        <div class="age-title">Syarat Minimum Pendaftar</div>
-        <div class="age-desc">Matchu terbuka untuk WNI berusia <strong>minimal 22 tahun</strong>, terdaftar di PDDikti (sedang kuliah atau sudah lulus D3–S3), dan memiliki nomor HP aktif.</div>
+        <div class="age-box-title" data-i18n="age-title">Syarat Minimum Pendaftar</div>
+        <div class="age-box-desc" data-i18n="age-desc">Matchu terbuka untuk WNI berusia <strong>minimal 22 tahun</strong>, terdaftar di PDDikti (sedang kuliah atau sudah lulus D3–S3), dan memiliki nomor HP aktif.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CARA KERJA -->
-<section id="how">
+<!-- ===== CARA KERJA ===== -->
+<section id="cara-kerja" class="how-section">
   <div class="container">
-    <div class="section-header">
-      <span class="section-tag">CARA KERJA</span>
-      <h2>Dari daftar sampai <em style="font-style:italic;color:var(--primary)">chat terbuka</em> — 6 langkah.</h2>
-      <p>Kami percaya hubungan yang baik dimulai dari niat yang jelas.</p>
+    <div class="sec-head reveal">
+      <span class="tag" data-i18n="how-tag">CARA KERJA</span>
+      <h2 data-i18n="how-title">Mulai dari karakter, bukan penampilan.</h2>
+      <p data-i18n="how-desc">Matchu dirancang agar ketertarikan dibangun melalui percakapan dan kecocokan nilai — bukan sekadar foto profil.</p>
     </div>
-    <div class="timeline">
-      <div class="tl-item">
-        <div class="tl-left"><div class="tl-dot">01</div><div class="tl-line"></div></div>
-        <div class="tl-content"><div class="tl-title">Daftar &amp; Verifikasi</div><div class="tl-desc">Isi data diri, verifikasi nomor HP via OTP, lalu nama &amp; tanggal lahir dicek ke PDDikti. Selesai dalam 5 menit.</div></div>
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="step-num-badge">1</div>
+        <div>
+          <h3 data-i18n="step-1-title">Buat Akun & Verifikasi</h3>
+          <p data-i18n="step-1-desc">Daftar dengan email, lalu verifikasi identitas melalui PDDikti dan OTP nomor HP. Nama yang ditampilkan adalah nama panggilan/samaran.</p>
+        </div>
       </div>
-      <div class="tl-item">
-        <div class="tl-left"><div class="tl-dot">02</div><div class="tl-line"></div></div>
-        <div class="tl-content"><div class="tl-title">Lengkapi Profil</div><div class="tl-desc">Isi informasi profesi, kota, agama, hobi, dan tujuan menikah. Jawab 10 pertanyaan singkat tentang nilai hidup dan rencana keluarga.</div></div>
+      <div class="step-card reveal">
+        <div class="step-num-badge">2</div>
+        <div>
+          <h3 data-i18n="step-2-title">Bangun Trust Score</h3>
+          <p data-i18n="step-2-desc">Lengkapi profil untuk meningkatkan Trust Score. Profil dengan skor lebih tinggi lebih sering direkomendasikan.</p>
+          <span class="step-note green" data-i18n="step-2-note">Target minimal 80 / 100</span>
+        </div>
       </div>
-      <div class="tl-item">
-        <div class="tl-left"><div class="tl-dot">03</div><div class="tl-line"></div></div>
-        <div class="tl-content"><div class="tl-title">Terima Kandidat Mingguan</div><div class="tl-desc">Setiap Senin, sistem mengirimkan kandidat terpilih — <strong>3 kandidat</strong> (Gratis) atau <strong>5 kandidat</strong> (Premium).</div></div>
+      <div class="step-card reveal">
+        <div class="step-num-badge">3</div>
+        <div>
+          <h3 data-i18n="step-3-title">Temukan Kandidat</h3>
+          <p data-i18n="step-3-desc">Matchu menampilkan 5 kandidat per minggu (Reguler) atau tanpa batas (Premium). Foto masih disamarkan di tahap ini.</p>
+        </div>
       </div>
-      <div class="tl-item">
-        <div class="tl-left"><div class="tl-dot">04</div><div class="tl-line"></div></div>
-        <div class="tl-content"><div class="tl-title">Kirim Surat Perkenalan</div><div class="tl-desc">Tertarik? Tulis surat perkenalan singkat (maks. 300 karakter) yang menjelaskan alasan kamu ingin berkenalan. Bukan swipe — tapi niat.</div></div>
+      <div class="step-card reveal">
+        <div class="step-num-badge">4</div>
+        <div>
+          <h3 data-i18n="step-4-title">Kirim Surat Perkenalan</h3>
+          <p data-i18n="step-4-desc">Tulis surat perkenalan singkat kepada kandidat yang kamu pilih. Surat menggantikan swipe — niat lebih jelas sejak awal.</p>
+        </div>
       </div>
-      <div class="tl-item">
-        <div class="tl-left"><div class="tl-dot">05</div><div class="tl-line"></div></div>
-        <div class="tl-content"><div class="tl-title">Kandidat Merespons</div><div class="tl-desc">Kandidat membaca suratmu dan memutuskan: Terima atau Lewati. Jika diterima, fitur chat langsung terbuka.</div></div>
+      <div class="step-card reveal">
+        <div class="step-num-badge">5</div>
+        <div>
+          <h3 data-i18n="step-5-title">Mulai Mengobrol</h3>
+          <p data-i18n="step-5-desc">Jika surat diterima, ruang chat terbuka. Foto dan nama asli masih tersembunyi agar fokus pada karakter dan komunikasi.</p>
+        </div>
       </div>
-      <div class="tl-item">
-        <div class="tl-left"><div class="tl-dot">06</div></div>
-        <div class="tl-content">
-          <div class="tl-title">Chat &amp; Siklus Berakhir</div>
-          <div class="tl-desc">Gunakan waktu chatmu sebaik mungkin. Setelah batas waktu, match otomatis berakhir — lanjutkan ke WA/sosmed atau mulai siklus baru.</div>
-          <span class="tl-warn">⚠️ Gratis: chat 7 hari · Premium: chat 30 hari</span>
+      <div class="step-card reveal">
+        <div class="step-num-badge">6</div>
+        <div>
+          <h3 data-i18n="step-6-title">Interest & Mutual Interest</h3>
+          <p data-i18n="step-6-desc">Tekan Interest kapan saja dalam chat. Lawan bicara tidak tahu. Saat keduanya Interest, Mutual Interest tercapai dan identitas terbuka.</p>
+          <span class="step-note" data-i18n="step-6-note">Nama asli & foto baru terlihat setelah Mutual Interest</span>
+        </div>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num-badge">7</div>
+        <div>
+          <h3 data-i18n="step-7-title">Verifikasi via PDDikti</h3>
+          <p data-i18n="step-7-desc">Setelah nama asli terbuka, kamu bisa verifikasi mandiri data pendidikannya langsung di situs PDDikti Kemdikbud.</p>
+          <span class="step-note green" data-i18n="step-7-note">pddikti.kemdikbud.go.id</span>
+        </div>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num-badge">8</div>
+        <div>
+          <h3 data-i18n="step-8-title">Lanjutkan di Luar Matchu</h3>
+          <p data-i18n="step-8-desc">Chat aktif 5 hari (Reguler) atau 14 hari (Premium). Setelah itu, lanjutkan komunikasi via WhatsApp, Instagram, atau Telegram.</p>
+        </div>
+      </div>
+    </div>
+    <div class="interest-flow reveal">
+      <div class="flow-title" data-i18n="flow-title">Cara Interest Bekerja — Tanpa Tekanan</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="flow-step-icon">💬</div>
+          <div class="flow-step-label" data-i18n="flow-1">Kamu klik<br>Interest</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-step-icon">🔇</div>
+          <div class="flow-step-label" data-i18n="flow-2">Lawan bicara<br>tidak tahu</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-step-icon">💌</div>
+          <div class="flow-step-label" data-i18n="flow-3">Ia juga klik<br>Interest</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-step-icon">❤️</div>
+          <div class="flow-step-label" data-i18n="flow-4">Mutual Interest!<br>Identitas terbuka</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- SURAT PERKENALAN -->
-<section id="letter" style="background:white;">
+<!-- ===== KEAMANAN ===== -->
+<section id="security" class="security-section">
   <div class="container">
-    <div class="section-header">
-      <span class="section-tag">SURAT PERKENALAN</span>
-      <h2>Apa itu surat perkenalan?</h2>
-      <p>Surat perkenalan adalah pesan singkat yang kamu tulis untuk menyatakan ketertarikanmu secara serius — sebelum chat terbuka. Ini yang membedakan Matchu dari aplikasi lain.</p>
-    </div>
-    <div class="letter-demo-wrap">
-      <div class="letter-candidate">
-        <div class="lc-header">
-          <div class="avatar">RS</div>
-          <div><div class="lc-name">Rania S.</div><div class="lc-meta">Dokter Umum · 28 th · Alumni UGM · Yogyakarta</div></div>
-          <div class="lc-compat">91% <span>cocok</span></div>
-        </div>
-        <div class="lc-tags">
-          <span class="lc-tag">Menikah 1–2 thn</span>
-          <span class="lc-tag">Islam</span>
-          <span class="lc-tag">Traveling</span>
-          <span class="lc-tag">Ingin 2 anak</span>
-        </div>
-      </div>
-      <div class="letter-arrow">✍️ Kamu menulis surat perkenalan...</div>
-      <div class="letter-card">
-        <div class="letter-from">Surat Perkenalan dari Ahmad F. → Rania S.</div>
-        <div class="letter-body">"Halo Rania, saya Ahmad — dokter gigi di Jakarta. Saya tertarik berkenalan karena kita sama-sama alumni kesehatan UGM dan memiliki tujuan menikah dalam 1–2 tahun ke depan. Senang jika kita bisa saling mengenal lebih jauh."</div>
-        <div class="letter-counter">247 / 300 karakter</div>
-        <div class="letter-buttons">
-          <button class="accept-btn" onclick="this.textContent='💬 Chat terbuka!'; this.style.background='#2d6a4f';">Terima &amp; Buka Chat</button>
-          <button class="decline-btn">Lewati</button>
-        </div>
-        <div class="letter-note">
-          💡 Setelah diterima, chat aktif <strong>7 hari (Gratis)</strong> atau <strong>30 hari (Premium)</strong>.
-          <br><span class="letter-warn">⚠️ Setelah batas waktu, match otomatis berakhir. Segera pindah ke WA atau sosmed!</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- KEAMANAN -->
-<section id="security">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-tag">KEAMANAN &amp; PRIVASI</span>
-      <h2>Kepercayaan adalah fondasi Matchu.</h2>
-      <p>Data kamu aman. Identitas terlindungi. Komunitas terjaga.</p>
+    <div class="sec-head reveal">
+      <span class="tag" data-i18n="sec-tag">KEAMANAN & PRIVASI</span>
+      <h2 data-i18n="sec-title">Kepercayaan adalah fondasi Matchu.</h2>
+      <p data-i18n="sec-desc">Data kamu aman. Identitas terlindungi. Komunitas terjaga.</p>
     </div>
     <div class="security-grid">
-      <div class="security-card"><div class="security-icon">📱</div><h3>Nomor HP Aman</h3><p>Nomor HP hanya untuk OTP dan tidak pernah ditampilkan ke pengguna lain.</p></div>
-      <div class="security-card"><div class="security-icon">🔒</div><h3>Data Terenkripsi</h3><p>Semua data sensitif disimpan dengan enkripsi berlapis dan tidak bisa diakses pihak ketiga.</p></div>
-      <div class="security-card"><div class="security-icon">🚫</div><h3>Anti Akun Palsu</h3><p>Verifikasi PDDikti + OTP memastikan satu orang, satu akun. Tidak bisa dibuat ulang setelah dihapus.</p></div>
-      <div class="security-card"><div class="security-icon">🛡️</div><h3>Sistem Report</h3><p>Tiga laporan valid → akun dinonaktifkan otomatis dan ditinjau tim dalam 24 jam.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- PRICING -->
-<section id="premium" style="background:white;">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-tag">PILIH PAKET</span>
-      <h2>Mulai gratis, upgrade saat kamu siap.</h2>
-      <p>Tidak ada biaya tersembunyi. Upgrade kapan saja, batalkan kapan saja.</p>
-    </div>
-    <div class="pricing-wrapper">
-      <div class="pricing-card">
-        <h3>Gratis</h3>
-        <h1>Rp0</h1>
-        <p class="pricing-sub">Selamanya gratis</p>
-        <div class="pricing-divider"></div>
-        <ul>
-          <li>✓ Verifikasi pendidikan &amp; pekerjaan</li>
-          <li>✓ <strong>3 kandidat</strong> per minggu</li>
-          <li>✓ Surat perkenalan tak terbatas</li>
-          <li>✓ Chat setelah surat diterima</li>
-          <li>✓ <strong>Chat aktif 7 hari</strong> per match</li>
-          <li class="li-limit">✗ Filter universitas <em>hanya 1× seumur hidup</em></li>
-          <li class="li-limit">✗ Filter profesi <em>hanya 1× seumur hidup</em></li>
-          <li class="li-limit">✗ Tidak bisa pilih kota kandidat</li>
-          <li class="li-limit">✗ Tanpa prioritas antrian</li>
-        </ul>
-        <a href="register.html" class="pricing-btn-outline">Mulai Gratis</a>
+      <div class="sec-card reveal">
+        <div class="sec-icon">📱</div>
+        <h3 data-i18n="sec-1-title">Nomor HP Aman</h3>
+        <p data-i18n="sec-1-desc">Nomor HP hanya untuk OTP dan tidak pernah ditampilkan ke pengguna lain.</p>
       </div>
-      <div class="pricing-card featured">
-        <div class="popular-badge">DIREKOMENDASIKAN</div>
-        <h3>Premium</h3>
-        <h1>Rp49K</h1>
-        <p class="pricing-sub">/bulan · batalkan kapan saja</p>
-        <div class="pricing-divider"></div>
-        <ul>
-          <li>✓ Semua fitur Gratis</li>
-          <li>✓ <strong>5 kandidat</strong> per minggu</li>
-          <li>✓ <strong>Chat aktif 30 hari</strong> per match</li>
-          <li>✓ Filter universitas <strong>tak terbatas</strong></li>
-          <li>✓ Filter profesi <strong>tak terbatas</strong></li>
-          <li>✓ Filter kota, agama, usia, hobi</li>
-          <li>✓ Lihat siapa yang baca suratmu</li>
-          <li>✓ Prioritas antrian kandidat</li>
-          <li>✓ Badge "Terverifikasi Premium"</li>
-        </ul>
-        <a href="register.html" class="pricing-btn-primary">Coba Premium</a>
+      <div class="sec-card reveal">
+        <div class="sec-icon">🔒</div>
+        <h3 data-i18n="sec-2-title">Data Terenkripsi</h3>
+        <p data-i18n="sec-2-desc">Semua data sensitif disimpan dengan enkripsi berlapis dan tidak bisa diakses pihak ketiga.</p>
+      </div>
+      <div class="sec-card reveal">
+        <div class="sec-icon">🚫</div>
+        <h3 data-i18n="sec-3-title">Anti Akun Palsu</h3>
+        <p data-i18n="sec-3-desc">Verifikasi PDDikti + OTP memastikan satu orang, satu akun. Tidak bisa dibuat ulang setelah dihapus.</p>
+      </div>
+      <div class="sec-card reveal">
+        <div class="sec-icon">🛡️</div>
+        <h3 data-i18n="sec-4-title">Sistem Report</h3>
+        <p data-i18n="sec-4-desc">Tiga laporan valid → akun dinonaktifkan otomatis dan ditinjau tim dalam 24 jam.</p>
       </div>
     </div>
-    <div class="pricing-note">🔒 Pembayaran aman via Midtrans · GoPay · OVO · Transfer Bank · QRIS</div>
   </div>
 </section>
 
-<!-- WAITLIST / DAFTAR -->
-<section id="waitlist">
+<!-- ===== PRICING ===== -->
+<section id="premium" class="pricing-section">
   <div class="container">
-    <div class="waitlist-box">
-      <h2>Jadilah bagian dari Matchu.</h2>
-      <p>Daftar sekarang dan dapatkan akses lebih awal saat aplikasi diluncurkan.</p>
-      <a href="register.html" class="waitlist-cta-btn">Daftar →</a>
+    <div class="sec-head reveal">
+      <span class="tag" data-i18n="price-tag">PILIH PAKET</span>
+      <h2 data-i18n="price-title">Mulai gratis, upgrade saat siap.</h2>
+      <p data-i18n="price-desc">Tidak ada biaya tersembunyi. Upgrade atau batalkan kapan saja.</p>
+    </div>
+    <div class="pricing-wrap">
+      <div class="price-card reveal">
+        <div class="price-tier" data-i18n="plan-free-name">Reguler</div>
+        <div class="price-num">Rp0</div>
+        <div class="price-sub" data-i18n="plan-free-sub">Selamanya gratis</div>
+        <div class="price-divider"></div>
+        <ul class="price-list">
+          <li data-i18n="pf-1">✓ Verifikasi pendidikan & pekerjaan</li>
+          <li data-i18n="pf-2">✓ <strong>5 kandidat</strong> per minggu</li>
+          <li data-i18n="pf-3">✓ Surat perkenalan tak terbatas</li>
+          <li data-i18n="pf-4">✓ Chat setelah surat diterima</li>
+          <li data-i18n="pf-5">✓ <strong>Chat aktif 5 hari</strong> per match</li>
+          <li class="dim" data-i18n="pf-6">✗ Filter universitas <em>hanya 1× seumur hidup</em></li>
+          <li class="dim" data-i18n="pf-7">✗ Filter profesi <em>hanya 1× seumur hidup</em></li>
+          <li class="dim" data-i18n="pf-8">✗ Tidak bisa pilih kota kandidat</li>
+        </ul>
+        <a href="register.html" class="price-btn-outline" data-i18n="plan-free-btn">Mulai Gratis</a>
+      </div>
+      <div class="price-card featured reveal">
+        <span class="popular-tag" data-i18n="plan-recommended">DIREKOMENDASIKAN</span>
+        <div class="price-tier" data-i18n="plan-prem-name">Premium</div>
+        <div class="price-num">Rp49K</div>
+        <div class="price-sub" data-i18n="plan-prem-sub">/bulan · batalkan kapan saja</div>
+        <div class="price-divider"></div>
+        <ul class="price-list">
+          <li data-i18n="pp-1">✓ Semua fitur Reguler</li>
+          <li data-i18n="pp-2">✓ <strong>Kandidat tak terbatas</strong></li>
+          <li data-i18n="pp-3">✓ <strong>Chat aktif 14 hari</strong> per match</li>
+          <li data-i18n="pp-4">✓ Filter universitas <strong>tak terbatas</strong></li>
+          <li data-i18n="pp-5">✓ Filter domisili <strong>tak terbatas</strong></li>
+          <li data-i18n="pp-6">✓ Filter agama, usia, hobi</li>
+          <li data-i18n="pp-7">✓ Lihat siapa yang baca suratmu</li>
+          <li data-i18n="pp-8">✓ Badge "Terverifikasi Premium"</li>
+        </ul>
+        <a href="register.html" class="price-btn-primary" data-i18n="plan-prem-btn">Coba Premium</a>
+      </div>
+    </div>
+    <div class="pricing-note reveal" data-i18n="price-note">🔒 Pembayaran aman via Midtrans · GoPay · OVO · Transfer Bank · QRIS</div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section id="waitlist" class="cta-section">
+  <div class="container">
+    <div class="cta-box reveal">
+      <h2 data-i18n="cta-title">Jadilah bagian dari Matchu.</h2>
+      <p data-i18n="cta-desc">Daftar sekarang dan dapatkan akses lebih awal saat aplikasi diluncurkan.</p>
+      <a href="register.html" class="cta-btn" data-i18n="cta-btn">Daftar Sekarang →</a>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
+<!-- ===== FOOTER ===== -->
 <footer>
   <div class="container">
     <div class="footer-grid">
       <div>
-        <h2>Matchu</h2>
-        <p>Verified Matchmaking Platform<br>untuk Profesional &amp; Alumni Indonesia.</p>
+        <div class="footer-logo">MATCHU</div>
+        <div class="footer-tagline">Beyond Matching. Toward Marriage.</div>
+        <div class="footer-desc" data-i18n="footer-desc">Verified Matchmaking Platform untuk Profesional & Alumni Indonesia.</div>
       </div>
-      <div>
-        <h4>Perusahaan</h4>
-        <a href="#">Tentang</a>
-        <a href="#">Karir</a>
-        <a href="#">Kontak</a>
+      <div class="footer-col">
+        <h4 data-i18n="footer-company">Perusahaan</h4>
+        <a href="#" data-i18n="footer-about">Tentang</a>
+        <a href="#" data-i18n="footer-careers">Karir</a>
+        <a href="#" data-i18n="footer-contact">Kontak</a>
       </div>
-      <div>
-        <h4>Legal</h4>
-        <a href="#">Privasi</a>
-        <a href="#">Syarat</a>
+      <div class="footer-col">
+        <h4 data-i18n="footer-legal">Legal</h4>
+        <a href="#" data-i18n="footer-privacy">Privasi</a>
+        <a href="#" data-i18n="footer-terms">Syarat</a>
       </div>
-      <div>
-        <h4>Sosial</h4>
+      <div class="footer-col">
+        <h4 data-i18n="footer-social">Sosial</h4>
         <a href="#">Instagram</a>
         <a href="#">LinkedIn</a>
         <a href="#">TikTok</a>
       </div>
     </div>
-    <p class="footer-copy">© 2026 Matchu. Dibuat dengan ❤️ di Indonesia.</p>
+    <div class="footer-copy">© 2026 Matchu. <span data-i18n="footer-copy">Dibuat dengan ❤️ di Indonesia.</span></div>
   </div>
 </footer>
 
 <script>
-const translations = {
+/* ===== TRANSLATIONS ===== */
+const T = {
   id: {
-    'eyebrow': 'Platform Matchmaking untuk Profesional',
-    'hero-desc': 'Temukan orang yang memiliki tujuan, nilai hidup, dan arah masa depan yang sejalan.',
-    'btn-join': 'Daftar', 'btn-how': 'Cara Kerja',
+    'nav-about': 'Tentang',
+    'nav-features': 'Keunggulan',
+    'nav-how': 'Cara Kerja',
+    'nav-pricing': 'Paket',
+    'nav-login': 'Masuk',
+    'nav-register': 'Daftar',
+    'hero-eyebrow': 'Platform Matchmaking untuk Profesional',
+    'hero-desc': 'Temukan orang yang memiliki tujuan, nilai hidup, dan arah masa depan yang sejalan denganmu.',
+    'hero-btn-join': 'Daftar Sekarang',
+    'hero-btn-how': 'Cara Kerja',
+    'stat-members': 'Member Terverifikasi',
+    'stat-universities': 'Universitas',
+    'stat-verified': 'Identitas Diverifikasi',
+    'phone-candidates': 'Kandidat Minggu Ini',
+    'phone-blur': 'FOTO DISAMARKAN',
+    'phone-verified': '✓ Pendidikan Terverifikasi',
+    'phone-detail': 'Lihat Profil',
+    'phone-info': 'Nama asli & foto terbuka setelah Mutual Interest',
+    'why-tag': 'KENAPA MATCHU?',
+    'why-title': 'Karena mencari pasangan tidak harus serba kebetulan.',
+    'why-desc': 'Matchu didirikan untuk mereka yang serius ingin menikah, namun terkendala kesibukan, wilayah, kepribadian introvert, atau minimnya lingkaran sosial.',
+    'prob-1-title': 'Terlalu Sibuk Bekerja',
+    'prob-1-desc': 'Karir yang padat membuat lingkaran sosial menyempit. Tidak ada waktu untuk berkenalan secara alami.',
+    'prob-2-title': 'Keterbatasan Wilayah',
+    'prob-2-desc': 'Bekerja di kota baru, jauh dari kampung halaman, dan belum membangun jaringan sosial yang luas.',
+    'prob-3-title': 'Introvert & Pemalu',
+    'prob-3-desc': 'Sulit memulai percakapan langsung. Lebih nyaman berkenalan secara tertulis dan terstruktur.',
+    'prob-4-title': 'Lingkaran Sosial Terbatas',
+    'prob-4-desc': 'Teman-teman sudah menikah. Tidak ada lagi yang bisa memperkenalkan kenalan baru.',
+    'prob-5-title': 'Lelah dengan Aplikasi Biasa',
+    'prob-5-desc': 'Bosan dengan swipe tanpa tujuan. Ingin platform yang lebih serius dan terverifikasi.',
+    'prob-6-title': 'Sulit Menemukan yang Setara',
+    'prob-6-desc': 'Ingin pasangan yang sejalan dalam pendidikan, nilai hidup, dan tujuan masa depan.',
+    'sol-title': 'Di Matchu, kamu bisa cari seseorang yang match dalam',
+    'sol-1': 'Pendidikan & Universitas', 'sol-2': 'Jurusan', 'sol-3': 'Pekerjaan',
+    'sol-4': 'Kota Domisili', 'sol-5': 'Gaya Hidup & Hobi', 'sol-6': 'Target Menikah',
+    'sol-7': 'Rencana Keluarga', 'sol-8': 'Agama & Nilai Hidup',
+    'feat-tag': 'KEUNGGULAN MATCHU',
+    'feat-title': 'Standar tinggi untuk komunitas yang serius.',
+    'feat-desc': 'Setiap anggota Matchu melewati proses verifikasi ketat sebelum bisa berinteraksi dengan kandidat lainnya.',
+    'pill-required': 'Wajib', 'pill-security': 'Keamanan',
+    'k-1-title': 'Pendidikan Terverifikasi via PDDikti',
+    'k-1-desc': 'Nama & tanggal lahir dicek ke database PDDikti — membuktikan kamu sedang kuliah atau sudah lulus. Tidak perlu upload ijazah.',
+    'k-2-title': 'Pekerjaan Terverifikasi',
+    'k-2-desc': 'Profesi diverifikasi via dokumen resmi. Hanya nama instansi dan jabatan yang terlihat pengguna lain.',
+    'k-2-t1': 'Karyawan', 'k-2-t2': 'Wirausaha',
+    'k-3-title': 'Satu Orang, Satu Akun',
+    'k-3-desc': 'Akun terikat ke satu nomor HP (OTP) dan PDDikti. Tidak bisa buat akun ganda.',
+    'k-3-t1': 'Anti Ganda',
+    'k-4-title': 'Sistem Report & Perlindungan',
+    'k-4-desc': 'Setiap profil bisa dilaporkan. Tiga laporan valid → akun dinonaktifkan otomatis dan ditinjau dalam 24 jam.',
+    'k-4-t1': 'Penipuan', 'k-4-t2': 'Konten Tak Pantas',
+    'k-5-title': 'Filter Match yang Kuat',
+    'k-5-desc': 'Cocokkan berdasarkan universitas, jurusan, profesi, kota, agama, hobi, hingga target waktu menikah.',
+    'k-5-t1': 'Universitas', 'k-5-t2': 'Profesi', 'k-5-t3': 'Lokasi', 'k-5-t4': 'Agama',
+    'k-6-title': 'Kandidat Terpilih per Minggu',
+    'k-6-desc': 'Bukan scroll tanpa batas. Sistem memilihkan kandidat paling kompatibel setiap minggu.',
+    'k-6-t1': 'Gratis: 5/minggu', 'k-6-t2': 'Premium: tak terbatas',
+    'k-7-title': 'Surat Perkenalan, Bukan Swipe',
+    'k-7-desc': 'Tulis surat perkenalan singkat untuk memulai. Chat baru terbuka setelah surat diterima.',
+    'k-7-t1': 'Niat Jelas', 'k-7-t2': 'Tanpa Swipe',
+    'k-8-title': 'Privasi Terjaga',
+    'k-8-desc': 'Foto profil dan nama asli hanya terlihat setelah Mutual Interest tercapai. Anti-stalker.',
+    'k-8-t1': 'Data Aman',
+    'k-9-title': 'Siklus Chat Terbatas',
+    'k-9-desc': 'Chat aktif 5 hari (Reguler) atau 14 hari (Premium). Segera pindah ke WA!',
+    'k-9-t1': 'Gratis: 5 hari', 'k-9-t2': 'Premium: 14 hari',
+    'safety-title': 'Komitmen Keamanan Matchu',
+    'safety-desc': 'Matchu adalah ruang yang aman. Setiap tindakan sarkasme, perundungan, penipuan, atau pelecehan akan ditindak tegas. Gunakan tombol <strong>Report</strong> di profil manapun — tim kami memantau 24/7.',
+    'ss-1': 'Peringatan resmi dikirim', 'ss-2': 'Akun disuspend sementara', 'ss-3': 'Akun dihapus permanen',
+    'age-title': 'Syarat Minimum Pendaftar',
+    'age-desc': 'Matchu terbuka untuk WNI berusia <strong>minimal 22 tahun</strong>, terdaftar di PDDikti (sedang kuliah atau sudah lulus D3–S3), dan memiliki nomor HP aktif.',
+    'how-tag': 'CARA KERJA',
+    'how-title': 'Mulai dari karakter, bukan penampilan.',
+    'how-desc': 'Matchu dirancang agar ketertarikan dibangun melalui percakapan dan kecocokan nilai — bukan sekadar foto profil.',
+    'step-1-title': 'Buat Akun & Verifikasi',
+    'step-1-desc': 'Daftar dengan email, lalu verifikasi identitas melalui PDDikti dan OTP nomor HP. Nama yang ditampilkan adalah nama panggilan/samaran.',
+    'step-2-title': 'Bangun Trust Score',
+    'step-2-desc': 'Lengkapi profil untuk meningkatkan Trust Score. Profil dengan skor lebih tinggi lebih sering direkomendasikan.',
+    'step-2-note': 'Target minimal 80 / 100',
+    'step-3-title': 'Temukan Kandidat',
+    'step-3-desc': 'Matchu menampilkan 5 kandidat per minggu (Reguler) atau tanpa batas (Premium). Foto masih disamarkan di tahap ini.',
+    'step-4-title': 'Kirim Surat Perkenalan',
+    'step-4-desc': 'Tulis surat perkenalan singkat kepada kandidat yang kamu pilih. Surat menggantikan swipe — niat lebih jelas sejak awal.',
+    'step-5-title': 'Mulai Mengobrol',
+    'step-5-desc': 'Jika surat diterima, ruang chat terbuka. Foto dan nama asli masih tersembunyi agar fokus pada karakter dan komunikasi.',
+    'step-6-title': 'Interest & Mutual Interest',
+    'step-6-desc': 'Tekan Interest kapan saja dalam chat. Lawan bicara tidak tahu. Saat keduanya Interest, Mutual Interest tercapai dan identitas terbuka.',
+    'step-6-note': 'Nama asli & foto baru terlihat setelah Mutual Interest',
+    'step-7-title': 'Verifikasi via PDDikti',
+    'step-7-desc': 'Setelah nama asli terbuka, kamu bisa verifikasi mandiri data pendidikannya langsung di situs PDDikti Kemdikbud.',
+    'step-7-note': 'pddikti.kemdikbud.go.id',
+    'step-8-title': 'Lanjutkan di Luar Matchu',
+    'step-8-desc': 'Chat aktif 5 hari (Reguler) atau 14 hari (Premium). Setelah itu, lanjutkan komunikasi via WhatsApp, Instagram, atau Telegram.',
+    'flow-title': 'Cara Interest Bekerja — Tanpa Tekanan',
+    'flow-1': 'Kamu klik\nInterest', 'flow-2': 'Lawan bicara\ntidak tahu',
+    'flow-3': 'Ia juga klik\nInterest', 'flow-4': 'Mutual Interest!\nIdentitas terbuka',
+    'sec-tag': 'KEAMANAN & PRIVASI',
+    'sec-title': 'Kepercayaan adalah fondasi Matchu.',
+    'sec-desc': 'Data kamu aman. Identitas terlindungi. Komunitas terjaga.',
+    'sec-1-title': 'Nomor HP Aman', 'sec-1-desc': 'Nomor HP hanya untuk OTP dan tidak pernah ditampilkan ke pengguna lain.',
+    'sec-2-title': 'Data Terenkripsi', 'sec-2-desc': 'Semua data sensitif disimpan dengan enkripsi berlapis dan tidak bisa diakses pihak ketiga.',
+    'sec-3-title': 'Anti Akun Palsu', 'sec-3-desc': 'Verifikasi PDDikti + OTP memastikan satu orang, satu akun. Tidak bisa dibuat ulang setelah dihapus.',
+    'sec-4-title': 'Sistem Report', 'sec-4-desc': 'Tiga laporan valid → akun dinonaktifkan otomatis dan ditinjau tim dalam 24 jam.',
+    'price-tag': 'PILIH PAKET',
+    'price-title': 'Mulai gratis, upgrade saat siap.',
+    'price-desc': 'Tidak ada biaya tersembunyi. Upgrade atau batalkan kapan saja.',
+    'plan-free-name': 'Reguler', 'plan-free-sub': 'Selamanya gratis', 'plan-free-btn': 'Mulai Gratis',
+    'plan-recommended': 'DIREKOMENDASIKAN',
+    'plan-prem-name': 'Premium', 'plan-prem-sub': '/bulan · batalkan kapan saja', 'plan-prem-btn': 'Coba Premium',
+    'pf-1': '✓ Verifikasi pendidikan & pekerjaan',
+    'pf-2': '✓ 5 kandidat per minggu',
+    'pf-3': '✓ Surat perkenalan tak terbatas',
+    'pf-4': '✓ Chat setelah surat diterima',
+    'pf-5': '✓ Chat aktif 5 hari per match',
+    'pf-6': '✗ Filter universitas — hanya 1× seumur hidup',
+    'pf-7': '✗ Filter profesi — hanya 1× seumur hidup',
+    'pf-8': '✗ Tidak bisa pilih kota kandidat',
+    'pp-1': '✓ Semua fitur Reguler',
+    'pp-2': '✓ Kandidat tak terbatas',
+    'pp-3': '✓ Chat aktif 14 hari per match',
+    'pp-4': '✓ Filter universitas tak terbatas',
+    'pp-5': '✓ Filter domisili tak terbatas',
+    'pp-6': '✓ Filter agama, usia, hobi',
+    'pp-7': '✓ Lihat siapa yang baca suratmu',
+    'pp-8': '✓ Badge "Terverifikasi Premium"',
+    'price-note': '🔒 Pembayaran aman via Midtrans · GoPay · OVO · Transfer Bank · QRIS',
+    'cta-title': 'Jadilah bagian dari Matchu.',
+    'cta-desc': 'Daftar sekarang dan dapatkan akses lebih awal saat aplikasi diluncurkan.',
+    'cta-btn': 'Daftar Sekarang →',
+    'footer-desc': 'Verified Matchmaking Platform untuk Profesional & Alumni Indonesia.',
+    'footer-company': 'Perusahaan', 'footer-about': 'Tentang', 'footer-careers': 'Karir', 'footer-contact': 'Kontak',
+    'footer-legal': 'Legal', 'footer-privacy': 'Privasi', 'footer-terms': 'Syarat',
+    'footer-social': 'Sosial', 'footer-copy': 'Dibuat dengan ❤️ di Indonesia.',
   },
   en: {
-    'eyebrow': 'Curated Matchmaking for Professionals',
+    'nav-about': 'About',
+    'nav-features': 'Features',
+    'nav-how': 'How It Works',
+    'nav-pricing': 'Pricing',
+    'nav-login': 'Sign In',
+    'nav-register': 'Sign Up',
+    'hero-eyebrow': 'Curated Matchmaking for Professionals',
     'hero-desc': 'Find someone who shares your goals, values, and vision for the future.',
-    'btn-join': 'Sign Up', 'btn-how': 'How It Works',
+    'hero-btn-join': 'Sign Up Now',
+    'hero-btn-how': 'How It Works',
+    'stat-members': 'Verified Members',
+    'stat-universities': 'Universities',
+    'stat-verified': 'Identity Verified',
+    'phone-candidates': 'This Week\'s Candidates',
+    'phone-blur': 'PHOTO HIDDEN',
+    'phone-verified': '✓ Education Verified',
+    'phone-detail': 'View Profile',
+    'phone-info': 'Real name & photo revealed after Mutual Interest',
+    'why-tag': 'WHY MATCHU?',
+    'why-title': 'Finding a life partner shouldn\'t be left to chance.',
+    'why-desc': 'Matchu was built for people who are serious about marriage but held back by busy careers, new cities, introversion, or a shrinking social circle.',
+    'prob-1-title': 'Too Busy with Work',
+    'prob-1-desc': 'A demanding career shrinks your social circle. No time to meet people naturally.',
+    'prob-2-title': 'Geographic Limitations',
+    'prob-2-desc': 'Working in a new city, far from home, without an established social network.',
+    'prob-3-title': 'Introverted & Shy',
+    'prob-3-desc': 'Hard to start conversations in person. More comfortable connecting through writing.',
+    'prob-4-title': 'Limited Social Circle',
+    'prob-4-desc': 'Friends are already married. Nobody left to make introductions.',
+    'prob-5-title': 'Tired of Regular Apps',
+    'prob-5-desc': 'Done with purposeless swiping. Want a more serious, verified platform.',
+    'prob-6-title': 'Hard to Find Compatible People',
+    'prob-6-desc': 'Looking for someone aligned in education, values, and life goals.',
+    'sol-title': 'On Matchu, you can find someone who matches you in',
+    'sol-1': 'Education & University', 'sol-2': 'Field of Study', 'sol-3': 'Career',
+    'sol-4': 'City', 'sol-5': 'Lifestyle & Hobbies', 'sol-6': 'Marriage Timeline',
+    'sol-7': 'Family Plans', 'sol-8': 'Religion & Values',
+    'feat-tag': 'MATCHU FEATURES',
+    'feat-title': 'High standards for a serious community.',
+    'feat-desc': 'Every Matchu member goes through a strict verification process before interacting with other candidates.',
+    'pill-required': 'Required', 'pill-security': 'Security',
+    'k-1-title': 'Education Verified via PDDikti',
+    'k-1-desc': 'Name & birthdate are checked against the PDDikti database — confirming active enrollment or graduation. No diploma upload needed.',
+    'k-2-title': 'Employment Verified',
+    'k-2-desc': 'Profession verified via official documents. Only institution name and role are visible to others.',
+    'k-2-t1': 'Employees', 'k-2-t2': 'Entrepreneurs',
+    'k-3-title': 'One Person, One Account',
+    'k-3-desc': 'Accounts are tied to one phone number (OTP) and PDDikti. Duplicate accounts are automatically detected.',
+    'k-3-t1': 'Anti-Duplicate',
+    'k-4-title': 'Report & Protection System',
+    'k-4-desc': 'Any profile can be reported. Three valid reports → account auto-deactivated and reviewed within 24 hours.',
+    'k-4-t1': 'Fraud', 'k-4-t2': 'Inappropriate Content',
+    'k-5-title': 'Powerful Match Filters',
+    'k-5-desc': 'Match by university, field, career, city, religion, hobbies, or marriage timeline.',
+    'k-5-t1': 'University', 'k-5-t2': 'Career', 'k-5-t3': 'Location', 'k-5-t4': 'Religion',
+    'k-6-title': 'Curated Candidates per Week',
+    'k-6-desc': 'Not endless scrolling. The system selects the most compatible candidates each week so you can focus.',
+    'k-6-t1': 'Free: 5/week', 'k-6-t2': 'Premium: unlimited',
+    'k-7-title': 'Introduction Letter, Not Swipe',
+    'k-7-desc': 'Write a short introduction letter to start. Chat only opens once the candidate accepts.',
+    'k-7-t1': 'Clear Intent', 'k-7-t2': 'No Swiping',
+    'k-8-title': 'Privacy Protected',
+    'k-8-desc': 'Full profile photo and real name only visible after Mutual Interest. Anti-stalker.',
+    'k-8-t1': 'Data Safe',
+    'k-9-title': 'Timed Chat Cycles',
+    'k-9-desc': 'Chat active for 5 days (Regular) or 14 days (Premium). After that, move to WhatsApp!',
+    'k-9-t1': 'Free: 5 days', 'k-9-t2': 'Premium: 14 days',
+    'safety-title': 'Matchu\'s Safety Commitment',
+    'safety-desc': 'Matchu is a safe space. Any harassment, bullying, fraud, or inappropriate behavior will be acted upon. Use the <strong>Report</strong> button on any profile — our team monitors 24/7.',
+    'ss-1': 'Official warning sent', 'ss-2': 'Account temporarily suspended', 'ss-3': 'Account permanently deleted',
+    'age-title': 'Minimum Requirements',
+    'age-desc': 'Matchu is open to Indonesian citizens aged <strong>22 or older</strong>, registered in PDDikti (currently enrolled or graduated D3–S3), with an active phone number.',
+    'how-tag': 'HOW IT WORKS',
+    'how-title': 'Start with character, not appearance.',
+    'how-desc': 'Matchu is designed so attraction builds through conversation and shared values — not just a profile photo.',
+    'step-1-title': 'Create Account & Verify',
+    'step-1-desc': 'Sign up with email, then verify your identity through PDDikti and phone OTP. The name displayed is your nickname/alias.',
+    'step-2-title': 'Build Your Trust Score',
+    'step-2-desc': 'Complete your profile to increase your Trust Score. Higher scores get recommended more often.',
+    'step-2-note': 'Minimum target: 80 / 100',
+    'step-3-title': 'Discover Candidates',
+    'step-3-desc': 'Matchu shows 5 candidates per week (Regular) or unlimited (Premium). Photos are hidden at this stage.',
+    'step-4-title': 'Send an Introduction Letter',
+    'step-4-desc': 'Write a short intro letter to your chosen candidate. Letters replace swiping — intent is clear from the start.',
+    'step-5-title': 'Start Chatting',
+    'step-5-desc': 'If your letter is accepted, a private chat room opens. Photos and real names remain hidden to keep focus on character.',
+    'step-6-title': 'Interest & Mutual Interest',
+    'step-6-desc': 'Press Interest anytime in chat. The other person won\'t know. When both press Interest, Mutual Interest is reached and identities unlock.',
+    'step-6-note': 'Real name & photo only visible after Mutual Interest',
+    'step-7-title': 'Verify via PDDikti',
+    'step-7-desc': 'Once the real name is revealed, you can independently verify their education on the official PDDikti website.',
+    'step-7-note': 'pddikti.kemdikbud.go.id',
+    'step-8-title': 'Continue Outside Matchu',
+    'step-8-desc': 'Chat is active for 5 days (Regular) or 14 days (Premium). After that, move to WhatsApp, Instagram, or Telegram.',
+    'flow-title': 'How Interest Works — No Pressure',
+    'flow-1': 'You press\nInterest', 'flow-2': 'They don\'t\nknow yet',
+    'flow-3': 'They also press\nInterest', 'flow-4': 'Mutual Interest!\nIdentity revealed',
+    'sec-tag': 'SECURITY & PRIVACY',
+    'sec-title': 'Trust is the foundation of Matchu.',
+    'sec-desc': 'Your data is safe. Identity protected. Community maintained.',
+    'sec-1-title': 'Phone Number Safe', 'sec-1-desc': 'Phone number is only used for OTP and never shown to other users.',
+    'sec-2-title': 'Encrypted Data', 'sec-2-desc': 'All sensitive data stored with layered encryption, inaccessible to third parties.',
+    'sec-3-title': 'Anti-Fake Accounts', 'sec-3-desc': 'PDDikti + OTP verification ensures one person, one account. Cannot be recreated after deletion.',
+    'sec-4-title': 'Report System', 'sec-4-desc': 'Three valid reports → account auto-deactivated and reviewed by team within 24 hours.',
+    'price-tag': 'PRICING',
+    'price-title': 'Start free, upgrade when ready.',
+    'price-desc': 'No hidden fees. Upgrade or cancel anytime.',
+    'plan-free-name': 'Regular', 'plan-free-sub': 'Free forever', 'plan-free-btn': 'Start Free',
+    'plan-recommended': 'RECOMMENDED',
+    'plan-prem-name': 'Premium', 'plan-prem-sub': '/month · cancel anytime', 'plan-prem-btn': 'Try Premium',
+    'pf-1': '✓ Education & employment verification',
+    'pf-2': '✓ 5 candidates per week',
+    'pf-3': '✓ Unlimited introduction letters',
+    'pf-4': '✓ Chat after letter accepted',
+    'pf-5': '✓ Chat active 5 days per match',
+    'pf-6': '✗ University filter — once in a lifetime',
+    'pf-7': '✗ Career filter — once in a lifetime',
+    'pf-8': '✗ Cannot choose candidate city',
+    'pp-1': '✓ All Regular features',
+    'pp-2': '✓ Unlimited candidates',
+    'pp-3': '✓ Chat active 14 days per match',
+    'pp-4': '✓ Unlimited university filter',
+    'pp-5': '✓ Unlimited city filter',
+    'pp-6': '✓ Filter by religion, age, hobbies',
+    'pp-7': '✓ See who read your letter',
+    'pp-8': '✓ "Verified Premium" badge',
+    'price-note': '🔒 Secure payment via Midtrans · GoPay · OVO · Bank Transfer · QRIS',
+    'cta-title': 'Be part of Matchu.',
+    'cta-desc': 'Sign up now and get early access when the app launches.',
+    'cta-btn': 'Sign Up Now →',
+    'footer-desc': 'Verified Matchmaking Platform for Indonesian Professionals & Alumni.',
+    'footer-company': 'Company', 'footer-about': 'About', 'footer-careers': 'Careers', 'footer-contact': 'Contact',
+    'footer-legal': 'Legal', 'footer-privacy': 'Privacy', 'footer-terms': 'Terms',
+    'footer-social': 'Social', 'footer-copy': 'Made with ❤️ in Indonesia.',
   }
 };
 
+let currentLang = 'id';
+
 function setLang(lang) {
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (T[lang][key] !== undefined) {
+      el.innerHTML = T[lang][key];
+    }
+  });
+  document.documentElement.lang = lang;
 }
 
-function toggleMenu() {
-  document.getElementById('navMenu').classList.toggle('open');
-}
-
-// Filter box toggle
-document.querySelectorAll('.match-filter-box').forEach(box => {
-  box.addEventListener('click', function() { this.classList.toggle('active'); });
+/* ===== HAMBURGER ===== */
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+});
+document.addEventListener('click', e => {
+  if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+    mobileMenu.classList.remove('open');
+  }
 });
 
-// Scroll reveal
-const observer = new IntersectionObserver((entries) => {
+/* Close mobile menu on link click */
+mobileMenu.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => mobileMenu.classList.remove('open'));
+});
+
+/* ===== SCROLL REVEAL ===== */
+const revealObs = new IntersectionObserver(entries => {
   entries.forEach(e => {
-    if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; }
+    if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
   });
 }, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
-document.querySelectorAll('.problem-card, .keunggulan-card, .security-card, .pricing-card, .tl-item').forEach(el => {
-  el.style.opacity = '0';
-  el.style.transform = 'translateY(20px)';
-  el.style.transition = 'opacity 0.45s ease, transform 0.45s ease';
-  observer.observe(el);
+/* ===== NAVBAR SCROLL SHADOW ===== */
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').style.boxShadow = window.scrollY > 20
+    ? '0 4px 24px rgba(0,0,0,0.2)' : 'none';
 });
 </script>
 </body>
