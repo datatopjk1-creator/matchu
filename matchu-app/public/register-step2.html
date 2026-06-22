@@ -122,8 +122,8 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
 </div>
 
 <script>
-const userId = localStorage.getItem('matchu_user_id');
-if (!userId) {
+const id = localStorage.getItem('matchu_user_id');
+if (!id) {
   alert('Sesi tidak ditemukan. Silakan daftar ulang.');
   window.location.href = 'register.html';
 }
@@ -170,7 +170,7 @@ async function submitVerification() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        userId: userId,
+        id: id,
         screenshot_url: screenshotBase64,
         kampus_klaim: kampus,
         jurusan_klaim: jurusan,

@@ -1,59 +1,261 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
 
-// Buat client langsung di sini, tidak import dari lib
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  }
 );
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
   try {
-    const { email } = await req.json();
-    if (!email) {
-      return NextResponse.json({ success: false, error: 'Email wajib diisi.' }, { status: 400 });
+    const { email, otp } = await req.json();
+
+    if (!email || !otp) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Email dan OTP wajib diisi',
+        },
+        {
+          status: 400,
+        }
+      );
     }
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
+    const cleanEmail = email.trim().toLowerCase();
 
-    // Hapus OTP lama
-    await supabase.from('email_otps').delete().eq('email', email);
-
-    // Simpan OTP baru
-    const { error: insertError } = await supabase
+    // Cari OTP
+    const { data: otpData, error: otpError } = await supabase
       .from('email_otps')
-      .insert({ email, otp, expires_at: expiresAt });
+      .select('*')
+      .eq('email', cleanEmail)
+      .eq('otp', otp)
+      .single();
 
-    if (insertError) {
-      console.error('Insert error:', insertError);
-      return NextResponse.json({ success: false, error: insertError.message }, { status: 500 });
+    if (otpError || !otpData) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Kode OTP tidak valid',
+        },
+        {
+          status: 400,
+        }
+      );
     }
 
-    // Kirim email via Resend
-    await resend.emails.send({
-      from: 'verify@matchu.id', // SEMENTARA pakai domain resend dulu
-      to: email,
-      subject: 'Kode Verifikasi Matchu',
-      html: `
-        <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;padding:32px;background:#fff;border-radius:16px;">
-          <h2 style="color:#7A2236;">MATCHU</h2>
-          <p style="color:#555;margin-top:16px;">Kode verifikasi email kamu:</p>
-          <h1 style="letter-spacing:10px;color:#7A2236;font-size:42px;margin:24px 0;">${otp}</h1>
-          <p style="color:#888;font-size:13px;">Kode berlaku selama <strong>10 menit</strong>.</p>
-        </div>
-      `,
-    });
+    // Cek expired
+    if (new Date(otpData.expires_at) < new Date()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Kode OTP sudah kadaluarsa',
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
-    return NextResponse.json({ success: true });
+    // Ambil data registrasi
+    const userData = otpData.user_data;
+
+    if (!userData) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            'Data registrasi tidak ditemukan. Silakan daftar ulang.',
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    // Cek email sudah ada
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', cleanEmail)
+      .maybeSingle();
+
+    if (existingUser) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Email sudah terdaftar',
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    // Buat user di Supabase Auth
+    const { data: authUser, error: authError } =
+      await supabase.auth.admin.createUser({
+        email: cleanEmail,
+        password: userData.password,
+        email_confirm: true,
+      });
+
+    if (authError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: authError.message,
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const userId = authUser.user.id;
+
+    // Simpan ke public.users
+    const { error: profileError } = await supabase
+      .from('users')
+      .insert({
+        id: userId,
+        email: cleanEmail,
+
+        nama_lengkap:
+          userData.nama ??
+          userData.nama_lengkap ??
+          null,
+
+        nama_panggilan:
+          userData.nama_panggilan ?? null,
+
+        tanggal_lahir:
+          userData.tanggal_lahir ?? null,
+
+        jenis_kelamin:
+          userData.jenis_kelamin ?? null,
+
+        universitas:
+          userData.universitas ?? null,
+
+        program_studi:
+          userData.program_studi ?? null,
+
+        jenjang:
+          userData.jenjang ?? null,
+
+        tahun_masuk:
+          userData.tahun_masuk ?? null,
+
+        status_pendidikan:
+          userData.status_pendidikan ?? null,
+
+        bulan_lahir:
+          userData.bulan_lahir ?? null,
+
+        tahun_lahir:
+          userData.tahun_lahir ?? null,
+
+        status_nikah:
+          userData.status_nikah ?? null,
+
+        status_kerja:
+          userData.status_kerja ?? null,
+
+        profesi:
+          userData.profesi ?? null,
+
+        perusahaan:
+          userData.perusahaan ?? null,
+
+        kota_domisili:
+          userData.kota_domisili ?? null,
+
+        kota_asal:
+          userData.kota_asal ?? null,
+
+        tinggi_badan:
+          userData.tinggi_badan ?? null,
+
+        berat_badan:
+          userData.berat_badan ?? null,
+
+        agama:
+          userData.agama ?? null,
+
+        target_menikah:
+          userData.target_menikah ?? null,
+
+        kepribadian:
+          userData.kepribadian ?? null,
+
+        mbti:
+          userData.mbti ?? null,
+
+        hobi:
+          userData.hobi ?? null,
+
+        bahasa:
+          userData.bahasa ?? null,
+
+        bio:
+          userData.bio ?? null,
+
+        foto_utama:
+          userData.foto_utama ?? null,
+
+        foto_kedua:
+          userData.foto_kedua ?? null,
+
+        instagram:
+          userData.instagram ?? null,
+
+        trust_score: 0,
+        status: 'pending',
+      });
+
+    if (profileError) {
+      // rollback auth user
+      await supabase.auth.admin.deleteUser(userId);
+
+      return NextResponse.json(
+        {
+          success: false,
+          error: profileError.message,
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    // Hapus OTP
+    await supabase
+      .from('email_otps')
+      .delete()
+      .eq('email', cleanEmail);
+
+    return NextResponse.json({
+      success: true,
+      user_id: userId,
+    });
   } catch (error: any) {
-    console.error('=== SEND OTP ERROR ===', error);
+    console.error('complete-register error:', error);
+
     return NextResponse.json(
-      { success: false, error: error?.message || 'Server error' },
-      { status: 500 }
+      {
+        success: false,
+        error: error?.message || 'Server error',
+      },
+      {
+        status: 500,
+      }
     );
   }
 }

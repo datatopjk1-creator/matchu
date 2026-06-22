@@ -125,8 +125,7 @@ body{ background:var(--bg); font-family:'Inter',sans-serif; color:var(--text); }
 </div>
 
 <script>
-  const userData = JSON.parse(localStorage.getItem('matchu_user') || '{}');
-console.log('DEBUG step4 userData:', userData); // ← tambahkan ini
+  
 // ── Cek sesi ─────────────────────────────────────────────────────────────
 const userData = JSON.parse(localStorage.getItem('matchu_user') || '{}');
 if (!userData.email || !userData.userId) {
