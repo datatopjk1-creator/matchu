@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profil Saya | Matchu</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --brand:#7A2236;--brand-dark:#5E1A2A;--brand-light:#f9f0f3;
+  --bg:#F5F2EF;--white:#fff;--text:#1C1C1E;--text-2:#6B7280;
+  --border:#E8E3DF;--green:#1ea672;--yellow:#f59e0b;
+  --topbar-h:68px;--radius:16px;--shadow:0 2px 16px rgba(0,0,0,0.06);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:100;}
+.overlay.active{display:block;}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;left:0;width:260px;height:100vh;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:200;transition:transform .28s ease;overflow:hidden;}
+.sidebar.hidden{transform:translateX(-100%);}
+.sidebar-logo{height:var(--topbar-h);display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid var(--border);}
+.logo-text{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--brand);letter-spacing:2px;}
+.sidebar-close{width:34px;height:34px;border:none;background:none;cursor:pointer;font-size:20px;color:var(--text-2);border-radius:8px;}
+.sidebar-nav{padding:16px 0;flex:1;overflow-y:auto;}
+.nav-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-2);padding:14px 24px 6px;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:0 20px;height:48px;text-decoration:none;color:#444;font-size:14px;font-weight:500;border-radius:12px;margin:2px 10px;transition:.15s;}
+.nav-item:hover,.nav-item.active{background:var(--brand-light);color:var(--brand);font-weight:600;}
+.nav-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sidebar-footer{padding:16px;border-top:1px solid var(--border);}
+.sidebar-user{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:var(--bg);}
+.s-avatar{width:36px;height:36px;border-radius:50%;background:var(--brand);color:white;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+.s-avatar img,.t-avatar img,.banner-avatar img{width:100%;height:100%;object-fit:cover;}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:50;height:var(--topbar-h);background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;}
+.hamburger{width:40px;height:40px;border:1px solid var(--border);border-radius:10px;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+.hamburger span{display:block;width:18px;height:2px;background:var(--text);border-radius:2px;}
+.topbar-brand{font-family:'Playfair Display',serif;font-size:20px;color:var(--brand);font-weight:700;letter-spacing:1px;}
+.topbar-spacer{flex:1;}
+.t-avatar{width:32px;height:32px;border-radius:50%;background:var(--brand);color:white;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.user-pill{display:flex;align-items:center;gap:8px;padding:5px 14px 5px 6px;border:1px solid var(--border);border-radius:50px;background:none;cursor:pointer;font-size:13px;font-weight:600;}
+
+/* CONTENT */
+.content{padding:28px 28px 60px;max-width:1100px;}
+
+/* BANNER */
+.page-banner{background:linear-gradient(130deg,var(--brand) 0%,#9E304D 60%,#c4677e 100%);border-radius:20px;padding:28px 32px;color:white;margin-bottom:24px;position:relative;overflow:hidden;display:flex;align-items:center;gap:24px;}
+.page-banner::before{content:'';position:absolute;right:-40px;top:-40px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.06);}
+.banner-avatar{width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.2);border:3px solid rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;color:white;flex-shrink:0;position:relative;z-index:1;overflow:hidden;}
+.banner-info{position:relative;z-index:1;flex:1;}
+.banner-tag{display:inline-block;padding:4px 12px;background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.25);border-radius:50px;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:8px;}
+.banner-info h1{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:4px;}
+.banner-info p{font-size:13px;opacity:.82;}
+.banner-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.vbadge{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;font-size:11px;font-weight:600;padding:4px 11px;border-radius:50px;}
+.banner-actions{display:flex;gap:10px;position:relative;z-index:1;flex-shrink:0;}
+.btn-white{padding:10px 22px;background:white;color:var(--brand);border:none;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;}
+.btn-white-out{padding:10px 22px;background:transparent;color:white;border:1.5px solid rgba(255,255,255,0.5);border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;}
+
+/* GRID LAYOUT */
+.main-grid{display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:start;}
+
+/* TRUST SCORE CARD — tidak bisa diedit */
+.trust-card{background:var(--white);border-radius:20px;padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);position:sticky;top:calc(var(--topbar-h) + 16px);}
+.trust-card-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:16px;color:var(--text);}
+.trust-ring-wrap{display:flex;align-items:center;gap:16px;margin-bottom:20px;padding:16px;background:var(--bg);border-radius:14px;}
+.trust-ring{width:80px;height:80px;flex-shrink:0;position:relative;}
+.trust-ring svg{transform:rotate(-90deg);}
+.trust-ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:var(--brand);}
+.trust-score-info{}
+.trust-score-num{font-size:22px;font-weight:700;color:var(--brand);}
+.trust-score-sub{font-size:12px;color:var(--text-2);margin-bottom:6px;}
+.trust-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;}
+.trust-badge.good{background:#e8f5e9;color:#2e7d32;}
+.trust-badge.mid{background:#fff8e1;color:#e65100;}
+.trust-badge.low{background:#fce4ec;color:#c62828;}
+
+.trust-breakdown{}
+.trust-breakdown-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-2);margin-bottom:10px;}
+.trust-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;margin-bottom:6px;background:var(--bg);}
+.trust-row-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.trust-row-icon.done{background:#e8f5e9;}
+.trust-row-icon.partial{background:#fff8e1;}
+.trust-row-icon.pending{background:#f5f5f5;}
+.trust-row-label{flex:1;font-size:13px;color:var(--text);}
+.trust-row-pts{font-size:12px;font-weight:700;}
+.trust-row-pts.done{color:#2e7d32;}
+.trust-row-pts.partial{color:#e65100;}
+.trust-row-pts.pending{color:#bbb;}
+.trust-bar{height:4px;background:#eee;border-radius:4px;margin-top:4px;overflow:hidden;}
+.trust-bar-fill{height:100%;border-radius:4px;background:var(--brand);transition:width .5s ease;}
+
+/* RIGHT COLUMN */
+.right-col{display:flex;flex-direction:column;gap:16px;}
+
+/* SECTION CARD */
+.section-card{background:var(--white);border-radius:20px;padding:22px 24px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.section-title{display:flex;align-items:center;gap:8px;font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--text);}
+.section-icon{width:32px;height:32px;border-radius:9px;background:var(--brand-light);display:flex;align-items:center;justify-content:center;font-size:15px;}
+.btn-edit{font-size:12px;font-weight:600;color:var(--brand);background:var(--brand-light);padding:5px 14px;border-radius:50px;cursor:pointer;border:none;transition:.15s;}
+.btn-edit:hover{background:#f0dde3;}
+
+/* INFO ROWS */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.info-row{padding:10px 0;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:3px;}
+.info-row:nth-last-child(-n+2){border-bottom:none;}
+.info-row.full{grid-column:1/-1;}
+.info-row.full:last-child{border-bottom:none;}
+.info-label{font-size:11px;color:var(--text-2);font-weight:500;}
+.info-value{font-size:14px;font-weight:600;color:var(--text);}
+.info-value.empty{color:#ccc;font-weight:400;font-style:italic;font-size:13px;}
+.info-value.verified{color:var(--green);}
+.info-value.pending-v{color:var(--yellow);}
+
+/* BIO */
+.bio-box{background:var(--bg);border-radius:12px;padding:14px 16px;border-left:3px solid #c4677e;font-size:14px;color:#555;line-height:1.8;}
+.bio-box.empty{color:#bbb;font-style:italic;border-left-color:#ddd;}
+
+/* TAGS */
+.tags-wrap{display:flex;flex-wrap:wrap;gap:8px;}
+.tag-chip{padding:6px 14px;background:var(--brand-light);color:var(--brand);border-radius:50px;font-size:13px;font-weight:500;border:1px solid rgba(122,34,54,0.12);}
+
+/* FOTO */
+.foto-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.foto-slot{aspect-ratio:3/4;border-radius:14px;background:var(--bg);border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:12px;font-weight:500;color:var(--text-2);overflow:hidden;position:relative;}
+.foto-slot.filled{border-style:solid;border-color:var(--border);}
+.foto-slot img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.foto-label{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(122,34,54,0.8);color:white;font-size:10px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;}
+
+/* VERIFIKASI BANNER */
+.verif-banner{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;margin-bottom:4px;}
+.verif-banner.pending{background:#fff8e1;border:1px solid #f59e0b;}
+.verif-banner.done{background:#e8f5e9;border:1px solid var(--green);}
+.verif-banner-icon{font-size:20px;flex-shrink:0;}
+.verif-banner-text{font-size:13px;line-height:1.5;}
+.verif-banner-title{font-weight:700;margin-bottom:2px;}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:500;align-items:center;justify-content:center;padding:20px;}
+.modal-bg.open{display:flex;}
+.modal{background:white;border-radius:24px;padding:28px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.modal-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-2);}
+.modal-section{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand);margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid #f0e8ea;}
+.field-group{margin-bottom:14px;}
+.field-label{font-size:12px;color:var(--text-2);display:block;margin-bottom:5px;font-weight:600;}
+.field-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:'Inter',sans-serif;color:var(--text);transition:.2s;}
+.field-input:focus{outline:none;border-color:var(--brand);}
+textarea.field-input{resize:vertical;min-height:80px;line-height:1.6;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.modal-footer{display:flex;gap:10px;margin-top:24px;}
+.btn-cancel{flex:1;padding:12px;border:1.5px solid var(--border);background:var(--bg);border-radius:50px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-save{flex:1;padding:12px;background:var(--brand);color:white;border:none;border-radius:50px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-save:disabled{opacity:.6;cursor:not-allowed;}
+
+/* TAG SELECTOR */
+.tag-sel-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.tag-sel{padding:6px 14px;border:1.5px solid var(--border);border-radius:50px;font-size:13px;cursor:pointer;user-select:none;transition:.15s;}
+.tag-sel:hover{border-color:var(--brand);color:var(--brand);}
+.tag-sel.on{border-color:var(--brand);background:var(--brand-light);color:var(--brand);font-weight:600;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--brand);color:white;padding:12px 28px;border-radius:50px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.2);transition:opacity .3s;pointer-events:none;}
+/* NOTIF DROPDOWN */
+.notif-btn{position:relative;width:40px;height:40px;border:1px solid var(--border);border-radius:10px;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+.notif-btn:hover{background:var(--brand-light);}
+.notif-btn svg{width:18px;height:18px;stroke:var(--text);}
+.notif-dot{position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--brand);border:2px solid white;}
+.notif-dropdown{position:absolute;top:calc(var(--topbar-h) + 6px);right:20px;width:310px;background:white;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.14);border:1px solid var(--border);z-index:400;display:none;}
+.notif-dropdown.open{display:block;}
+.notif-drop-head{padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.notif-drop-title{font-size:15px;font-weight:700;}
+.notif-drop-clear{font-size:12px;color:var(--brand);cursor:pointer;font-weight:600;}
+.notif-drop-item{display:flex;align-items:flex-start;gap:12px;padding:13px 18px;border-bottom:1px solid var(--border);transition:background .1s;}
+.notif-drop-item:last-child{border-bottom:none;}
+.notif-drop-item:hover{background:var(--bg);}
+.notif-drop-icon{width:34px;height:34px;border-radius:10px;background:var(--brand-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.notif-drop-icon svg{width:16px;height:16px;stroke:var(--brand);}
+.notif-drop-text{font-size:13px;line-height:1.5;}
+.notif-drop-time{font-size:11px;color:var(--text-2);margin-top:2px;}
+
+/* SKELETON */
+.skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:8px;height:16px;width:100%;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* DANGER */
+.danger-card{background:#FFF8F8;border-radius:20px;padding:22px 24px;border:1px solid #ffd5d5;}
+.danger-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#c0392b;margin-bottom:6px;}
+.danger-desc{font-size:13px;color:#888;line-height:1.6;margin-bottom:14px;}
+.danger-btn{padding:10px 24px;background:#c0392b;color:white;border:none;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;}
+
+@media(max-width:900px){
+  .main-grid{grid-template-columns:1fr;}
+  .trust-card{position:static;}
+  .info-grid{grid-template-columns:1fr;}
+  .info-row:nth-last-child(-n+2){border-bottom:1px solid var(--border);}
+  .info-row:last-child{border-bottom:none;}
+  .content{padding:16px 16px 60px;}
+  .page-banner{flex-direction:column;align-items:flex-start;}
+  .banner-actions{width:100%;}
+  .field-row{grid-template-columns:1fr;}
+}
+@media(max-width:560px){
+  .foto-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar hidden" id="sidebar">
+  <div class="sidebar-logo">
+    <span class="logo-text">MATCHU</span>
+    <button class="sidebar-close" id="sidebarClose">✕</button>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Menu Utama</div>
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><rect x="3" y="3" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/></svg></span>Dashboard
+    </a>
+    <a href="profil.html" class="nav-item active">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>Profil Saya
+    </a>
+    <a href="kandidat.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M2 20c0-3.3 3.1-6 7-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="15" r="4" stroke="currentColor" stroke-width="1.8"/></svg></span>Kandidat
+      <span style="margin-left:auto;background:var(--brand);color:white;font-size:10px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</span>
+    </a>
+    <a href="permintaan-perkenalan.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg></span>
+      Permintaan Perkenalan
+      <span style="margin-left:auto;background:var(--brand);color:white;font-size:10px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</span>
+    </a>
+    <a href="chat.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>Chat
+    </a>
+    <div class="nav-label" style="margin-top:8px">Akun</div>
+    <a href="premium.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+      Premium
+    </a>
+<div class="nav-label" style="margin-top:8px">Akun</div>
+    <a href="pengaturan.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" stroke-width="1.8"/></svg></span>Pengaturan
+    </a>
+    <a href="#" class="nav-item" style="color:#c0392b;" id="logoutSidebar">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round"/><polyline points="16,17 21,12 16,7" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="21" y1="12" x2="9" y2="12" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round"/></svg></span>Keluar
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="s-avatar" id="sidebarAvatar">?</div>
+      <div>
+        <div style="font-size:13px;font-weight:600;" id="sidebarName">Memuat...</div>
+        <div style="font-size:11px;color:var(--text-2);">Member Matchu</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- NOTIF DROPDOWN -->
+<div class="notif-dropdown" id="notifDropdown">
+  <div class="notif-drop-head">
+    <div class="notif-drop-title">Notifikasi</div>
+    <span class="notif-drop-clear">Tandai semua dibaca</span>
+  </div>
+  <div class="notif-drop-item">
+    <div class="notif-drop-icon"><svg fill="none" viewBox="0 0 24 24"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg></div>
+    <div><div class="notif-drop-text"><b>Manda</b> menerima surat perkenalan Anda.</div><div class="notif-drop-time">2 jam lalu</div></div>
+  </div>
+  <div class="notif-drop-item">
+    <div class="notif-drop-icon"><svg fill="none" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+    <div><div class="notif-drop-text">Chat dengan <b>Rara</b> akan berakhir dalam 2 hari.</div><div class="notif-drop-time">5 jam lalu</div></div>
+  </div>
+  <div class="notif-drop-item">
+    <div class="notif-drop-icon"><svg fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+    <div><div class="notif-drop-text">3 kandidat baru tersedia minggu ini.</div><div class="notif-drop-time">1 hari lalu</div></div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  <span class="topbar-brand">MATCHU</span>
+  <div class="topbar-spacer"></div>
+  <div class="topbar-right" style="display:flex;align-items:center;gap:10px;">
+    <button class="notif-btn" id="notifBtn">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke-linecap="round"/></svg>
+      <span class="notif-dot"></span>
+    </button>
+    <button class="user-pill" id="btnLogout">
+      <div class="t-avatar" id="topbarAvatar">?</div>
+      <span id="topbarName">...</span>
+    </button>
+  </div>
+</header>
+
+<div class="content">
+
+  <!-- BANNER -->
+  <div class="page-banner">
+    <div class="banner-avatar" id="bannerAvatar">?</div>
+    <div class="banner-info">
+      <div class="banner-tag">Profil Saya</div>
+      <h1 id="bannerNama">Memuat...</h1>
+      <p id="bannerSub">—</p>
+      <div class="banner-badges" id="bannerBadges"></div>
+    </div>
+    <div class="banner-actions">
+      <button class="btn-white" onclick="openModal('modalIdentitas')">✏ Edit Profil</button>
+      <button class="btn-white-out" onclick="doLogout()">Keluar</button>
+    </div>
+  </div>
+
+  <!-- MAIN GRID: Trust Score (kiri) + Konten (kanan) -->
+  <div class="main-grid">
+
+    <!-- KIRI: TRUST SCORE — hanya tampilan, tidak bisa diedit -->
+    <div class="trust-card">
+      <div class="trust-card-title">🎯 Trust Score</div>
+      <div class="trust-ring-wrap">
+        <div class="trust-ring">
+          <svg width="80" height="80" viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="32" fill="none" stroke="#f0e6ea" stroke-width="8"/>
+            <circle cx="40" cy="40" r="32" fill="none" stroke="#7A2236" stroke-width="8"
+              stroke-dasharray="201" id="trustCircle" stroke-dashoffset="201" stroke-linecap="round" style="transition:stroke-dashoffset .8s ease"/>
+          </svg>
+          <div class="trust-ring-num" id="trustNum">0</div>
+        </div>
+        <div class="trust-score-info">
+          <div class="trust-score-num" id="trustScoreText">0 / 100</div>
+          <div class="trust-score-sub" style="margin-bottom:8px;">Target minimal 80 poin</div>
+          <span class="trust-badge low" id="trustBadge">Sedang dimuat...</span>
+        </div>
+      </div>
+
+      <div class="trust-breakdown">
+        <div class="trust-breakdown-title">Rincian Poin</div>
+        <div id="trustRows">
+          <div class="trust-row"><div class="trust-row-icon pending">⏳</div><div class="trust-row-label"><div class="skeleton"></div></div></div>
+          <div class="trust-row"><div class="trust-row-icon pending">⏳</div><div class="trust-row-label"><div class="skeleton"></div></div></div>
+          <div class="trust-row"><div class="trust-row-icon pending">⏳</div><div class="trust-row-label"><div class="skeleton"></div></div></div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:12px;font-size:12px;color:var(--text-2);line-height:1.6;">
+        💡 Trust score dihitung otomatis dari kelengkapan profil kamu. Lengkapi semua bagian untuk mendapatkan lebih banyak rekomendasi kandidat.
+      </div>
+    </div>
+
+    <!-- KANAN: SEMUA SECTION -->
+    <div class="right-col">
+
+      <!-- 1. INFORMASI PRIBADI -->
+      <div class="section-card">
+        <div class="section-head">
+          <div class="section-title"><span class="section-icon">👤</span> Informasi Pribadi</div>
+          <button class="btn-edit" onclick="openModal('modalIdentitas')">Edit</button>
+        </div>
+        <div class="info-grid">
+          <div class="info-row"><span class="info-label">Nama Lengkap</span><span class="info-value" id="infoNama">—</span></div>
+          <div class="info-row"><span class="info-label">Nama Panggilan</span><span class="info-value" id="infoPanggilan">—</span></div>
+          <div class="info-row"><span class="info-label">Jenis Kelamin</span><span class="info-value" id="infoGender">—</span></div>
+          <div class="info-row"><span class="info-label">Tanggal Lahir</span><span class="info-value" id="infoLahir">—</span></div>
+          <div class="info-row"><span class="info-label">Status Pernikahan</span><span class="info-value" id="infoStatusNikah">—</span></div>
+          <div class="info-row"><span class="info-label">Agama</span><span class="info-value" id="infoAgama">—</span></div>
+          <div class="info-row"><span class="info-label">Instagram</span><span class="info-value" id="infoIG">—</span></div>
+          <div class="info-row"><span class="info-label">Email</span><span class="info-value" id="infoEmail">—</span></div>
+        </div>
+      </div>
+
+      <!-- 2. LOKASI & FISIK -->
+      <div class="section-card">
+        <div class="section-head">
+          <div class="section-title"><span class="section-icon">📍</span> Lokasi & Fisik</div>
+          <button class="btn-edit" onclick="openModal('modalLokasiFisik')">Edit</button>
+        </div>
+        <div class="info-grid">
+          <div class="info-row"><span class="info-label">Kota Domisili</span><span class="info-value" id="infoDomisili">—</span></div>
+          <div class="info-row"><span class="info-label">Kota Asal</span><span class="info-value" id="infoKotaAsal">—</span></div>
+          <div class="info-row"><span class="info-label">Tinggi Badan</span><span class="info-value" id="infoTinggi">—</span></div>
+          <div class="info-row"><span class="info-label">Berat Badan</span><span class="info-value" id="infoBerat">—</span></div>
+        </div>
+      </div>
+
+      <!-- 3. PENDIDIKAN -->
+      <div class="section-card">
+        <div class="section-head">
+          <div class="section-title"><span class="section-icon">🎓</span> Pendidikan</div>
+          <button class="btn-edit" onclick="openModal('modalPendidikan')">Edit</button>
+        </div>
+        <div id="verifBanner" class="verif-banner pending" style="margin-bottom:12px;">
+          <div class="verif-banner-icon">⏳</div>
+          <div class="verif-banner-text">
+            <div class="verif-banner-title">Menunggu Verifikasi PDDikti</div>
+            <div style="font-size:12px;">Tim Matchu sedang memverifikasi data pendidikan kamu. Proses ini 1×24 jam. Setelah terverifikasi, trust score kamu akan bertambah +30 poin.</div>
+          </div>
+        </div>
+        <div class="info-grid">
+          <div class="info-row full"><span class="info-label">Universitas / Institusi</span><span class="info-value" id="infoUniv">—</span></div>
+          <div class="info-row full"><span class="info-label">Program Studi / Jurusan</span><span class="info-value" id="infoProdi">—</span></div>
+          <div class="info-row"><span class="info-label">Jenjang</span><span class="info-value" id="infoJenjang">—</span></div>
+          <div class="info-row"><span class="info-label">Tahun Masuk</span><span class="info-value" id="infoAngkatan">—</span></div>
+          <div class="info-row"><span class="info-label">Status</span><span class="info-value" id="infoStatusPend">—</span></div>
+          <div class="info-row"><span class="info-label">Verifikasi PDDikti</span><span class="info-value" id="infoVerifPend">—</span></div>
+        </div>
+      </div>
+
+      <!-- 4. PEKERJAAN -->
+      <div class="section-card">
+        <div class="section-head">
+          <div class="section-title"><span class="section-icon">💼</span> Pekerjaan</div>
+          <button class="btn-edit" onclick="openModal('modalPekerjaan')">Edit</button>
+        </div>
+        <div class="info-grid">
+          <div class="info-row"><span class="info-label">Status Pekerjaan</span><span class="info-value" id="infoStatusKerja">—</span></div>
+          <div class="info-row"><span class="info-label">Profesi / Jabatan</span><span class="info-value" id="infoProfesi">—</span></div>
+          <div class="info-row full"><span class="info-label">Perusahaan / Instansi</span><span class="info-value" id="infoPerusahaan">—</span></div>
+        </div>
+      </div>
+
+      <!-- 5. KEPRIBADIAN & TUJUAN -->
+      <div class="section-card">
+        <div class="section-head">
+          <div class="section-title"><span class="section-icon">🧠</span> Kepribadian & Tujuan</div>
+          <button class="btn-edit" onclick="openModal('modalKepribadian')">Edit</button>
+        </div>
+        <div class="info-grid">
+          <div class="info-row"><span class="info-label">Tipe Kepribadian</span><span class="info-value" id="infoKepribadian">—</span></div>
+          <div class="info-row"><span class="info-label">MBTI</span><span class="info-value" id="infoMBTI">—</span></div>
+          <div class="info-row"><span class="info-label">Target Menikah</span><span class="info-value" id="infoTarget">—</span></div>
+          <div class="info-row"><span class="info-label">Agama</span><span class="info-value" id="infoAgama2">—</span></div>
+        </div>
+      </div>
+
+      <!-- 6. TENTANG SAYA -->
+      <div class="section-card">
+        <div class="section-head">
+          <div class="section-title"><span class="section-icon">📝</span> Tentang Saya</div>
+          <button class="btn-edit" onclick="openModal('modalBio')">Edit</button>
+        </div>
+        <div class="bio-box" id="infoBio">Belum ada bio.</div>
+      </div>
+
+      <!-- 7. HOBI & BAHASA -->
+      <div class="section-card">
+        <div class="section-head">
+          <div class="section-title"><span class="section-icon">🎯</span> Hobi & Bahasa</div>
+          <button class="btn-edit" onclick="openModal('modalHobi')">Edit</button>
+        </div>
+        <div style="margin-bottom:12px;">
+          <div style="font-size:11px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Hobi & Minat</div>
+          <div class="tags-wrap" id="infoHobi"><span style="color:#ccc;font-size:13px;font-style:italic;">Belum diisi</span></div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Bahasa yang Dikuasai</div>
+          <div class="tags-wrap" id="infoBahasa"></div>
+        </div>
+      </div>
+
+      <!-- 8. FOTO PROFIL -->
+      <div class="section-card">
+        <div class="section-head">
+          <div class="section-title"><span class="section-icon">📸</span> Foto Profil</div>
+        </div>
+        <div class="foto-grid">
+          <div class="foto-slot" id="foto1Slot">
+            <span style="font-size:24px;">📷</span>
+            <span>Foto Utama</span>
+          </div>
+          <div class="foto-slot" id="foto2Slot">
+            <span style="font-size:24px;">📷</span>
+            <span>Foto Kedua</span>
+          </div>
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:var(--text-2);">Untuk mengganti foto, hubungi tim Matchu atau gunakan menu Pengaturan.</div>
+      </div>
+
+      <!-- DANGER -->
+      <div class="danger-card">
+        <div class="danger-title">⚠ Zona Berbahaya</div>
+        <div class="danger-desc">Menghapus akun akan menghapus seluruh data secara permanen dan tidak dapat dipulihkan.</div>
+        <button class="danger-btn" onclick="confirmDelete()">Hapus Akun Permanen</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ====== MODAL: INFORMASI PRIBADI ====== -->
+<div class="modal-bg" id="modalIdentitas">
+<div class="modal">
+  <div class="modal-head"><span class="modal-title">👤 Edit Informasi Pribadi</span><button class="modal-close" onclick="closeModal('modalIdentitas')">✕</button></div>
+  <div class="field-group"><label class="field-label">Nama Panggilan</label><input class="field-input" id="editPanggilan" placeholder="Nama panggilan"></div>
+  <div class="field-row">
+    <div class="field-group"><label class="field-label">Status Pernikahan</label>
+      <select class="field-input" id="editStatusNikah">
+        <option value="">Pilih</option>
+        <option>Belum pernah menikah</option>
+        <option>Janda atau Duda (cerai)</option>
+        <option>Janda atau Duda (ditinggal)</option>
+      </select>
+    </div>
+    <div class="field-group"><label class="field-label">Agama</label>
+      <select class="field-input" id="editAgama">
+        <option value="">Pilih</option>
+        <option>Islam</option><option>Kristen Protestan</option>
+        <option>Katolik</option><option>Hindu</option>
+        <option>Buddha</option><option>Konghucu</option>
+      </select>
+    </div>
+  </div>
+  <div class="field-group"><label class="field-label">Instagram (tanpa @)</label><input class="field-input" id="editIG" placeholder="username_kamu"></div>
+  <div class="modal-footer">
+    <button class="btn-cancel" onclick="closeModal('modalIdentitas')">Batal</button>
+    <button class="btn-save" onclick="saveSection('identitas')">Simpan</button>
+  </div>
+</div>
+</div>
+
+<!-- ====== MODAL: LOKASI & FISIK ====== -->
+<div class="modal-bg" id="modalLokasiFisik">
+<div class="modal">
+  <div class="modal-head"><span class="modal-title">📍 Edit Lokasi & Fisik</span><button class="modal-close" onclick="closeModal('modalLokasiFisik')">✕</button></div>
+  <div class="field-row">
+    <div class="field-group"><label class="field-label">Kota Domisili</label><input class="field-input" id="editDomisili" placeholder="Contoh: Jakarta Selatan"></div>
+    <div class="field-group"><label class="field-label">Kota Asal</label><input class="field-input" id="editKotaAsal" placeholder="Contoh: Padang"></div>
+  </div>
+  <div class="field-row">
+    <div class="field-group"><label class="field-label">Tinggi Badan (cm)</label><input class="field-input" id="editTinggi" type="number" placeholder="168" min="140" max="220"></div>
+    <div class="field-group"><label class="field-label">Berat Badan (kg)</label><input class="field-input" id="editBerat" type="number" placeholder="60" min="30" max="200"></div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn-cancel" onclick="closeModal('modalLokasiFisik')">Batal</button>
+    <button class="btn-save" onclick="saveSection('lokasiFisik')">Simpan</button>
+  </div>
+</div>
+</div>
+
+<!-- ====== MODAL: PENDIDIKAN ====== -->
+<div class="modal-bg" id="modalPendidikan">
+<div class="modal">
+  <div class="modal-head"><span class="modal-title">🎓 Edit Pendidikan</span><button class="modal-close" onclick="closeModal('modalPendidikan')">✕</button></div>
+  <div class="field-group"><label class="field-label">Universitas / Institusi</label><input class="field-input" id="editUniv" placeholder="Nama universitas"></div>
+  <div class="field-group"><label class="field-label">Program Studi / Jurusan</label><input class="field-input" id="editProdi" placeholder="Nama program studi"></div>
+  <div class="field-row">
+    <div class="field-group"><label class="field-label">Jenjang</label>
+      <select class="field-input" id="editJenjang">
+        <option value="">Pilih</option>
+        <option>D3</option><option>D4</option><option>S1</option>
+        <option>S2</option><option>S3</option><option>Diploma Kedinasan</option>
+      </select>
+    </div>
+    <div class="field-group"><label class="field-label">Tahun Masuk</label><input class="field-input" id="editAngkatan" type="number" placeholder="2020" min="1990" max="2030"></div>
+  </div>
+  <div class="field-group"><label class="field-label">Status Pendidikan</label>
+    <select class="field-input" id="editStatusPend">
+      <option value="">Pilih</option>
+      <option>Mahasiswa aktif</option><option>Tingkat akhir</option>
+      <option>Fresh graduate</option><option>Alumni</option>
+    </select>
+  </div>
+  <div class="modal-footer">
+    <button class="btn-cancel" onclick="closeModal('modalPendidikan')">Batal</button>
+    <button class="btn-save" onclick="saveSection('pendidikan')">Simpan</button>
+  </div>
+</div>
+</div>
+
+<!-- ====== MODAL: PEKERJAAN ====== -->
+<div class="modal-bg" id="modalPekerjaan">
+<div class="modal">
+  <div class="modal-head"><span class="modal-title">💼 Edit Pekerjaan</span><button class="modal-close" onclick="closeModal('modalPekerjaan')">✕</button></div>
+  <div class="field-group"><label class="field-label">Status Pekerjaan</label>
+    <select class="field-input" id="editStatusKerja">
+      <option value="">Pilih</option>
+      <option value="bekerja">Sedang bekerja</option>
+      <option value="wirausaha">Wirausaha / Freelance</option>
+      <option value="magang">Sedang magang</option>
+      <option value="mencari">Sedang mencari pekerjaan</option>
+      <option value="belum">Belum mulai bekerja</option>
+    </select>
+  </div>
+  <div class="field-group"><label class="field-label">Profesi / Jabatan</label><input class="field-input" id="editProfesi" placeholder="Contoh: Software Engineer"></div>
+  <div class="field-group"><label class="field-label">Perusahaan / Instansi (opsional)</label><input class="field-input" id="editPerusahaan" placeholder="Nama perusahaan"></div>
+  <div class="modal-footer">
+    <button class="btn-cancel" onclick="closeModal('modalPekerjaan')">Batal</button>
+    <button class="btn-save" onclick="saveSection('pekerjaan')">Simpan</button>
+  </div>
+</div>
+</div>
+
+<!-- ====== MODAL: KEPRIBADIAN ====== -->
+<div class="modal-bg" id="modalKepribadian">
+<div class="modal">
+  <div class="modal-head"><span class="modal-title">🧠 Edit Kepribadian & Tujuan</span><button class="modal-close" onclick="closeModal('modalKepribadian')">✕</button></div>
+  <div class="field-row">
+    <div class="field-group"><label class="field-label">Tipe Kepribadian</label>
+      <select class="field-input" id="editKepribadian">
+        <option value="">Pilih</option>
+        <option>Introvert</option><option>Ekstrovert</option><option>Ambivert</option>
+      </select>
+    </div>
+    <div class="field-group"><label class="field-label">MBTI</label>
+      <select class="field-input" id="editMBTI">
+        <option value="">Pilih</option>
+        <option>INTJ</option><option>INTP</option><option>ENTJ</option><option>ENTP</option>
+        <option>INFJ</option><option>INFP</option><option>ENFJ</option><option>ENFP</option>
+        <option>ISTJ</option><option>ISFJ</option><option>ESTJ</option><option>ESFJ</option>
+        <option>ISTP</option><option>ISFP</option><option>ESTP</option><option>ESFP</option>
+      </select>
+    </div>
+  </div>
+  <div class="field-group"><label class="field-label">Target Menikah</label>
+    <select class="field-input" id="editTarget">
+      <option value="">Pilih</option>
+      <option>Kurang dari 1 tahun</option>
+      <option>1 sampai 2 tahun</option>
+      <option>2 sampai 3 tahun</option>
+      <option>Fleksibel</option>
+    </select>
+  </div>
+  <div class="modal-footer">
+    <button class="btn-cancel" onclick="closeModal('modalKepribadian')">Batal</button>
+    <button class="btn-save" onclick="saveSection('kepribadian')">Simpan</button>
+  </div>
+</div>
+</div>
+
+<!-- ====== MODAL: BIO ====== -->
+<div class="modal-bg" id="modalBio">
+<div class="modal">
+  <div class="modal-head"><span class="modal-title">📝 Edit Tentang Saya</span><button class="modal-close" onclick="closeModal('modalBio')">✕</button></div>
+  <div class="field-group">
+    <label class="field-label">Bio (maks. 300 karakter)</label>
+    <textarea class="field-input" id="editBio" maxlength="300" rows="5" placeholder="Ceritakan tentang dirimu..."></textarea>
+    <div style="font-size:12px;color:var(--text-2);margin-top:4px;" id="bioCount">0 / 300</div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn-cancel" onclick="closeModal('modalBio')">Batal</button>
+    <button class="btn-save" onclick="saveSection('bio')">Simpan</button>
+  </div>
+</div>
+</div>
+
+<!-- ====== MODAL: HOBI & BAHASA ====== -->
+<div class="modal-bg" id="modalHobi">
+<div class="modal">
+  <div class="modal-head"><span class="modal-title">🎯 Edit Hobi & Bahasa</span><button class="modal-close" onclick="closeModal('modalHobi')">✕</button></div>
+  <div class="modal-section">Hobi & Minat (pilih minimal 1)</div>
+  <div class="tag-sel-wrap" id="hobiSel"></div>
+  <div class="modal-section">Bahasa yang Dikuasai</div>
+  <div class="tag-sel-wrap" id="bahasaSel"></div>
+  <div class="modal-footer">
+    <button class="btn-cancel" onclick="closeModal('modalHobi')">Batal</button>
+    <button class="btn-save" onclick="saveSection('hobi')">Simpan</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ── STATE ─────────────────────────────────────────────────
+let profile = null;
+let trustBreakdown = null;
+const userId = localStorage.getItem('matchu_user_id');
+if (!userId) { alert('Sesi tidak ditemukan. Silakan login.'); window.location.href = 'login.html'; }
+
+const HOBI_LIST = ['Traveling','Membaca','Olahraga','Memasak','Fotografi','Musik','Film dan Series','Gaming','Seni dan Desain','Hiking dan Alam','Menulis','Kuliner','Volunteering','Yoga dan Meditasi','Bisnis dan Investasi'];
+const BAHASA_LIST = ['Bahasa Inggris','Bahasa Jepang','Bahasa Mandarin','Bahasa Arab','Bahasa Korea','Bahasa Jerman','Bahasa Prancis','Bahasa Belanda','Bahasa Melayu','Bahasa Daerah'];
+
+// ── LOAD ──────────────────────────────────────────────────
+async function loadProfile() {
+  try {
+    const res = await fetch(`/api/get-profile?userId=${userId}`);
+    const data = await res.json();
+    if (!data.success) { alert('Gagal memuat profil: ' + data.error); return; }
+    profile = data.profile;
+    trustBreakdown = data.trust_breakdown;
+    renderAll();
+  } catch(e) { console.error('loadProfile:', e); }
+}
+
+// ── RENDER ALL ────────────────────────────────────────────
+function renderAll() {
+  renderBanner();
+  renderTrust();
+  renderSections();
+}
+
+function renderBanner() {
+  const p = profile;
+  const inisial = (p.nama_panggilan || p.nama || '?')[0].toUpperCase();
+  const setAvatar = (id, isImg) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (p.foto_url_1) el.innerHTML = `<img src="${p.foto_url_1}" alt="">`;
+    else el.textContent = inisial;
+  };
+  setAvatar('bannerAvatar'); setAvatar('topbarAvatar'); setAvatar('sidebarAvatar');
+  document.getElementById('bannerNama').textContent = p.nama || '—';
+  document.getElementById('topbarName').textContent = p.nama_panggilan || p.nama || '—';
+  document.getElementById('sidebarName').textContent = p.nama_panggilan || p.nama || '—';
+  const usia = p.tanggal_lahir ? hitungUsia(p.tanggal_lahir) + ' Tahun' : '';
+  document.getElementById('bannerSub').textContent = [usia, p.profesi, p.kota_domisili].filter(Boolean).join(' · ') || '—';
+  const badges = [];
+  if (p.email_verified) badges.push('✓ Email');
+  if (p.education_score_given) badges.push('✓ Pendidikan');
+  if (p.foto_url_1) badges.push('✓ Foto');
+  if (p.instagram) badges.push('✓ Instagram');
+  document.getElementById('bannerBadges').innerHTML = badges.map(b => `<span class="vbadge">${b}</span>`).join('');
+}
+
+function renderTrust() {
+  const score = profile.trust_score || 0;
+  const circ = 201;
+  document.getElementById('trustCircle').style.strokeDashoffset = circ - (score / 100) * circ;
+  document.getElementById('trustNum').textContent = score;
+  document.getElementById('trustScoreText').textContent = `${score} / 100 Poin`;
+  const badge = document.getElementById('trustBadge');
+  if (score >= 80) { badge.textContent = '✓ Aktif Direkomendasikan'; badge.className = 'trust-badge good'; }
+  else if (score >= 50) { badge.textContent = '⚡ Sedang — Lengkapi Profil'; badge.className = 'trust-badge mid'; }
+  else { badge.textContent = '⚠ Perlu Dilengkapi'; badge.className = 'trust-badge low'; }
+
+  if (!trustBreakdown) return;
+  const container = document.getElementById('trustRows');
+  container.innerHTML = Object.entries(trustBreakdown).map(([, item]) => {
+    const cls = item.done ? 'done' : (item.poin > 0 ? 'partial' : 'pending');
+    const icon = item.done ? '✅' : (item.poin > 0 ? '⚡' : '○');
+    const pct = (item.poin / item.max) * 100;
+    return `<div class="trust-row">
+      <div class="trust-row-icon ${cls}">${icon}</div>
+      <div class="trust-row-label">
+        <div style="font-size:13px;font-weight:500;margin-bottom:3px;">${item.label}</div>
+        <div class="trust-bar"><div class="trust-bar-fill" style="width:${pct}%;background:${item.done ? 'var(--green)' : (item.poin > 0 ? 'var(--yellow)' : '#ddd')}"></div></div>
+      </div>
+      <div class="trust-row-pts ${cls}" style="white-space:nowrap;font-size:12px;font-weight:700;">${item.poin}/${item.max}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderSections() {
+  const p = profile;
+  // PRIBADI
+  setVal('infoNama', p.nama);
+  setVal('infoPanggilan', p.nama_panggilan);
+  setVal('infoGender', p.jenis_kelamin);
+  setVal('infoLahir', p.tanggal_lahir ? formatTanggal(p.tanggal_lahir) : null);
+  setVal('infoStatusNikah', p.status_nikah);
+  setVal('infoAgama', p.agama);
+  setVal('infoIG', p.instagram ? '@' + p.instagram : null);
+  setVal('infoEmail', p.email);
+
+  // LOKASI & FISIK
+  setVal('infoDomisili', p.kota_domisili);
+  setVal('infoKotaAsal', p.kota_asal);
+  setVal('infoTinggi', p.tinggi_badan ? p.tinggi_badan + ' cm' : null);
+  setVal('infoBerat', p.berat_badan ? p.berat_badan + ' kg' : null);
+
+  // PENDIDIKAN
+  // Update verifikasi banner
+  const vb = document.getElementById('verifBanner');
+  const vp = document.getElementById('infoVerifPend');
+  if (p.education_score_given) {
+    vb.className = 'verif-banner done';
+    vb.innerHTML = `<div class="verif-banner-icon">✅</div><div class="verif-banner-text"><div class="verif-banner-title">Pendidikan Terverifikasi +30 Poin</div><div style="font-size:12px;">Data pendidikanmu telah diverifikasi oleh tim Matchu. Trust score bertambah +30 poin.</div></div>`;
+    vp.textContent = '✓ Terverifikasi'; vp.className = 'info-value verified';
+  } else {
+    vb.className = 'verif-banner pending';
+    vb.innerHTML = `<div class="verif-banner-icon">⏳</div><div class="verif-banner-text"><div class="verif-banner-title">Menunggu Verifikasi PDDikti</div><div style="font-size:12px;">Tim Matchu sedang memverifikasi. Proses ini 1×24 jam. Setelah terverifikasi, trust score kamu akan bertambah +30 poin.</div></div>`;
+    vp.textContent = 'Menunggu Verifikasi'; vp.className = 'info-value pending-v';
+  }
+  setVal('infoUniv', p.universitas);
+  setVal('infoProdi', p.program_studi ? `${p.jenjang || ''} ${p.program_studi}`.trim() : null);
+  setVal('infoJenjang', p.jenjang);
+  setVal('infoAngkatan', p.tahun_masuk);
+  setVal('infoStatusPend', p.status_pendidikan);
+
+  // PEKERJAAN
+  setVal('infoStatusKerja', p.status_kerja);
+  setVal('infoProfesi', p.profesi);
+  setVal('infoPerusahaan', p.perusahaan);
+
+  // KEPRIBADIAN
+  setVal('infoKepribadian', p.kepribadian);
+  setVal('infoMBTI', p.mbti);
+  setVal('infoTarget', p.target_menikah);
+  setVal('infoAgama2', p.agama);
+
+  // BIO
+  const bioEl = document.getElementById('infoBio');
+  if (p.bio) { bioEl.textContent = p.bio; bioEl.className = 'bio-box'; }
+  else { bioEl.textContent = 'Belum ada bio. Klik Edit untuk menambahkan.'; bioEl.className = 'bio-box empty'; }
+
+  // HOBI
+  const hobiEl = document.getElementById('infoHobi');
+  hobiEl.innerHTML = p.hobi ? p.hobi.split(',').map(h => `<span class="tag-chip">${h.trim()}</span>`).join('') : '<span style="color:#ccc;font-size:13px;font-style:italic;">Belum diisi</span>';
+
+  // BAHASA
+  const bahasaList = ['Bahasa Indonesia', ...(p.bahasa ? p.bahasa.split(',').map(b => b.trim()).filter(Boolean) : [])];
+  document.getElementById('infoBahasa').innerHTML = bahasaList.map(b => `<span class="tag-chip">${b}</span>`).join('');
+
+  // FOTO
+  const s1 = document.getElementById('foto1Slot');
+  const s2 = document.getElementById('foto2Slot');
+  if (p.foto_url_1) { s1.classList.add('filled'); s1.innerHTML = `<img src="${p.foto_url_1}" alt="Foto Utama"><span class="foto-label">Foto Utama</span>`; }
+  if (p.foto_url_2) { s2.classList.add('filled'); s2.innerHTML = `<img src="${p.foto_url_2}" alt="Foto Kedua"><span class="foto-label">Foto Kedua</span>`; }
+}
+
+function setVal(id, val) {
+  const el = document.getElementById(id); if (!el) return;
+  if (val) { el.textContent = val; el.className = 'info-value'; }
+  else { el.textContent = 'Belum diisi'; el.className = 'info-value empty'; }
+}
+function hitungUsia(tgl) {
+  const today = new Date(), born = new Date(tgl);
+  let age = today.getFullYear() - born.getFullYear();
+  if (today.getMonth() - born.getMonth() < 0 || (today.getMonth() === born.getMonth() && today.getDate() < born.getDate())) age--;
+  return age;
+}
+function formatTanggal(tgl) { return new Date(tgl).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}); }
+
+// ── MODAL ─────────────────────────────────────────────────
+function openModal(id) {
+  fillModal(id);
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow = ''; }
+document.querySelectorAll('.modal-bg').forEach(bg => bg.addEventListener('click', e => { if (e.target === bg) bg.classList.remove('open'); }));
+
+function fillModal(id) {
+  if (!profile) return;
+  const p = profile;
+  if (id === 'modalIdentitas') {
+    setF('editPanggilan', p.nama_panggilan);
+    setF('editStatusNikah', p.status_nikah);
+    setF('editAgama', p.agama);
+    setF('editIG', p.instagram);
+  } else if (id === 'modalLokasiFisik') {
+    setF('editDomisili', p.kota_domisili);
+    setF('editKotaAsal', p.kota_asal);
+    setF('editTinggi', p.tinggi_badan);
+    setF('editBerat', p.berat_badan);
+  } else if (id === 'modalPendidikan') {
+    setF('editUniv', p.universitas);
+    setF('editProdi', p.program_studi);
+    setF('editJenjang', p.jenjang);
+    setF('editAngkatan', p.tahun_masuk);
+    setF('editStatusPend', p.status_pendidikan);
+  } else if (id === 'modalPekerjaan') {
+    setF('editStatusKerja', p.status_kerja);
+    setF('editProfesi', p.profesi);
+    setF('editPerusahaan', p.perusahaan);
+  } else if (id === 'modalKepribadian') {
+    setF('editKepribadian', p.kepribadian);
+    setF('editMBTI', p.mbti);
+    setF('editTarget', p.target_menikah);
+  } else if (id === 'modalBio') {
+    setF('editBio', p.bio);
+    updateBioCount();
+  } else if (id === 'modalHobi') {
+    renderTagSel('hobiSel', HOBI_LIST, p.hobi);
+    renderTagSel('bahasaSel', BAHASA_LIST, p.bahasa);
+  }
+}
+function setF(id, val) { const el = document.getElementById(id); if (el) el.value = val || ''; }
+
+// ── TAG SELECTOR ──────────────────────────────────────────
+function renderTagSel(cId, list, cur) {
+  const current = cur ? cur.split(',').map(s => s.trim()) : [];
+  document.getElementById(cId).innerHTML = list.map(item =>
+    `<div class="tag-sel ${current.includes(item) ? 'on' : ''}" onclick="this.classList.toggle('on')">${item}</div>`
+  ).join('');
+}
+function getSelectedTags(cId) {
+  return [...document.querySelectorAll(`#${cId} .tag-sel.on`)].map(el => el.textContent).join(', ');
+}
+
+document.getElementById('editBio').addEventListener('input', updateBioCount);
+function updateBioCount() {
+  const len = document.getElementById('editBio').value.length;
+  document.getElementById('bioCount').textContent = `${len} / 300`;
+}
+
+// ── SAVE ──────────────────────────────────────────────────
+async function saveSection(section) {
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = 'Menyimpan...';
+
+  const modalMap = { identitas:'modalIdentitas', lokasiFisik:'modalLokasiFisik', pendidikan:'modalPendidikan', pekerjaan:'modalPekerjaan', kepribadian:'modalKepribadian', bio:'modalBio', hobi:'modalHobi' };
+
+  let payload = { userId };
+  if (section === 'identitas') {
+    payload = { ...payload,
+      nama_panggilan: document.getElementById('editPanggilan').value.trim(),
+      status_nikah:   document.getElementById('editStatusNikah').value,
+      agama:          document.getElementById('editAgama').value,
+      instagram:      document.getElementById('editIG').value.trim().replace('@',''),
+    };
+  } else if (section === 'lokasiFisik') {
+    payload = { ...payload,
+      kota_domisili: document.getElementById('editDomisili').value.trim(),
+      kota_asal:     document.getElementById('editKotaAsal').value.trim(),
+      tinggi_badan:  parseInt(document.getElementById('editTinggi').value) || null,
+      berat_badan:   parseInt(document.getElementById('editBerat').value) || null,
+    };
+  } else if (section === 'pendidikan') {
+    payload = { ...payload,
+      universitas:       document.getElementById('editUniv').value.trim(),
+      program_studi:     document.getElementById('editProdi').value.trim(),
+      jenjang:           document.getElementById('editJenjang').value,
+      tahun_masuk:       parseInt(document.getElementById('editAngkatan').value) || null,
+      status_pendidikan: document.getElementById('editStatusPend').value,
+    };
+  } else if (section === 'pekerjaan') {
+    payload = { ...payload,
+      status_kerja: document.getElementById('editStatusKerja').value,
+      profesi:      document.getElementById('editProfesi').value.trim(),
+      perusahaan:   document.getElementById('editPerusahaan').value.trim(),
+    };
+  } else if (section === 'kepribadian') {
+    payload = { ...payload,
+      kepribadian:    document.getElementById('editKepribadian').value,
+      mbti:           document.getElementById('editMBTI').value,
+      target_menikah: document.getElementById('editTarget').value,
+    };
+  } else if (section === 'bio') {
+    payload = { ...payload, bio: document.getElementById('editBio').value.trim() };
+  } else if (section === 'hobi') {
+    payload = { ...payload, hobi: getSelectedTags('hobiSel'), bahasa: getSelectedTags('bahasaSel') };
+  }
+
+  try {
+    const res = await fetch('/api/save-profile', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (data.success) {
+      closeModal(modalMap[section]);
+      // Reload fresh dari server
+      const fr = await fetch(`/api/get-profile?userId=${userId}`);
+      const fd = await fr.json();
+      if (fd.success) { profile = fd.profile; trustBreakdown = fd.trust_breakdown; }
+      renderAll();
+      showToast('✓ Profil berhasil diperbarui');
+    } else {
+      alert('Gagal: ' + (data.error || 'Coba lagi.'));
+    }
+  } catch(e) { alert('Gagal terhubung ke server.'); console.error(e); }
+  btn.disabled = false; btn.textContent = 'Simpan';
+}
+
+// ── TOAST ─────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2500);
+}
+
+// ── SIDEBAR, NOTIF & LOGOUT ───────────────────────────────
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const notifDropdown = document.getElementById('notifDropdown');
+document.getElementById('hamburger').addEventListener('click', () => { sidebar.classList.toggle('hidden'); overlay.classList.toggle('active'); });
+document.getElementById('sidebarClose').addEventListener('click', () => { sidebar.classList.add('hidden'); overlay.classList.remove('active'); });
+overlay.addEventListener('click', () => { sidebar.classList.add('hidden'); overlay.classList.remove('active'); notifDropdown.classList.remove('open'); });
+document.getElementById('notifBtn').addEventListener('click', e => { e.stopPropagation(); notifDropdown.classList.toggle('open'); });
+document.addEventListener('click', e => { if (!notifDropdown.contains(e.target) && e.target !== document.getElementById('notifBtn')) notifDropdown.classList.remove('open'); });
+function doLogout() { if (confirm('Yakin ingin keluar?')) { localStorage.clear(); window.location.href = 'login.html'; } }
+document.getElementById('btnLogout').addEventListener('click', doLogout);
+document.getElementById('logoutSidebar').addEventListener('click', e => { e.preventDefault(); doLogout(); });
+function confirmDelete() { if (confirm('Yakin hapus akun? TIDAK BISA dibatalkan.')) alert('Fitur hapus akun akan segera tersedia.'); }
+
+// ── INIT ──────────────────────────────────────────────────
+loadProfile();
+</script>
+</body>
+</html>

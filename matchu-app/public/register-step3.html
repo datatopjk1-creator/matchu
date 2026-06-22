@@ -8,23 +8,53 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{ --primary:#7A2236; --bg:#F8F5F2; --text:#222; --muted:#6b7280; --border:#ddd; }
+:root{ --primary:#7A2236; --bg:#F8F5F2; --text:#222; --muted:#6b7280; --border:#ddd; --green:#1ea672; }
 *{ margin:0; padding:0; box-sizing:border-box; }
 body{ background:var(--bg); font-family:'Inter',sans-serif; color:var(--text); }
 .container{ max-width:700px; margin:0 auto; padding:40px 20px 80px; }
 .card{ background:white; padding:48px; border-radius:28px; box-shadow:0 20px 40px rgba(0,0,0,.05); }
-.logo{ text-align:center; font-family:'Playfair Display',serif; font-size:52px; color:var(--primary); margin-bottom:6px; }
-.tagline{ text-align:center; color:var(--primary); font-style:italic; font-size:13px; margin-bottom:28px; }
-.step{ text-align:center; color:var(--primary); font-weight:600; font-size:13px; margin-bottom:10px; }
-.progress{ width:100%; height:7px; background:#eee; border-radius:20px; margin-bottom:28px; overflow:hidden; }
-.progress-fill{ width:66%; height:100%; background:var(--primary); border-radius:20px; }
-.title{ text-align:center; font-family:'Playfair Display',serif; font-size:30px; margin-bottom:8px; }
-.desc{ text-align:center; color:var(--muted); margin-bottom:32px; line-height:1.7; font-size:14px; }
 
+/* Header */
+.logo{ text-align:center; font-family:'Playfair Display',serif; font-size:52px; color:var(--primary); margin-bottom:6px; }
+.tagline{ text-align:center; color:var(--primary); font-style:italic; font-size:13px; margin-bottom:24px; }
+.step{ text-align:center; color:var(--primary); font-weight:600; font-size:12px; margin-bottom:8px; }
+.progress-bar{ width:100%; height:6px; background:#eee; border-radius:20px; margin-bottom:28px; overflow:hidden; }
+.progress-fill{ width:75%; height:100%; background:var(--primary); border-radius:20px; }
+
+/* Trust score banner — sama persis dengan step2 */
+.trust-banner{
+  background:linear-gradient(135deg,#7A2236 0%,#a83254 100%);
+  border-radius:16px; padding:20px 22px; margin-bottom:24px; color:white;
+}
+.trust-banner-title{ font-size:13px; font-weight:600; opacity:.85; margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em; }
+.trust-items{ display:flex; gap:8px; flex-wrap:wrap; }
+.trust-item{
+  background:rgba(255,255,255,.15); border-radius:8px;
+  padding:7px 12px; font-size:12px; font-weight:600;
+  display:flex; align-items:center; gap:5px;
+}
+.trust-item.done{ background:rgba(30,166,114,.35); }
+.trust-item.active{ background:rgba(255,255,255,.3); border:1.5px solid white; }
+
+/* Badge box — sama dengan step2 */
+.badge-box{
+  display:flex; align-items:center; gap:14px;
+  background:#f9f4f5; border:2px solid var(--primary);
+  border-radius:16px; padding:18px 20px; margin-bottom:24px;
+}
+.badge-icon{ font-size:36px; flex-shrink:0; }
+.badge-title{ font-weight:700; color:var(--primary); font-size:15px; margin-bottom:4px; }
+.badge-pts{ display:inline-block; background:var(--primary); color:white; border-radius:20px; padding:2px 10px; font-size:11px; font-weight:700; margin-left:6px; }
+.badge-sub{ font-size:13px; color:#555; line-height:1.5; }
+
+/* Section label */
 .section-label{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--primary); margin:28px 0 14px; padding-bottom:8px; border-bottom:1px solid #f0e8ea; }
+
+/* Form */
 .form-group{ margin-bottom:16px; }
 label{ display:block; margin-bottom:6px; font-weight:600; font-size:14px; }
 .opt{ font-weight:400; color:var(--muted); font-size:11px; margin-left:4px; }
+.req{ color:#e53e3e; margin-left:2px; }
 .hint{ display:block; margin-top:5px; color:var(--muted); font-size:12px; line-height:1.5; }
 .hint a{ color:var(--primary); }
 input, select, textarea{ width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:11px; font-size:14px; font-family:'Inter',sans-serif; color:var(--text); background:white; transition:.2s; }
@@ -33,7 +63,7 @@ textarea{ resize:vertical; min-height:85px; line-height:1.6; }
 .row-2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
 .row-3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
 
-/* AUTOCOMPLETE */
+/* Autocomplete */
 .ac-wrap{ position:relative; }
 .ac-dd{ position:absolute; top:100%; left:0; right:0; z-index:200; background:white; border:1.5px solid var(--primary); border-top:none; border-radius:0 0 11px 11px; max-height:220px; overflow-y:auto; box-shadow:0 8px 24px rgba(0,0,0,.1); display:none; }
 .ac-dd.show{ display:block; }
@@ -44,28 +74,27 @@ textarea{ resize:vertical; min-height:85px; line-height:1.6; }
 .ac-msg{ padding:12px 14px; font-size:13px; color:var(--muted); text-align:center; }
 .badge{ display:none; margin-top:6px; padding:7px 12px; background:#f9f4f5; border-radius:8px; font-size:13px; color:var(--primary); font-weight:600; }
 .badge.show{ display:block; }
+.btn-manual{ display:none; margin-top:6px; background:none; border:1.5px dashed var(--primary); color:var(--primary); padding:7px 14px; border-radius:8px; font-size:13px; cursor:pointer; font-family:'Inter',sans-serif; width:100%; text-align:left; transition:.2s; }
+.btn-manual:hover{ background:#f9f4f5; }
+.btn-manual.show{ display:block; }
 
-/* INFO BOX */
+/* Info box */
 .info-box{ background:#f9f4f5; border-left:3px solid var(--primary); border-radius:10px; padding:12px 14px; font-size:13px; color:#555; line-height:1.6; margin-top:8px; }
 .info-box a{ color:var(--primary); font-weight:600; }
 
-/* BAHASA TAGS */
+/* Tags */
 .tag-group{ display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
 .tag{ padding:7px 14px; border:1.5px solid var(--border); border-radius:50px; font-size:13px; cursor:pointer; transition:.2s; user-select:none; }
 .tag:hover{ border-color:var(--primary); color:var(--primary); }
 .tag.selected{ border-color:var(--primary); background:#f9f4f5; color:var(--primary); font-weight:600; }
 
-/* REQUIRED STAR */
-.req{ color:#e53e3e; margin-left:2px; }
-/* MANUAL BTN */
-.btn-manual{ display:none; margin-top:6px; background:none; border:1.5px dashed var(--primary); color:var(--primary); padding:7px 14px; border-radius:8px; font-size:13px; cursor:pointer; font-family:'Inter',sans-serif; width:100%; text-align:left; transition:.2s; }
-.btn-manual:hover{ background:#f9f4f5; }
-.btn-manual.show{ display:block; }
-/* ERROR */
+/* Error */
 .err{ color:#e53e3e; font-size:12px; margin-top:4px; display:none; }
 
+/* Submit */
 .btn{ width:100%; margin-top:26px; background:var(--primary); color:white; border:none; padding:15px; border-radius:13px; cursor:pointer; font-size:15px; font-weight:600; font-family:'Inter',sans-serif; transition:.2s; }
 .btn:hover{ opacity:.9; }
+.btn:disabled{ opacity:.6; cursor:not-allowed; }
 .back-link{ text-align:center; margin-top:14px; color:var(--muted); font-size:13px; }
 .back-link a{ color:var(--primary); text-decoration:none; font-weight:600; }
 
@@ -73,13 +102,12 @@ textarea{ resize:vertical; min-height:85px; line-height:1.6; }
   .container{ padding:20px 14px 60px; }
   .card{ padding:28px 18px; border-radius:20px; }
   .logo{ font-size:38px; }
-  .title{ font-size:22px; }
   .row-2{ grid-template-columns:1fr; gap:0; }
   .row-3{ grid-template-columns:1fr 1fr; }
+  .trust-items{ gap:6px; }
+  .trust-item{ font-size:11px; padding:5px 10px; }
 }
-@media(max-width:380px){
-  .row-3{ grid-template-columns:1fr; }
-}
+@media(max-width:380px){ .row-3{ grid-template-columns:1fr; } }
 </style>
 </head>
 <body>
@@ -88,33 +116,45 @@ textarea{ resize:vertical; min-height:85px; line-height:1.6; }
 
   <div class="logo">MATCHU</div>
   <div class="tagline">Beyond Matching. Toward Marriage.</div>
-  <div class="step">LANGKAH 2 DARI 3</div>
-  <div class="progress"><div class="progress-fill"></div></div>
-  <div class="title">Lengkapi Profilmu</div>
-  <div class="desc">Informasi ini membantu kami menemukan kandidat yang benar-benar sejalan denganmu.</div>
+  <div class="step">LANGKAH 3 DARI 4 — Lengkapi Profil</div>
+  <div class="progress-bar"><div class="progress-fill"></div></div>
+
+  <!-- Trust Score Banner -->
+  <div class="trust-banner">
+    <div class="trust-banner-title">Cara Mendapatkan Trust Score 100/100</div>
+    <div class="trust-items">
+      <div class="trust-item done">✓ Email OTP +20</div>
+      <div class="trust-item done">✓ Pendidikan +30</div>
+      <div class="trust-item active">👤 Profil Lengkap +30</div>
+      <div class="trust-item">Instagram +10</div>
+      <div class="trust-item">2 Foto +10</div>
+    </div>
+  </div>
+
+  <!-- Badge Box -->
+  <div class="badge-box">
+    <div class="badge-icon">👤</div>
+    <div>
+      <div class="badge-title">Profil Lengkap <span class="badge-pts">+30 poin</span></div>
+      <div class="badge-sub">Profil yang lengkap meningkatkan peluang match hingga 3x lebih tinggi. Isi semua field untuk mendapatkan poin penuh.</div>
+    </div>
+  </div>
 
   <form onsubmit="return validateForm(event)">
 
-    <!-- ── IDENTITAS DIRI ── -->
+    <!-- IDENTITAS DIRI -->
     <div class="section-label">Identitas Diri</div>
-
     <div class="row-3">
       <div class="form-group">
         <label>Bulan Lahir <span class="req">*</span></label>
         <select id="bulan-lahir" required>
           <option value="">Pilih bulan</option>
-          <option value="1">Januari</option>
-          <option value="2">Februari</option>
-          <option value="3">Maret</option>
-          <option value="4">April</option>
-          <option value="5">Mei</option>
-          <option value="6">Juni</option>
-          <option value="7">Juli</option>
-          <option value="8">Agustus</option>
-          <option value="9">September</option>
-          <option value="10">Oktober</option>
-          <option value="11">November</option>
-          <option value="12">Desember</option>
+          <option value="1">Januari</option><option value="2">Februari</option>
+          <option value="3">Maret</option><option value="4">April</option>
+          <option value="5">Mei</option><option value="6">Juni</option>
+          <option value="7">Juli</option><option value="8">Agustus</option>
+          <option value="9">September</option><option value="10">Oktober</option>
+          <option value="11">November</option><option value="12">Desember</option>
         </select>
       </div>
       <div class="form-group">
@@ -137,22 +177,19 @@ textarea{ resize:vertical; min-height:85px; line-height:1.6; }
       </div>
     </div>
 
-    <!-- ── PENDIDIKAN ── -->
+    <!-- PENDIDIKAN -->
     <div class="section-label">Pendidikan</div>
-
     <div class="form-group">
-      <label>Universitas / Perguruan Tinggi / Sekolah Kedinasan <span class="req">*</span></label>
+      <label>Universitas / Perguruan Tinggi <span class="req">*</span></label>
       <div class="ac-wrap">
-        <input type="text" id="univ-input" placeholder="Ketik nama universitas atau sekolah kedinasan..." autocomplete="off" oninput="searchUniv(this.value)" onfocus="if(this.value.length>=2)searchUniv(this.value)">
+        <input type="text" id="univ-input" placeholder="Ketik nama universitas..." autocomplete="off" oninput="searchUniv(this.value)" onfocus="if(this.value.length>=2)searchUniv(this.value)">
         <div class="ac-dd" id="univ-dd"></div>
       </div>
       <input type="hidden" id="univ-val">
       <div class="badge" id="univ-badge"></div>
       <button type="button" class="btn-manual" id="univ-manual-btn" onclick="tambahManualUniv()">+ Tidak ada di daftar? Tambahkan manual</button>
       <div class="err" id="univ-err">Pilih atau masukkan nama institusi pendidikan.</div>
-      <small class="hint">PTN, PTS, Politeknik, Institut, Sekolah Kedinasan (IPDN, STMKG, STIS, dll.)</small>
     </div>
-
     <div class="form-group">
       <label>Program Studi / Jurusan <span class="req">*</span></label>
       <div class="ac-wrap">
@@ -164,19 +201,14 @@ textarea{ resize:vertical; min-height:85px; line-height:1.6; }
       <button type="button" class="btn-manual" id="prodi-manual-btn" onclick="tambahManualProdi()">+ Tidak ada di daftar? Tambahkan manual</button>
       <div class="err" id="prodi-err">Pilih atau masukkan nama program studi.</div>
     </div>
-
     <div class="row-3">
       <div class="form-group">
         <label>Jenjang <span class="req">*</span></label>
         <select id="jenjang" required>
           <option value="">Pilih</option>
-          <option>D3</option>
-          <option>D4</option>
-          <option>S1</option>
-          <option>S2</option>
-          <option>S3</option>
-          <option>Diploma Kedinasan</option>
-          <option>Sarjana Terapan</option>
+          <option>D3</option><option>D4</option><option>S1</option>
+          <option>S2</option><option>S3</option>
+          <option>Diploma Kedinasan</option><option>Sarjana Terapan</option>
         </select>
       </div>
       <div class="form-group">
@@ -193,17 +225,14 @@ textarea{ resize:vertical; min-height:85px; line-height:1.6; }
         <label>Status <span class="req">*</span></label>
         <select id="status-pendidikan" required>
           <option value="">Pilih</option>
-          <option>Mahasiswa aktif</option>
-          <option>Tingkat akhir</option>
-          <option>Fresh graduate</option>
-          <option>Alumni</option>
+          <option>Mahasiswa aktif</option><option>Tingkat akhir</option>
+          <option>Fresh graduate</option><option>Alumni</option>
         </select>
       </div>
     </div>
 
-    <!-- ── PEKERJAAN ── -->
+    <!-- PEKERJAAN -->
     <div class="section-label">Pekerjaan</div>
-
     <div class="row-2">
       <div class="form-group">
         <label>Status Pekerjaan <span class="req">*</span></label>
@@ -222,19 +251,16 @@ textarea{ resize:vertical; min-height:85px; line-height:1.6; }
         <div class="err" id="profesi-err">Isi profesi atau jabatan.</div>
       </div>
     </div>
-
     <div id="instansi-wrap" class="form-group" style="display:none;">
       <label>Nama Perusahaan / Instansi <span class="opt">(opsional)</span></label>
       <input type="text" id="perusahaan" placeholder="Contoh: RS Cipto Mangunkusumo, Google">
     </div>
-
     <div id="info-mencari" class="info-box" style="display:none;">
       Tidak masalah! Kami tetap mempertemukan kamu dengan kandidat yang sesuai. Status pekerjaan tidak mempengaruhi peluang match di Matchu.
     </div>
 
-    <!-- ── LOKASI ── -->
+    <!-- LOKASI -->
     <div class="section-label">Lokasi</div>
-
     <div class="row-2">
       <div class="form-group">
         <label>Kota Domisili Saat Ini <span class="req">*</span></label>
@@ -242,15 +268,14 @@ textarea{ resize:vertical; min-height:85px; line-height:1.6; }
         <small class="hint">Kota tempat kamu tinggal sekarang.</small>
       </div>
       <div class="form-group">
-        <label>Kota Asal / Kampung Halaman <span class="opt">(opsional)</span></label>
+        <label>Kota Asal <span class="opt">(opsional)</span></label>
         <input type="text" id="kota-asal" placeholder="Contoh: Padang, Surabaya">
         <small class="hint">Kota tempat kamu lahir atau dibesarkan.</small>
       </div>
     </div>
 
-    <!-- ── DATA FISIK ── -->
+    <!-- DATA FISIK -->
     <div class="section-label">Data Fisik</div>
-
     <div class="row-2">
       <div class="form-group">
         <label>Tinggi Badan (cm) <span class="req">*</span></label>
@@ -262,20 +287,16 @@ textarea{ resize:vertical; min-height:85px; line-height:1.6; }
       </div>
     </div>
 
-    <!-- ── NILAI & KEYAKINAN ── -->
+    <!-- NILAI & KEYAKINAN -->
     <div class="section-label">Nilai dan Keyakinan</div>
-
     <div class="row-2">
       <div class="form-group">
         <label>Agama <span class="req">*</span></label>
         <select id="agama" required>
           <option value="">Pilih agama</option>
-          <option>Islam</option>
-          <option>Kristen Protestan</option>
-          <option>Katolik</option>
-          <option>Hindu</option>
-          <option>Buddha</option>
-          <option>Konghucu</option>
+          <option>Islam</option><option>Kristen Protestan</option>
+          <option>Katolik</option><option>Hindu</option>
+          <option>Buddha</option><option>Konghucu</option>
         </select>
       </div>
       <div class="form-group">
@@ -290,39 +311,24 @@ textarea{ resize:vertical; min-height:85px; line-height:1.6; }
       </div>
     </div>
 
-    <!-- ── KEPRIBADIAN ── -->
+    <!-- KEPRIBADIAN -->
     <div class="section-label">Kepribadian</div>
-
     <div class="row-2">
       <div class="form-group">
         <label>Tipe Kepribadian <span class="req">*</span></label>
         <select id="kepribadian" required>
           <option value="">Pilih</option>
-          <option>Introvert</option>
-          <option>Ekstrovert</option>
-          <option>Ambivert</option>
+          <option>Introvert</option><option>Ekstrovert</option><option>Ambivert</option>
         </select>
       </div>
       <div class="form-group">
         <label>Tipe MBTI <span class="req">*</span></label>
         <select id="mbti" required>
           <option value="">Pilih tipe MBTI</option>
-          <option>INTJ</option>
-          <option>INTP</option>
-          <option>ENTJ</option>
-          <option>ENTP</option>
-          <option>INFJ</option>
-          <option>INFP</option>
-          <option>ENFJ</option>
-          <option>ENFP</option>
-          <option>ISTJ</option>
-          <option>ISFJ</option>
-          <option>ESTJ</option>
-          <option>ESFJ</option>
-          <option>ISTP</option>
-          <option>ISFP</option>
-          <option>ESTP</option>
-          <option>ESFP</option>
+          <option>INTJ</option><option>INTP</option><option>ENTJ</option><option>ENTP</option>
+          <option>INFJ</option><option>INFP</option><option>ENFJ</option><option>ENFP</option>
+          <option>ISTJ</option><option>ISFJ</option><option>ESTJ</option><option>ESFJ</option>
+          <option>ISTP</option><option>ISFP</option><option>ESTP</option><option>ESFP</option>
         </select>
         <div class="info-box" style="margin-top:8px;">
           Belum tahu tipe MBTI kamu? Tes gratis di:
@@ -332,9 +338,8 @@ textarea{ resize:vertical; min-height:85px; line-height:1.6; }
       </div>
     </div>
 
-    <!-- ── HOBI ── -->
+    <!-- HOBI -->
     <div class="section-label">Hobi</div>
-
     <div class="form-group">
       <label>Hobi (pilih minimal 1) <span class="req">*</span></label>
       <div class="tag-group" id="hobi-grid">
@@ -358,9 +363,8 @@ textarea{ resize:vertical; min-height:85px; line-height:1.6; }
       <div class="err" id="hobi-err">Pilih minimal 1 hobi.</div>
     </div>
 
-    <!-- ── BAHASA ── -->
+    <!-- BAHASA -->
     <div class="section-label">Bahasa yang Dikuasai <span class="opt" style="font-size:12px;text-transform:none;letter-spacing:0;">(opsional)</span></div>
-
     <div class="form-group">
       <label>Pilih bahasa yang kamu kuasai <span class="opt">(opsional)</span></label>
       <div class="tag-group" id="bahasa-grid">
@@ -376,34 +380,28 @@ textarea{ resize:vertical; min-height:85px; line-height:1.6; }
         <div class="tag" onclick="toggleTag(this,'bahasa')">Bahasa Daerah</div>
       </div>
       <input type="hidden" id="bahasa-val">
-      <small class="hint">Bahasa Indonesia sudah otomatis tercantum. Tambahkan bahasa lain jika ada.</small>
+      <small class="hint">Bahasa Indonesia sudah otomatis tercantum.</small>
     </div>
 
-    <!-- ── BIO ── -->
+    <!-- BIO -->
     <div class="section-label">Tentang Diri</div>
-
     <div class="form-group">
       <label>Ceritakan sedikit tentang dirimu <span class="req">*</span></label>
       <textarea id="bio" placeholder="Contoh: Saya dokter yang menyukai traveling dan pendidikan. Mencari pasangan yang serius dan berpikiran terbuka..." maxlength="300" required></textarea>
       <small class="hint" id="bio-count">0 / 300 karakter</small>
     </div>
 
-    <button type="submit" class="btn">Lanjutkan ke Verifikasi</button>
-    <div class="back-link"><a href="register.html">Kembali ke langkah sebelumnya</a></div>
+    <button type="submit" class="btn">Lanjutkan ke Foto & Instagram</button>
+    <div class="back-link"><a href="register-step2.html">Kembali ke langkah sebelumnya</a></div>
 
   </form>
 </div>
 </div>
 
 <script>
-// ── CEK SESI (FIXED: baca 'matchu_user_id', bukan 'matchu_user') ──
 const matchuUserId = localStorage.getItem('matchu_user_id');
-if (!matchuUserId) {
-  alert('Sesi tidak ditemukan. Silakan daftar ulang.');
-  window.location.href = 'register.html';
-}
+if (!matchuUserId) { alert('Sesi tidak ditemukan. Silakan daftar ulang.'); window.location.href = 'register.html'; }
 
-// ── TAHUN LAHIR ──
 const tahunSekarang = new Date().getFullYear();
 const tahunLahirList = [];
 for (let t = tahunSekarang - 22; t >= tahunSekarang - 70; t--) tahunLahirList.push(t);
@@ -420,10 +418,8 @@ function pilihTahunLahir(val, label) {
   document.getElementById('tahunlahir-err').style.display = 'none';
 }
 
-// ── UNIVERSITAS ──
 const PDDIKTI = 'https://pddikti.kemdiktisaintek.go.id/api';
 let univTimeout = null;
-
 async function searchUniv(q) {
   document.getElementById('univ-val').value = '';
   document.getElementById('univ-badge').className = 'badge';
@@ -443,103 +439,16 @@ async function searchUniv(q) {
         renderAcList('univ-dd', list, q, (v,l) => pilihUniv(v,l)); return;
       }
     } catch {}
-    try {
-      const res = await fetch(`https://api-frontend.kemdikbud.go.id/hit_pt/${encodeURIComponent(q)}`, { signal: AbortSignal.timeout(4000) });
-      const json = await res.json();
-      const raw = json.pt || (Array.isArray(json) ? json : []);
-      if (raw.length > 0) {
-        const list = raw.slice(0,15).map(i => ({ label: i.nama_pt||i.nama||String(i), val: i.kode_pt||'' }));
-        renderAcList('univ-dd', list, q, (v,l) => pilihUniv(v,l)); return;
-      }
-    } catch {}
     univFallback(q);
   }, 400);
 }
-
 function univFallback(q) {
-  const data = [
-    'Institut Pertanian Bogor (IPB University)',
-    'Universitas Indonesia','Universitas Gadjah Mada','Institut Teknologi Bandung',
-    'Institut Teknologi Sepuluh Nopember','Universitas Airlangga','Universitas Diponegoro',
-    'Universitas Brawijaya','Universitas Padjadjaran','Universitas Hasanuddin',
-    'Universitas Sumatera Utara','Universitas Sebelas Maret','Universitas Negeri Yogyakarta',
-    'Universitas Negeri Malang','Universitas Pendidikan Indonesia','Universitas Andalas',
-    'Universitas Sriwijaya','Universitas Mataram','Universitas Tadulako',
-    'Universitas Halu Oleo','Universitas Sam Ratulangi','Universitas Pattimura',
-    'Universitas Cenderawasih','Universitas Mulawarman','Universitas Lambung Mangkurat',
-    'Universitas Nusa Cendana','Universitas Negeri Semarang','Universitas Negeri Surabaya',
-    'Universitas Negeri Makassar','Universitas Negeri Jakarta','Universitas Negeri Padang',
-    'Universitas Negeri Gorontalo','Universitas Negeri Manado','Universitas Udayana',
-    'Universitas Tanjungpura','Universitas Palangka Raya','Universitas Bengkulu',
-    'Universitas Jambi','Universitas Riau','Universitas Syiah Kuala',
-    'Universitas Malikussaleh','Universitas Samudra',
-    'Universitas Islam Negeri Syarif Hidayatullah Jakarta',
-    'Universitas Islam Negeri Maulana Malik Ibrahim Malang',
-    'Universitas Islam Negeri Sunan Kalijaga Yogyakarta',
-    'Universitas Islam Negeri Sunan Ampel Surabaya',
-    'Universitas Islam Negeri Alauddin Makassar',
-    'Universitas Islam Negeri Raden Fatah Palembang',
-    'Universitas Islam Negeri Walisongo Semarang',
-    'Universitas Islam Negeri Ar-Raniry Banda Aceh',
-    'Universitas Islam Negeri Sultan Syarif Kasim Riau',
-    'Politeknik Negeri Jakarta','Politeknik Negeri Bandung',
-    'Politeknik Negeri Semarang','Politeknik Negeri Surabaya',
-    'Politeknik Negeri Medan','Politeknik Negeri Malang',
-    'Institut Teknologi Kalimantan','Institut Teknologi Sumatera',
-    'Institut Seni Indonesia Yogyakarta','Institut Seni Indonesia Denpasar',
-    'BINUS University','Universitas Pelita Harapan',
-    'Universitas Atma Jaya Jakarta','Universitas Trisakti','Universitas Tarumanagara',
-    'Universitas Mercu Buana','Universitas Esa Unggul','Universitas Gunadarma',
-    'Universitas Pancasila','Universitas Telkom','Universitas Ciputra',
-    'Universitas Prasetiya Mulya','Universitas Multimedia Nusantara','President University',
-    'Universitas Islam Indonesia','Universitas Muhammadiyah Yogyakarta',
-    'Universitas Ahmad Dahlan','Universitas Muhammadiyah Surakarta',
-    'Universitas Muhammadiyah Malang','Universitas Muhammadiyah Jakarta',
-    'Universitas Muhammadiyah Makassar','Universitas Muhammadiyah Surabaya',
-    'Universitas Kristen Satya Wacana','Universitas Sanata Dharma',
-    'Universitas Katolik Indonesia Atma Jaya','Universitas Kristen Indonesia',
-    'Universitas Katolik Soegijapranata','Universitas Parahyangan',
-    'Universitas Nahdlatul Ulama Indonesia','Universitas Al Azhar Indonesia',
-    'Universitas Bina Sarana Informatika','Universitas Komputer Indonesia',
-    'Universitas Dian Nuswantoro','Universitas Widyatama','Universitas Pasundan',
-    'Universitas Maranatha','Universitas Warmadewa','Universitas Surabaya',
-    'Universitas 17 Agustus 1945 Surabaya','Universitas Petra',
-    'Universitas Pembangunan Nasional Veteran Jakarta',
-    'Universitas Pembangunan Nasional Veteran Yogyakarta',
-    'Universitas Pembangunan Nasional Veteran Surabaya',
-    'Universitas Terbuka',
-    'Institut Pemerintahan Dalam Negeri (IPDN)',
-    'Sekolah Tinggi Meteorologi Klimatologi dan Geofisika (STMKG)',
-    'Sekolah Tinggi Ilmu Statistik (STIS)',
-    'Sekolah Tinggi Intelijen Negara (STIN)',
-    'Sekolah Tinggi Transportasi Darat (STTD)',
-    'Politeknik Transportasi Darat Indonesia (PTDI)',
-    'Politeknik Penerbangan Indonesia Curug (PPI Curug)',
-    'Sekolah Tinggi Perikanan (STP)',
-    'Politeknik Kelautan dan Perikanan',
-    'Sekolah Tinggi Pertanahan Nasional (STPN)',
-    'Politeknik Keuangan Negara STAN (PKN STAN)',
-    'Akademi Ilmu Pemasyarakatan (AKIP)',
-    'Politeknik Imigrasi (Poltekim)',
-    'Akademi Kepolisian (Akpol)',
-    'Akademi Militer (Akmil)',
-    'Akademi Angkatan Laut (AAL)',
-    'Akademi Angkatan Udara (AAU)',
-    'Sekolah Tinggi Akuntansi Negara (STAN)',
-    'Institut Teknologi PLN',
-    'Politeknik Energi dan Mineral Akamigas',
-    'Politeknik Perkebunan Nusantara',
-  ];
+  const data = ['Institut Pertanian Bogor (IPB University)','Universitas Indonesia','Universitas Gadjah Mada','Institut Teknologi Bandung','Institut Teknologi Sepuluh Nopember','Universitas Airlangga','Universitas Diponegoro','Universitas Brawijaya','Universitas Padjadjaran','Universitas Hasanuddin','Universitas Sumatera Utara','Universitas Sebelas Maret','Universitas Negeri Yogyakarta','Universitas Negeri Malang','Universitas Pendidikan Indonesia','Universitas Andalas','Universitas Udayana','Universitas Tanjungpura','Universitas Riau','Universitas Syiah Kuala','BINUS University','Universitas Pelita Harapan','Universitas Trisakti','Universitas Tarumanagara','Universitas Gunadarma','Universitas Telkom','Universitas Mercu Buana','President University','Universitas Islam Indonesia','Universitas Muhammadiyah Yogyakarta','Universitas Muhammadiyah Malang','Universitas Ahmad Dahlan','Universitas Kristen Satya Wacana','Universitas Sanata Dharma','Universitas Islam Negeri Syarif Hidayatullah Jakarta','Universitas Islam Negeri Sunan Kalijaga Yogyakarta','Universitas Islam Negeri Maulana Malik Ibrahim Malang','Politeknik Negeri Jakarta','Politeknik Negeri Bandung','Politeknik Keuangan Negara STAN (PKN STAN)','Institut Pemerintahan Dalam Negeri (IPDN)','Sekolah Tinggi Meteorologi Klimatologi dan Geofisika (STMKG)','Sekolah Tinggi Ilmu Statistik (STIS)','Akademi Kepolisian (Akpol)','Akademi Militer (Akmil)','Akademi Angkatan Laut (AAL)','Akademi Angkatan Udara (AAU)','Universitas Terbuka'];
   const f = data.filter(u => u.toLowerCase().includes(q.toLowerCase())).slice(0,15).map(u => ({ label: u, val: '' }));
-  if (f.length === 0) {
-    document.getElementById('univ-dd').innerHTML = '<div class="ac-msg">Tidak ditemukan. Klik tombol di bawah untuk input manual.</div>';
-    document.getElementById('univ-manual-btn').className = 'btn-manual show';
-    return;
-  }
+  if (f.length === 0) { document.getElementById('univ-dd').innerHTML = '<div class="ac-msg">Tidak ditemukan. Gunakan tombol di bawah untuk input manual.</div>'; document.getElementById('univ-manual-btn').className = 'btn-manual show'; return; }
   document.getElementById('univ-manual-btn').className = 'btn-manual show';
   renderAcList('univ-dd', f, q, (v,l) => pilihUniv(v,l));
 }
-
 function pilihUniv(val, label) {
   document.getElementById('univ-input').value = label;
   document.getElementById('univ-val').value = val || label;
@@ -548,8 +457,16 @@ function pilihUniv(val, label) {
   b.textContent = 'Dipilih: ' + label; b.className = 'badge show';
   document.getElementById('univ-err').style.display = 'none';
 }
+function tambahManualUniv() {
+  const val = document.getElementById('univ-input').value.trim();
+  if (!val) { alert('Ketik nama universitas terlebih dahulu.'); return; }
+  pilihUniv(val, val);
+  document.getElementById('univ-manual-btn').className = 'btn-manual';
+}
+document.getElementById('univ-input').addEventListener('blur', function() {
+  setTimeout(() => { if (!document.getElementById('univ-val').value && this.value.length >= 2) document.getElementById('univ-manual-btn').className = 'btn-manual show'; }, 200);
+});
 
-// ── PRODI ──
 let prodiTimeout = null;
 async function searchProdi(q) {
   document.getElementById('prodi-val').value = '';
@@ -567,72 +484,18 @@ async function searchProdi(q) {
       const raw = json.data || json.prodi || (Array.isArray(json) ? json : []);
       if (raw.length > 0) {
         const seen = new Set();
-        const list = raw.filter(i => { const n=i.nama||i.nama_prodi||String(i); if(seen.has(n))return false; seen.add(n); return true; })
-          .slice(0,15).map(i => ({ label: i.nama||i.nama_prodi||String(i), val: i.id||i.kode_prodi||'' }));
-        renderAcList('prodi-dd', list, q, (v,l) => pilihProdi(v,l)); return;
-      }
-    } catch {}
-    try {
-      const res = await fetch(`https://api-frontend.kemdikbud.go.id/hit_prodi/${encodeURIComponent(q)}`, { signal: AbortSignal.timeout(4000) });
-      const json = await res.json();
-      const raw = json.prodi || (Array.isArray(json) ? json : []);
-      if (raw.length > 0) {
-        const seen = new Set();
-        const list = raw.filter(i => { const n=i.nama_prodi||i.nama||String(i); if(seen.has(n))return false; seen.add(n); return true; })
-          .slice(0,15).map(i => ({ label: i.nama_prodi||i.nama||String(i), val: i.kode_prodi||'' }));
+        const list = raw.filter(i => { const n=i.nama||i.nama_prodi||String(i); if(seen.has(n))return false; seen.add(n); return true; }).slice(0,15).map(i => ({ label: i.nama||i.nama_prodi||String(i), val: i.id||i.kode_prodi||'' }));
         renderAcList('prodi-dd', list, q, (v,l) => pilihProdi(v,l)); return;
       }
     } catch {}
     prodiFallback(q);
   }, 400);
 }
-
 function prodiFallback(q) {
-  const data = [
-    'Administrasi Bisnis','Administrasi Negara','Administrasi Publik',
-    'Agribisnis','Agroteknologi','Agroekoteknologi',
-    'Akuntansi','Akuntansi Perpajakan','Akuntansi Sektor Publik',
-    'Antropologi Sosial','Arsitektur','Arsitektur Lanskap',
-    'Biologi','Biokimia','Bioteknologi',
-    'Bisnis Digital','Bisnis Internasional',
-    'Desain Komunikasi Visual','Desain Interior','Desain Produk',
-    'Ekonomi','Ekonomi Pembangunan','Ekonomi Islam',
-    'Farmasi','Film dan Televisi','Fisika','Fisioterapi',
-    'Gizi','Gizi Klinik','Hubungan Internasional','Hubungan Masyarakat',
-    'Hukum','Hukum Bisnis','Hukum Internasional',
-    'Ilmu Administrasi Negara','Ilmu Komunikasi','Ilmu Komputer',
-    'Ilmu Kelautan','Ilmu Pemerintahan','Ilmu Politik','Ilmu Perpustakaan',
-    'Jurnalistik','Kebidanan','Kedokteran','Kedokteran Gigi','Kedokteran Hewan',
-    'Kehutanan','Keperawatan','Kesehatan Lingkungan','Kesehatan Masyarakat',
-    'Kimia','Kimia Industri','Komunikasi Penyiaran Islam',
-    'Manajemen','Manajemen Bisnis','Manajemen Informatika',
-    'Manajemen Keuangan','Manajemen Pariwisata','Manajemen Pemasaran',
-    'Matematika','Musik',
-    'Pendidikan Agama Islam','Pendidikan Bahasa Arab',
-    'Pendidikan Bahasa Indonesia','Pendidikan Bahasa Inggris',
-    'Pendidikan Bahasa Jepang','Pendidikan Bahasa Mandarin',
-    'Pendidikan Biologi','Pendidikan Dokter',
-    'Pendidikan Fisika','Pendidikan Geografi',
-    'Pendidikan Guru Pendidikan Anak Usia Dini',
-    'Pendidikan Guru Sekolah Dasar',
-    'Pendidikan IPA','Pendidikan IPS','Pendidikan Jasmani','Pendidikan Kimia',
-    'Pendidikan Luar Biasa','Pendidikan Matematika',
-    'Pendidikan Pancasila dan Kewarganegaraan',
-    'Pendidikan Sejarah','Pendidikan Seni','Pendidikan Sosiologi',
-    'Perbankan','Perbankan Syariah','Periklanan','Perikanan','Peternakan',
-    'Psikologi','Sastra Arab','Sastra Indonesia','Sastra Inggris',
-    'Sastra Jepang','Sastra Mandarin','Sastra Perancis',
-    'Seni Rupa','Sosiologi','Statistika','Sistem Informasi',
-    'Teknik Aeronautika','Teknik Biomedik','Teknik Elektro',
-    'Teknik Informatika','Teknik Industri','Teknik Kimia',
-    'Teknik Lingkungan','Teknik Mesin','Teknik Pertambangan',
-    'Teknik Pertanian','Teknik Perkapalan','Teknik Sipil',
-    'Teknologi Informasi','Teknologi Pangan','Ilmu Tanah',
-  ];
+  const data = ['Akuntansi','Administrasi Bisnis','Arsitektur','Biologi','Desain Komunikasi Visual','Ekonomi Pembangunan','Farmasi','Fisika','Gizi','Hubungan Internasional','Hukum','Ilmu Komunikasi','Ilmu Komputer','Jurnalistik','Kebidanan','Kedokteran','Kedokteran Gigi','Keperawatan','Kesehatan Masyarakat','Kimia','Manajemen','Matematika','Pendidikan Guru Sekolah Dasar','Pendidikan Bahasa Inggris','Pendidikan Matematika','Psikologi','Sastra Indonesia','Sastra Inggris','Sistem Informasi','Sosiologi','Statistika','Teknik Elektro','Teknik Informatika','Teknik Industri','Teknik Mesin','Teknik Sipil','Teknologi Informasi','Teknologi Pangan'];
   const f = data.filter(p => p.toLowerCase().includes(q.toLowerCase())).slice(0,15).map(p => ({ label: p, val: '' }));
   renderAcList('prodi-dd', f, q, (v,l) => pilihProdi(v,l));
 }
-
 function pilihProdi(val, label) {
   document.getElementById('prodi-input').value = label;
   document.getElementById('prodi-val').value = val || label;
@@ -641,8 +504,16 @@ function pilihProdi(val, label) {
   b.textContent = 'Dipilih: ' + label; b.className = 'badge show';
   document.getElementById('prodi-err').style.display = 'none';
 }
+function tambahManualProdi() {
+  const val = document.getElementById('prodi-input').value.trim();
+  if (!val) { alert('Ketik nama program studi terlebih dahulu.'); return; }
+  pilihProdi(val, val);
+  document.getElementById('prodi-manual-btn').className = 'btn-manual';
+}
+document.getElementById('prodi-input').addEventListener('blur', function() {
+  setTimeout(() => { if (!document.getElementById('prodi-val').value && this.value.length >= 2) document.getElementById('prodi-manual-btn').className = 'btn-manual show'; }, 200);
+});
 
-// ── ANGKATAN ──
 const angkatanList = [];
 for (let t = tahunSekarang; t >= 1990; t--) angkatanList.push(t);
 function showAngkatan() { renderAcList('angkatan-dd', angkatanList.slice(0,15).map(t=>({label:t+' — Angkatan '+t,val:t})), '', (v,l)=>pilihAngkatan(v,l)); }
@@ -659,34 +530,6 @@ function pilihAngkatan(val, label) {
   document.getElementById('angkatan-err').style.display = 'none';
 }
 
-// ── MANUAL INPUT ──
-function tambahManualUniv() {
-  const val = document.getElementById('univ-input').value.trim();
-  if (!val) { alert('Ketik nama universitas atau sekolah kedinasan terlebih dahulu.'); return; }
-  pilihUniv(val, val);
-  document.getElementById('univ-manual-btn').className = 'btn-manual';
-}
-function tambahManualProdi() {
-  const val = document.getElementById('prodi-input').value.trim();
-  if (!val) { alert('Ketik nama program studi terlebih dahulu.'); return; }
-  pilihProdi(val, val);
-  document.getElementById('prodi-manual-btn').className = 'btn-manual';
-}
-
-document.getElementById('univ-input').addEventListener('blur', function() {
-  setTimeout(() => {
-    if (!document.getElementById('univ-val').value && this.value.length >= 2) {
-      document.getElementById('univ-manual-btn').className = 'btn-manual show';
-    }
-  }, 200);
-});
-document.getElementById('prodi-input').addEventListener('blur', function() {
-  setTimeout(() => {
-    if (!document.getElementById('prodi-val').value && this.value.length >= 2) {
-      document.getElementById('prodi-manual-btn').className = 'btn-manual show';
-    }
-  }, 200);
-});
 function togglePekerjaan() {
   const val = document.getElementById('status-kerja').value;
   const instansi = document.getElementById('instansi-wrap');
@@ -694,21 +537,18 @@ function togglePekerjaan() {
   const profesiInput = document.getElementById('profesi');
   const star = document.getElementById('profesi-star');
   if (val === 'mencari' || val === 'belum') {
-    instansi.style.display = 'none';
-    info.style.display = 'block';
+    instansi.style.display = 'none'; info.style.display = 'block';
     profesiInput.placeholder = 'Opsional — isi jika ada';
     profesiInput.removeAttribute('required');
     if (star) star.style.display = 'none';
   } else {
-    instansi.style.display = 'block';
-    info.style.display = 'none';
+    instansi.style.display = 'block'; info.style.display = 'none';
     profesiInput.placeholder = 'Contoh: Dokter, Software Engineer';
     profesiInput.setAttribute('required','');
     if (star) star.style.display = 'inline';
   }
 }
 
-// ── TAG (hobi & bahasa) ──
 const hobiSet = new Set();
 const bahasaSet = new Set();
 function toggleTag(el, type) {
@@ -720,18 +560,13 @@ function toggleTag(el, type) {
   if (type === 'hobi') document.getElementById('hobi-err').style.display = 'none';
 }
 
-// ── BIO counter ──
 document.getElementById('bio').addEventListener('input', function() {
   document.getElementById('bio-count').textContent = this.value.length + ' / 300 karakter';
 });
 
-// ── GENERIC AUTOCOMPLETE render ──
 function renderAcList(ddId, items, q, onSelect) {
   const dd = document.getElementById(ddId);
-  if (!items || items.length === 0) {
-    dd.innerHTML = '<div class="ac-msg">Tidak ditemukan.</div>';
-    dd.className = 'ac-dd show'; return;
-  }
+  if (!items || items.length === 0) { dd.innerHTML = '<div class="ac-msg">Tidak ditemukan.</div>'; dd.className = 'ac-dd show'; return; }
   dd.innerHTML = items.map(item => {
     const hl = q ? item.label.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<span class="m">$1</span>') : item.label;
     return `<div class="ac-item" onclick="(${onSelect.toString()})('${String(item.val).replace(/'/g,"\\'")}','${item.label.replace(/'/g,"\\'")}');this.closest('.ac-dd').className='ac-dd'">${hl}</div>`;
@@ -739,51 +574,34 @@ function renderAcList(ddId, items, q, onSelect) {
   dd.className = 'ac-dd show';
 }
 function closeAc(id) { document.getElementById(id).className = 'ac-dd'; }
+document.addEventListener('click', function(e) { if (!e.target.closest('.ac-wrap')) document.querySelectorAll('.ac-dd').forEach(d=>d.className='ac-dd'); });
 
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.ac-wrap')) document.querySelectorAll('.ac-dd').forEach(d=>d.className='ac-dd');
-});
-
-// ── VALIDASI & SUBMIT (FIXED) ──
 async function validateForm(e) {
   e.preventDefault();
   let valid = true;
   const show = (id) => { document.getElementById(id).style.display = 'block'; valid = false; };
-
   if (!document.getElementById('tahunlahir-val').value) show('tahunlahir-err');
   if (!document.getElementById('univ-input').value.trim()) show('univ-err');
   if (!document.getElementById('prodi-input').value.trim()) show('prodi-err');
   if (!document.getElementById('angkatan-val').value) show('angkatan-err');
-
   const statusKerja = document.getElementById('status-kerja').value;
   if (!['mencari', 'belum'].includes(statusKerja) && !document.getElementById('profesi').value.trim()) show('profesi-err');
-
   if (!document.getElementById('mbti').value) show('mbti-err');
   if (hobiSet.size === 0) show('hobi-err');
+  if (!valid) { document.querySelector('.err[style*="block"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); return false; }
 
-  if (!valid) {
-    document.querySelector('.err[style*="block"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    return false;
-  }
-
-  // ✅ FIXED: ambil userId langsung dari 'matchu_user_id', bukan dari objek 'matchu_user' yang sudah dihapus
   const userId = localStorage.getItem('matchu_user_id');
-  if (!userId) {
-    alert('Sesi tidak ditemukan. Silakan mulai dari awal.');
-    window.location.href = 'register.html';
-    return false;
-  }
+  if (!userId) { alert('Sesi tidak ditemukan.'); window.location.href = 'register.html'; return false; }
 
   const btn = document.querySelector('.btn[type="submit"]');
-  btn.disabled = true;
-  btn.textContent = 'Menyimpan...';
+  btn.disabled = true; btn.textContent = 'Menyimpan...';
 
   try {
     const res = await fetch('/api/update-profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        userId: userId, // ✅ FIXED
+        userId,
         bulan_lahir: parseInt(document.getElementById('bulan-lahir').value) || null,
         tahun_lahir: parseInt(document.getElementById('tahunlahir-val').value) || null,
         status_nikah: document.getElementById('status-nikah').value,
@@ -808,21 +626,10 @@ async function validateForm(e) {
         bio: document.getElementById('bio').value.trim(),
       }),
     });
-
     const data = await res.json();
-    if (data.success) {
-      window.location.href = 'register-step3.html';
-    } else {
-      alert('Gagal menyimpan profil: ' + (data.error || 'Coba lagi.'));
-      btn.disabled = false;
-      btn.textContent = 'Lanjutkan ke Verifikasi';
-    }
-  } catch {
-    alert('Gagal terhubung ke server.');
-    btn.disabled = false;
-    btn.textContent = 'Lanjutkan ke Verifikasi';
-  }
-
+    if (data.success) { window.location.href = 'register-step4.html'; }
+    else { alert('Gagal menyimpan profil: ' + (data.error || 'Coba lagi.')); btn.disabled = false; btn.textContent = 'Lanjutkan ke Foto & Instagram'; }
+  } catch { alert('Gagal terhubung ke server.'); btn.disabled = false; btn.textContent = 'Lanjutkan ke Foto & Instagram'; }
   return false;
 }
 </script>

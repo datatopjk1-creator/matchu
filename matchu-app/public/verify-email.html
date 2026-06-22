@@ -177,7 +177,7 @@ async function verifyOTP() {
       ...userData,
       userId: d2.userId,
     }));
-
+    localStorage.setItem('matchu_user_id', d2.userId); 
     // Lanjut ke step 2 (verifikasi pendidikan)
     window.location.href = 'register-step2.html';
 

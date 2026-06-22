@@ -3,145 +3,246 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Upload Foto | Matchu</title>
+<title>Foto & Instagram | Matchu</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{ --primary:#7A2236; --bg:#F8F5F2; --text:#222; --muted:#6b7280; --border:#ddd; }
+:root{ --primary:#7A2236; --bg:#F8F5F2; --text:#222; --muted:#6b7280; --border:#ddd; --green:#1ea672; }
 *{ margin:0; padding:0; box-sizing:border-box; }
 body{ background:var(--bg); font-family:'Inter',sans-serif; color:var(--text); }
-.container{ max-width:600px; margin:0 auto; padding:40px 20px 80px; }
+.container{ max-width:620px; margin:0 auto; padding:40px 20px 80px; }
 .card{ background:white; padding:48px; border-radius:28px; box-shadow:0 20px 40px rgba(0,0,0,.05); }
-.logo{ text-align:center; font-family:'Playfair Display',serif; font-size:50px; color:var(--primary); margin-bottom:6px; }
+
+/* Header — sama persis */
+.logo{ text-align:center; font-family:'Playfair Display',serif; font-size:52px; color:var(--primary); margin-bottom:6px; }
 .tagline{ text-align:center; color:var(--primary); font-style:italic; font-size:13px; margin-bottom:24px; }
 .step{ text-align:center; color:var(--primary); font-weight:600; font-size:12px; margin-bottom:8px; }
-.progress{ width:100%; height:6px; background:#eee; border-radius:20px; margin-bottom:28px; overflow:hidden; }
+.progress-bar{ width:100%; height:6px; background:#eee; border-radius:20px; margin-bottom:28px; overflow:hidden; }
 .progress-fill{ width:100%; height:100%; background:var(--primary); border-radius:20px; }
-.title{ text-align:center; font-family:'Playfair Display',serif; font-size:28px; margin-bottom:6px; }
-.desc{ text-align:center; color:var(--muted); margin-bottom:28px; font-size:14px; line-height:1.6; }
-.foto-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
-.foto-box{ border:2px dashed var(--border); border-radius:16px; aspect-ratio:3/4; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; transition:.2s; position:relative; overflow:hidden; background:#fafafa; }
-.foto-box:hover{ border-color:var(--primary); background:#f9f4f5; }
-.foto-box.has-foto{ border-style:solid; border-color:var(--primary); }
-.foto-box img{ width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; }
-.foto-box input{ display:none; }
-.foto-placeholder{ text-align:center; color:var(--muted); }
-.foto-placeholder .icon{ font-size:32px; margin-bottom:8px; }
-.foto-placeholder .label{ font-size:13px; font-weight:600; }
-.foto-placeholder .sub{ font-size:11px; margin-top:4px; }
-.foto-remove{ position:absolute; top:8px; right:8px; background:rgba(0,0,0,.5); color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; font-size:14px; display:none; align-items:center; justify-content:center; }
-.foto-box.has-foto .foto-remove{ display:flex; }
-.tips-box{ background:#f9f4f5; border-radius:12px; padding:16px 18px; margin-bottom:20px; }
+
+/* Trust score banner — identik */
+.trust-banner{
+  background:linear-gradient(135deg,#7A2236 0%,#a83254 100%);
+  border-radius:16px; padding:20px 22px; margin-bottom:24px; color:white;
+}
+.trust-banner-title{ font-size:13px; font-weight:600; opacity:.85; margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em; }
+.trust-items{ display:flex; gap:8px; flex-wrap:wrap; }
+.trust-item{
+  background:rgba(255,255,255,.15); border-radius:8px;
+  padding:7px 12px; font-size:12px; font-weight:600;
+  display:flex; align-items:center; gap:5px;
+}
+.trust-item.done{ background:rgba(30,166,114,.35); }
+.trust-item.active{ background:rgba(255,255,255,.3); border:1.5px solid white; }
+
+/* Badge box — identik */
+.badge-box{
+  display:flex; align-items:center; gap:14px;
+  background:#f9f4f5; border:2px solid var(--primary);
+  border-radius:16px; padding:18px 20px; margin-bottom:8px;
+}
+.badge-icon{ font-size:36px; flex-shrink:0; }
+.badge-title{ font-weight:700; color:var(--primary); font-size:15px; margin-bottom:4px; }
+.badge-pts{ display:inline-block; background:var(--primary); color:white; border-radius:20px; padding:2px 10px; font-size:11px; font-weight:700; margin-left:6px; }
+.badge-sub{ font-size:13px; color:#555; line-height:1.5; }
+.badge-box-ig{
+  display:flex; align-items:center; gap:14px;
+  background:#f0faf5; border:2px solid var(--green);
+  border-radius:16px; padding:18px 20px; margin-bottom:24px;
+}
+.badge-title-ig{ font-weight:700; color:var(--green); font-size:15px; margin-bottom:4px; }
+.badge-pts-ig{ display:inline-block; background:var(--green); color:white; border-radius:20px; padding:2px 10px; font-size:11px; font-weight:700; margin-left:6px; }
+
+/* Section label — identik */
+.section-label{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--primary); margin:28px 0 14px; padding-bottom:8px; border-bottom:1px solid #f0e8ea; }
+
+/* Tips box */
+.tips-box{ background:#f9f4f5; border-radius:14px; padding:16px 18px; margin-bottom:20px; }
 .tips-title{ font-weight:700; color:var(--primary); font-size:13px; margin-bottom:10px; }
 .tips-list{ list-style:none; }
-.tips-list li{ display:flex; gap:8px; align-items:flex-start; font-size:13px; color:#555; margin-bottom:7px; }
+.tips-list li{ display:flex; gap:8px; align-items:flex-start; font-size:13px; color:#555; margin-bottom:7px; line-height:1.5; }
 .tips-list li:last-child{ margin-bottom:0; }
-.tips-list .check{ color:#1ea672; font-weight:700; flex-shrink:0; }
-.section{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--primary); margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid #f0e8ea; }
-.ig-wrap{ display:flex; align-items:center; border:1.5px solid var(--border); border-radius:10px; overflow:hidden; transition:.2s; }
+.tips-list .ok{ color:var(--green); font-weight:700; flex-shrink:0; }
+.tips-list .no{ color:#e53e3e; font-weight:700; flex-shrink:0; }
+
+/* Foto grid */
+.foto-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:8px; }
+.foto-box{
+  border:2px dashed var(--border); border-radius:16px;
+  aspect-ratio:3/4; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; cursor:pointer;
+  transition:.2s; position:relative; overflow:hidden; background:#fafafa;
+}
+.foto-box:hover{ border-color:var(--primary); background:#f9f4f5; }
+.foto-box.has-foto{ border-style:solid; border-color:var(--primary); }
+.foto-box input{ display:none; }
+.foto-placeholder{ text-align:center; color:var(--muted); padding:16px; }
+.foto-placeholder .icon{ font-size:32px; margin-bottom:8px; }
+.foto-placeholder .label{ font-size:13px; font-weight:600; color:var(--text); }
+.foto-placeholder .sub{ font-size:11px; margin-top:4px; color:var(--muted); }
+.foto-preview{ width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; display:none; }
+.foto-remove{
+  position:absolute; top:8px; right:8px;
+  background:rgba(122,34,54,.85); color:white; border:none;
+  border-radius:50%; width:26px; height:26px; cursor:pointer;
+  font-size:15px; display:none; align-items:center; justify-content:center;
+  line-height:1;
+}
+.foto-box.has-foto .foto-remove{ display:flex; }
+.foto-label-badge{
+  position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
+  background:rgba(122,34,54,.85); color:white;
+  border-radius:20px; padding:3px 10px; font-size:11px; font-weight:600;
+  white-space:nowrap; display:none;
+}
+.foto-box.has-foto .foto-label-badge{ display:block; }
+
+/* Instagram input */
+.ig-wrap{ display:flex; align-items:center; border:1.5px solid var(--border); border-radius:11px; overflow:hidden; transition:.2s; }
 .ig-wrap:focus-within{ border-color:var(--primary); }
-.ig-at{ padding:0 12px; font-weight:600; color:var(--muted); background:#f9f9f9; border-right:1.5px solid var(--border); font-size:15px; display:flex; align-items:center; height:44px; }
-.ig-input{ border:none !important; flex:1; padding:11px 13px; font-size:14px; font-family:'Inter',sans-serif; }
+.ig-at{ padding:0 14px; font-weight:600; color:var(--muted); background:#f9f9f9; border-right:1.5px solid var(--border); font-size:15px; display:flex; align-items:center; height:48px; }
+.ig-input{ border:none !important; flex:1; padding:12px 14px; font-size:14px; font-family:'Inter',sans-serif; color:var(--text); }
 .ig-input:focus{ outline:none; }
-.ig-hint{ font-size:12px; color:var(--muted); margin-top:5px; }
-.err{ color:#e53e3e; font-size:12px; margin-top:4px; display:none; }
-.tos-wrap{ display:flex; gap:10px; align-items:flex-start; margin:20px 0; font-size:13px; color:var(--muted); line-height:1.6; }
-.tos-wrap input{ width:auto; flex-shrink:0; margin-top:3px; accent-color:var(--primary); }
-.tos-wrap a{ color:var(--primary); font-weight:600; }
-.btn{ width:100%; background:var(--primary); color:white; border:none; padding:14px; border-radius:12px; cursor:pointer; font-size:15px; font-weight:600; font-family:'Inter',sans-serif; transition:.2s; }
+.hint{ font-size:12px; color:var(--muted); margin-top:6px; line-height:1.5; }
+
+/* ToS */
+.tos-wrap{ display:flex; gap:10px; align-items:flex-start; margin:20px 0 4px; font-size:13px; color:var(--muted); line-height:1.6; background:#f9f4f5; border-radius:12px; padding:14px 16px; }
+.tos-wrap input[type="checkbox"]{ width:auto; flex-shrink:0; margin-top:3px; accent-color:var(--primary); width:16px; height:16px; cursor:pointer; }
+.tos-wrap a{ color:var(--primary); font-weight:600; text-decoration:none; }
+.tos-wrap a:hover{ text-decoration:underline; }
+
+/* Error */
+.err{ color:#e53e3e; font-size:12px; margin-top:6px; display:none; }
+
+/* Submit btn */
+.btn{ width:100%; margin-top:20px; background:var(--primary); color:white; border:none; padding:15px; border-radius:13px; cursor:pointer; font-size:15px; font-weight:600; font-family:'Inter',sans-serif; transition:.2s; }
 .btn:hover{ opacity:.9; }
 .btn:disabled{ opacity:.6; cursor:not-allowed; }
-.back-link{ text-align:center; margin-top:12px; font-size:13px; color:var(--muted); }
+.back-link{ text-align:center; margin-top:14px; color:var(--muted); font-size:13px; }
 .back-link a{ color:var(--primary); text-decoration:none; font-weight:600; }
+
 @media(max-width:480px){
   .container{ padding:16px 14px 60px; }
-  .card{ padding:24px 16px; border-radius:18px; }
+  .card{ padding:24px 16px; border-radius:20px; }
   .logo{ font-size:38px; }
-  .title{ font-size:22px; }
+  .trust-items{ gap:6px; }
+  .trust-item{ font-size:11px; padding:5px 10px; }
 }
 </style>
 </head>
 <body>
 <div class="container">
 <div class="card">
+
   <div class="logo">MATCHU</div>
   <div class="tagline">Beyond Matching. Toward Marriage.</div>
-  <div class="step">LANGKAH 4 DARI 4</div>
-  <div class="progress"><div class="progress-fill"></div></div>
-  <div class="title">Foto & Instagram</div>
-  <div class="desc">Foto yang baik meningkatkan peluang kamu mendapat kandidat yang cocok.</div>
+  <div class="step">LANGKAH 4 DARI 4 — Foto & Instagram</div>
+  <div class="progress-bar"><div class="progress-fill"></div></div>
 
+  <!-- Trust Score Banner -->
+  <div class="trust-banner">
+    <div class="trust-banner-title">Cara Mendapatkan Trust Score 100/100</div>
+    <div class="trust-items">
+      <div class="trust-item done">✓ Email OTP +20</div>
+      <div class="trust-item done">✓ Pendidikan +30</div>
+      <div class="trust-item done">✓ Profil Lengkap +30</div>
+      <div class="trust-item active">📸 2 Foto +10</div>
+      <div class="trust-item active">Instagram +10</div>
+    </div>
+  </div>
+
+  <!-- Badge Foto -->
+  <div class="badge-box">
+    <div class="badge-icon">📸</div>
+    <div>
+      <div class="badge-title">2 Foto Profil <span class="badge-pts">+10 poin</span></div>
+      <div class="badge-sub">Profil dengan foto lengkap mendapat 5x lebih banyak perhatian. Upload foto terbaikmu sekarang.</div>
+    </div>
+  </div>
+
+  <!-- Badge Instagram -->
+  <div class="badge-box-ig">
+    <div class="badge-icon">📱</div>
+    <div>
+      <div class="badge-title-ig">Verifikasi Instagram <span class="badge-pts-ig">+10 poin</span></div>
+      <div class="badge-sub">Instagram kamu tidak ditampilkan sebelum perkenalan diterima. Hanya digunakan untuk verifikasi identitas.</div>
+    </div>
+  </div>
+
+  <!-- Panduan Foto -->
+  <div class="section-label">Panduan Foto</div>
   <div class="tips-box">
-    <div class="tips-title">Panduan Foto</div>
+    <div class="tips-title">Kriteria foto yang baik</div>
     <ul class="tips-list">
-      <li><span class="check">✓</span> Wajah harus terlihat jelas dan tidak terhalang</li>
-      <li><span class="check">✓</span> Gunakan foto terbaru (maks. 2 tahun terakhir)</li>
-      <li><span class="check">✓</span> Foto outdoor atau background bersih lebih baik</li>
-      <li><span class="check">✗</span> Hindari mirror selfie, foto grup, atau foto dengan filter berlebihan</li>
-      <li><span class="check">✗</span> Jangan gunakan foto AI atau hasil edit berat</li>
+      <li><span class="ok">✓</span> Wajah terlihat jelas dan tidak terhalang</li>
+      <li><span class="ok">✓</span> Foto terbaru (maks. 2 tahun terakhir)</li>
+      <li><span class="ok">✓</span> Background bersih atau outdoor lebih baik</li>
+      <li><span class="no">✗</span> Hindari mirror selfie, foto grup, atau filter berlebihan</li>
+      <li><span class="no">✗</span> Jangan gunakan foto AI atau hasil edit berat</li>
     </ul>
   </div>
 
+  <!-- Upload Foto -->
+  <div class="section-label">Upload Foto</div>
   <div class="foto-grid">
     <div class="foto-box" id="box1" onclick="document.getElementById('foto1-input').click()">
-      <input type="file" id="foto1-input" accept="image/jpeg,image/png,image/webp" onchange="previewFoto(this,'box1','preview1')">
-      <img id="preview1" src="" style="display:none;">
+      <input type="file" id="foto1-input" accept="image/jpeg,image/png,image/webp" onchange="previewFoto(this,'box1','preview1','badge1')">
+      <img id="preview1" class="foto-preview">
       <div class="foto-placeholder" id="placeholder1">
         <div class="icon">+</div>
         <div class="label">Foto Utama</div>
-        <div class="sub">Wajib</div>
+        <div class="sub">Wajib · JPG/PNG · Maks. 5MB</div>
       </div>
-      <button type="button" class="foto-remove" onclick="hapusFoto(event,'box1','foto1-input','preview1','placeholder1')">×</button>
+      <button type="button" class="foto-remove" onclick="hapusFoto(event,'box1','foto1-input','preview1','placeholder1','badge1')">×</button>
+      <div class="foto-label-badge" id="badge1">Foto Utama</div>
     </div>
     <div class="foto-box" id="box2" onclick="document.getElementById('foto2-input').click()">
-      <input type="file" id="foto2-input" accept="image/jpeg,image/png,image/webp" onchange="previewFoto(this,'box2','preview2')">
-      <img id="preview2" src="" style="display:none;">
+      <input type="file" id="foto2-input" accept="image/jpeg,image/png,image/webp" onchange="previewFoto(this,'box2','preview2','badge2')">
+      <img id="preview2" class="foto-preview">
       <div class="foto-placeholder" id="placeholder2">
         <div class="icon">+</div>
         <div class="label">Foto Kedua</div>
-        <div class="sub">Opsional</div>
+        <div class="sub">Opsional · JPG/PNG · Maks. 5MB</div>
       </div>
-      <button type="button" class="foto-remove" onclick="hapusFoto(event,'box2','foto2-input','preview2','placeholder2')">×</button>
+      <button type="button" class="foto-remove" onclick="hapusFoto(event,'box2','foto2-input','preview2','placeholder2','badge2')">×</button>
+      <div class="foto-label-badge" id="badge2">Foto Kedua</div>
     </div>
   </div>
   <div class="err" id="foto-err">Upload minimal 1 foto profil.</div>
 
-  <div class="section">Instagram</div>
+  <!-- Instagram -->
+  <div class="section-label">Instagram</div>
   <div class="ig-wrap">
     <span class="ig-at">@</span>
     <input type="text" id="instagram" class="ig-input" placeholder="username_kamu">
   </div>
-  <div class="ig-hint">Digunakan untuk verifikasi identitas. Tidak ditampilkan sebelum perkenalan diterima.</div>
-  <div class="err" id="ig-err">Masukkan username Instagram.</div>
+  <div class="hint">Tidak ditampilkan ke siapapun sebelum perkenalan diterima. Hanya untuk verifikasi identitas.</div>
+  <div class="err" id="ig-err">Masukkan username Instagram kamu.</div>
 
+  <!-- ToS -->
   <div class="tos-wrap">
     <input type="checkbox" id="tos">
     <span>Saya menyatakan foto yang diupload adalah foto saya sendiri, data yang diberikan benar, dan saya menyetujui <a href="#">Syarat & Ketentuan</a> serta <a href="#">Kebijakan Privasi</a> Matchu.</span>
   </div>
 
   <button class="btn" id="btn-submit" onclick="submitRegistration()">Selesaikan Pendaftaran</button>
-  <div class="back-link"><a href="register-step3.html">Kembali</a></div>
+  <div class="back-link"><a href="complete-profile.html">Kembali ke langkah sebelumnya</a></div>
+
 </div>
 </div>
 
 <script>
-// ── Cek sesi (FIXED: baca 'matchu_user_id' langsung) ──────────────────────
 const matchuUserId = localStorage.getItem('matchu_user_id');
-if (!matchuUserId) {
-  alert('Sesi tidak ditemukan. Silakan mulai dari awal.');
-  window.location.href = 'register.html';
-}
+if (!matchuUserId) { alert('Sesi tidak ditemukan. Silakan mulai dari awal.'); window.location.href = 'register.html'; }
 
-// ── Variabel foto ─────────────────────────────────────────────────────────
 let foto1Base64 = null;
 let foto2Base64 = null;
 
-// ── Preview foto ──────────────────────────────────────────────────────────
-function previewFoto(input, boxId, previewId) {
+function previewFoto(input, boxId, previewId, badgeId) {
   const file = input.files[0];
   if (!file) return;
   if (file.size > 5 * 1024 * 1024) { alert('Ukuran maksimal 5MB.'); input.value = ''; return; }
-
   const reader = new FileReader();
   reader.onload = e => {
     const img = document.getElementById(previewId);
@@ -156,8 +257,7 @@ function previewFoto(input, boxId, previewId) {
   reader.readAsDataURL(file);
 }
 
-// ── Hapus foto ────────────────────────────────────────────────────────────
-function hapusFoto(e, boxId, inputId, previewId, placeholderId) {
+function hapusFoto(e, boxId, inputId, previewId, placeholderId, badgeId) {
   e.stopPropagation();
   document.getElementById(previewId).style.display = 'none';
   document.getElementById(previewId).src = '';
@@ -168,50 +268,36 @@ function hapusFoto(e, boxId, inputId, previewId, placeholderId) {
   else foto2Base64 = null;
 }
 
-// ── Submit (FIXED) ──────────────────────────────────────────────────────────
 async function submitRegistration() {
-  if (!foto1Base64) {
-    document.getElementById('foto-err').style.display = 'block';
-    return;
-  }
+  let valid = true;
+  if (!foto1Base64) { document.getElementById('foto-err').style.display = 'block'; valid = false; }
   const ig = document.getElementById('instagram').value.trim();
-  if (!ig) {
-    document.getElementById('ig-err').style.display = 'block';
-    return;
-  }
-  if (!document.getElementById('tos').checked) {
-    alert('Centang persetujuan terlebih dahulu.');
-    return;
-  }
+  if (!ig) { document.getElementById('ig-err').style.display = 'block'; valid = false; }
+  if (!document.getElementById('tos').checked) { alert('Centang persetujuan terlebih dahulu.'); valid = false; }
+  if (!valid) return;
 
-  // ✅ FIXED: ambil userId langsung, bukan dari objek 'matchu_user' yang sudah dihapus
   const userId = localStorage.getItem('matchu_user_id');
-  if (!userId) {
-    alert('Sesi tidak ditemukan. Silakan mulai dari awal.');
-    window.location.href = 'register.html';
-    return;
-  }
+  if (!userId) { alert('Sesi tidak ditemukan. Silakan mulai dari awal.'); window.location.href = 'register.html'; return; }
 
   const btn = document.getElementById('btn-submit');
   btn.disabled = true;
   btn.textContent = 'Mendaftarkan akun...';
 
   try {
-    const res = await fetch('/api/register-user', {
+    const res = await fetch('/api/complete-registration', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        userId: userId, // ✅ FIXED
+        userId,
         instagram: ig.replace('@', ''),
         foto1: foto1Base64,
         foto2: foto2Base64,
       }),
     });
-
     const data = await res.json();
-
     if (data.success) {
-      localStorage.setItem('matchu_user_id', data.userId || userId); // ✅ FIXED
+      localStorage.removeItem('matchu_user_id');
+      localStorage.removeItem('matchu_user');
       window.location.href = 'dashboard.html';
     } else {
       alert('Gagal mendaftar: ' + (data.error || 'Coba lagi.'));

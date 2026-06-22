@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kandidat | Matchu</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --brand: #7A2236;
+  --brand-dark: #5E1A2A;
+  --brand-light: #f9f0f3;
+  --brand-mid: #c4677e;
+  --bg: #F5F2EF;
+  --white: #ffffff;
+  --text: #1C1C1E;
+  --text-2: #6B7280;
+  --border: #E8E3DF;
+  --sidebar-w: 260px;
+  --topbar-h: 68px;
+  --radius: 16px;
+  --shadow: 0 2px 16px rgba(0,0,0,0.06);
+}
+
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* ===== OVERLAY ===== */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 100; }
+.overlay.active { display: block; }
+
+/* ===== SIDEBAR ===== */
+.sidebar { position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh; background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 200; transition: transform .28s cubic-bezier(.4,0,.2,1); overflow: hidden; }
+.sidebar.hidden { transform: translateX(-100%); }
+.sidebar-logo { height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.logo-text { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--brand); letter-spacing: 2px; }
+.sidebar-close { width: 34px; height: 34px; border: none; background: none; cursor: pointer; font-size: 20px; color: var(--text-2); display: flex; align-items: center; justify-content: center; border-radius: 8px; }
+.sidebar-close:hover { background: var(--bg); }
+.sidebar-nav { padding: 16px 0; flex: 1; overflow-y: auto; }
+.nav-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-2); padding: 14px 24px 6px; }
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 0 20px; height: 48px; text-decoration: none; color: #444; font-size: 14.5px; font-weight: 500; border-radius: 12px; margin: 2px 10px; transition: background .15s, color .15s; }
+.nav-item:hover { background: var(--brand-light); color: var(--brand); }
+.nav-item.active { background: var(--brand-light); color: var(--brand); font-weight: 600; }
+.nav-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-badge { margin-left: auto; background: var(--brand); color: white; font-size: 10px; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.sidebar-footer { padding: 16px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.sidebar-user { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; background: var(--bg); }
+.s-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--brand); color: white; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.s-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.s-role { font-size: 11px; color: var(--text-2); }
+
+/* ===== MAIN ===== */
+.main { min-height: 100vh; }
+
+/* ===== TOPBAR ===== */
+.topbar { position: sticky; top: 0; z-index: 50; height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; gap: 12px; }
+.hamburger { width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 10px; background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; flex-shrink: 0; }
+.hamburger span { display: block; width: 18px; height: 2px; background: var(--text); border-radius: 2px; transition: all .2s; }
+.hamburger:hover span { background: var(--brand); }
+.topbar-brand { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--brand); font-weight: 700; letter-spacing: 1px; }
+.topbar-spacer { flex: 1; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.notif-btn { position: relative; width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 10px; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s; }
+.notif-btn:hover { background: var(--brand-light); }
+.notif-btn svg { width: 18px; height: 18px; stroke: var(--text); }
+.notif-dot { position: absolute; top: 7px; right: 7px; width: 8px; height: 8px; border-radius: 50%; background: var(--brand); border: 2px solid white; }
+.user-pill { display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 6px; border: 1px solid var(--border); border-radius: 50px; background: none; cursor: pointer; transition: background .15s; }
+.user-pill:hover { background: var(--brand-light); }
+.t-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--brand); color: white; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+.t-name { font-size: 13px; font-weight: 600; color: var(--text); }
+
+/* ===== NOTIF DROPDOWN ===== */
+.notif-dropdown { position: absolute; top: calc(var(--topbar-h) + 6px); right: 20px; width: 310px; background: white; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.14); border: 1px solid var(--border); z-index: 300; display: none; }
+.notif-dropdown.open { display: block; }
+.notif-drop-head { padding: 16px 18px 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.notif-drop-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.notif-drop-clear { font-size: 12px; color: var(--brand); cursor: pointer; font-weight: 600; }
+.notif-drop-item { display: flex; align-items: flex-start; gap: 12px; padding: 13px 18px; border-bottom: 1px solid var(--border); transition: background .1s; }
+.notif-drop-item:last-child { border-bottom: none; }
+.notif-drop-item:hover { background: var(--bg); }
+.notif-drop-icon { width: 34px; height: 34px; border-radius: 10px; background: var(--brand-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.notif-drop-icon svg { width: 16px; height: 16px; stroke: var(--brand); }
+.notif-drop-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+.notif-drop-time { font-size: 11px; color: var(--text-2); margin-top: 2px; }
+
+/* ===== CONTENT ===== */
+.content { padding: 28px 28px 60px; max-width: 1100px; }
+
+/* ===== PAGE BANNER ===== */
+.page-banner { background: linear-gradient(130deg, var(--brand) 0%, #9E304D 60%, #c4677e 100%); border-radius: 20px; padding: 28px 32px; color: white; margin-bottom: 24px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.page-banner::before { content: ''; position: absolute; right: -40px; top: -40px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,0.06); }
+.page-banner::after { content: ''; position: absolute; right: 60px; bottom: -60px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,0.04); }
+.banner-left { position: relative; z-index: 1; }
+.banner-tag { display: inline-block; padding: 5px 12px; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.25); border-radius: 50px; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 10px; }
+.page-banner h1 { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; margin-bottom: 5px; line-height: 1.2; }
+.page-banner p { font-size: 14px; opacity: .88; max-width: 500px; line-height: 1.6; }
+.banner-meta { position: relative; z-index: 1; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 14px; padding: 14px 20px; text-align: center; flex-shrink: 0; }
+.banner-meta-num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: white; line-height: 1; margin-bottom: 4px; }
+.banner-meta-label { font-size: 11px; color: rgba(255,255,255,0.75); }
+.banner-reset { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 6px; }
+
+/* ===== TABS ===== */
+.tabs-row { display: flex; gap: 8px; margin-bottom: 20px; }
+.tab-btn { padding: 9px 20px; border: 1px solid var(--border); border-radius: 50px; background: var(--white); font-size: 13px; font-weight: 600; color: var(--text-2); cursor: pointer; transition: all .18s; }
+.tab-btn:hover { border-color: var(--brand-mid); color: var(--brand); }
+.tab-btn.active { background: var(--brand); color: white; border-color: var(--brand); }
+
+/* ===== FILTER ROW ===== */
+.filter-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; align-items: center; }
+.filter-select { height: 42px; padding: 0 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--white); font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text); cursor: pointer; outline: none; transition: border-color .15s; }
+.filter-select:focus { border-color: var(--brand-mid); }
+.filter-btn { height: 42px; padding: 0 20px; border: none; border-radius: 10px; background: var(--brand); color: white; font-size: 13px; font-weight: 700; cursor: pointer; transition: background .15s; }
+.filter-btn:hover { background: var(--brand-dark); }
+.filter-clear { height: 42px; padding: 0 16px; border: 1px solid var(--border); border-radius: 10px; background: none; font-size: 13px; color: var(--text-2); cursor: pointer; transition: all .15s; }
+.filter-clear:hover { border-color: var(--brand-mid); color: var(--brand); }
+
+/* ===== PREMIUM LOCK ===== */
+.premium-lock-card { background: var(--white); border-radius: 20px; padding: 32px; border: 1px dashed var(--brand-mid); text-align: center; margin-bottom: 24px; box-shadow: var(--shadow); }
+.premium-lock-icon { font-size: 36px; margin-bottom: 14px; }
+.premium-lock-title { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--brand); margin-bottom: 8px; }
+.premium-lock-desc { font-size: 14px; color: var(--text-2); line-height: 1.7; margin-bottom: 18px; max-width: 440px; margin-left: auto; margin-right: auto; }
+.premium-lock-btn { display: inline-block; padding: 11px 28px; background: var(--brand); color: white; border: none; border-radius: 50px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background .15s; }
+.premium-lock-btn:hover { background: var(--brand-dark); }
+
+/* ===== KANDIDAT GRID ===== */
+.kandidat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 20px; }
+
+/* ===== KANDIDAT CARD ===== */
+.k-card { background: var(--white); border-radius: 20px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow); transition: transform .22s, box-shadow .22s; cursor: pointer; }
+.k-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(122,34,54,0.12); border-color: var(--brand-mid); }
+
+.k-photo {
+  height: 240px; position: relative; overflow: hidden;
+  background: repeating-linear-gradient(135deg, #d8d0d3 0, #d8d0d3 5px, #e8e0e3 5px, #e8e0e3 10px);
+  display: flex; align-items: center; justify-content: center;
+}
+.k-photo-blur-text { text-align: center; color: #b0a0a5; }
+.k-photo-blur-text svg { width: 36px; height: 36px; stroke: #c4b0b5; margin-bottom: 6px; }
+.k-photo-blur-text p { font-size: 11px; font-weight: 600; letter-spacing: 1px; }
+
+.k-match-badge { position: absolute; bottom: 12px; right: 12px; background: white; color: var(--brand); font-size: 14px; font-weight: 800; width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.k-verified-badge { position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,0.92); color: #2e7d32; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 4px; border: 1px solid rgba(46,125,50,0.2); }
+.k-photo-label { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.35); color: rgba(255,255,255,0.8); font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 20px; }
+
+.k-body { padding: 18px 20px; }
+.k-name { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.k-alias-note { font-size: 11px; color: var(--text-2); margin-bottom: 10px; font-style: italic; }
+.k-info { font-size: 13px; color: var(--text-2); line-height: 1.9; margin-bottom: 14px; }
+.k-info span { display: flex; align-items: center; gap: 7px; }
+.k-info svg { width: 13px; height: 13px; stroke: var(--brand-mid); flex-shrink: 0; }
+.k-actions { display: flex; gap: 10px; }
+.k-btn-sec { flex: 1; height: 42px; border: 1.5px solid var(--brand); background: transparent; color: var(--brand); border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; }
+.k-btn-sec:hover { background: var(--brand-light); }
+.k-btn-pri { flex: 1; height: 42px; border: none; background: var(--brand); color: white; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.k-btn-pri:hover { background: var(--brand-dark); }
+.k-btn-pri svg { width: 14px; height: 14px; stroke: white; }
+
+/* Reguler lock card */
+.k-card.locked .k-body { filter: blur(3px); pointer-events: none; }
+.k-card.locked { position: relative; }
+.lock-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(245,242,239,0.85); z-index: 2; flex-direction: column; gap: 10px; border-radius: 20px; }
+.lock-overlay svg { width: 28px; height: 28px; stroke: var(--brand); }
+.lock-overlay p { font-size: 13px; font-weight: 600; color: var(--brand); }
+
+/* ===== WEEKLY RESET BAR ===== */
+.reset-bar { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; box-shadow: var(--shadow); }
+.reset-left { display: flex; align-items: center; gap: 10px; }
+.reset-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--brand-light); display: flex; align-items: center; justify-content: center; }
+.reset-icon svg { width: 17px; height: 17px; stroke: var(--brand); }
+.reset-text { font-size: 13px; color: var(--text-2); }
+.reset-text strong { color: var(--text); }
+.reset-counter { display: flex; gap: 6px; }
+.slot-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--brand); }
+.slot-dot.empty { background: var(--border); }
+
+/* ===== PROFILE DETAIL MODAL ===== */
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500; align-items: center; justify-content: center; padding: 20px; }
+.modal-bg.open { display: flex; }
+.modal-box { background: var(--white); border-radius: 24px; width: 100%; max-width: 620px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 80px rgba(0,0,0,0.25); }
+
+/* Modal top photo */
+.modal-photo {
+  height: 220px; position: relative;
+  background: repeating-linear-gradient(135deg, #d8d0d3 0, #d8d0d3 5px, #e8e0e3 5px, #e8e0e3 10px);
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 24px 24px 0 0; flex-shrink: 0;
+}
+.modal-photo-text { text-align: center; color: #b0a0a5; }
+.modal-photo-text svg { width: 40px; height: 40px; stroke: #c4b0b5; margin-bottom: 6px; }
+.modal-photo-text p { font-size: 11px; font-weight: 600; letter-spacing: 1px; }
+.modal-match { position: absolute; bottom: -26px; right: 24px; width: 60px; height: 60px; border-radius: 50%; background: var(--brand); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; box-shadow: 0 6px 20px rgba(122,34,54,0.35); }
+.modal-close { position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; background: rgba(255,255,255,0.85); border: none; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text); transition: background .15s; }
+.modal-close:hover { background: white; }
+
+.modal-body { padding: 36px 28px 28px; }
+.modal-vbadge { display: inline-flex; align-items: center; gap: 5px; background: #e8f5e9; color: #2e7d32; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; border: 1px solid #c8e6c9; }
+.modal-name { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.modal-alias-note { font-size: 12px; color: var(--text-2); font-style: italic; margin-bottom: 16px; }
+
+.modal-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.modal-info-item { background: var(--bg); border-radius: 12px; padding: 12px 14px; border: 1px solid var(--border); }
+.modal-info-label { font-size: 11px; color: var(--text-2); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+.modal-info-value { font-size: 14px; font-weight: 700; color: var(--text); }
+.modal-info-value.brand { color: var(--brand); }
+
+.modal-divider { height: 1px; background: var(--border); margin: 20px 0; }
+.modal-section-title { font-size: 13px; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+
+.pddikti-box { background: #EEF2FF; border: 1px solid #c7d2fe; border-radius: 12px; padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
+.pddikti-icon { width: 34px; height: 34px; background: #3730a3; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.pddikti-icon svg { width: 16px; height: 16px; stroke: white; }
+.pddikti-text { font-size: 12.5px; color: #3730a3; line-height: 1.6; }
+.pddikti-text strong { display: block; font-weight: 700; margin-bottom: 2px; }
+.pddikti-link { font-size: 11px; color: #6366f1; font-weight: 600; text-decoration: underline; cursor: pointer; }
+
+.mutual-info { background: var(--brand-light); border-radius: 12px; padding: 14px 16px; font-size: 13px; color: var(--brand); line-height: 1.6; margin-bottom: 20px; border: 1px solid rgba(122,34,54,0.12); }
+.mutual-info strong { font-weight: 700; }
+
+.modal-actions { display: flex; gap: 10px; }
+.modal-btn-sec { flex: 1; height: 46px; border: 1.5px solid var(--brand); background: transparent; color: var(--brand); border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all .15s; }
+.modal-btn-sec:hover { background: var(--brand-light); }
+.modal-btn-pri { flex: 2; height: 46px; border: none; background: linear-gradient(130deg, var(--brand), #9E304D); color: white; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all .15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.modal-btn-pri:hover { opacity: 0.9; }
+.modal-btn-pri svg { width: 16px; height: 16px; stroke: white; }
+
+/* Surat form in modal */
+.surat-form { display: none; }
+.surat-form.open { display: block; }
+.surat-textarea { width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 14px; font-size: 14px; font-family: 'Inter', sans-serif; resize: none; outline: none; color: var(--text); line-height: 1.7; transition: border-color .15s; }
+.surat-textarea:focus { border-color: var(--brand-mid); }
+.surat-counter { font-size: 11px; color: var(--text-2); text-align: right; margin-top: 4px; margin-bottom: 12px; }
+.surat-send-btn { width: 100%; height: 46px; border: none; background: linear-gradient(130deg, var(--brand), #9E304D); color: white; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.surat-send-btn:hover { opacity: 0.9; }
+
+/* Success toast */
+.toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: var(--brand); color: white; padding: 13px 28px; border-radius: 50px; font-size: 14px; font-weight: 600; z-index: 9999; box-shadow: 0 8px 24px rgba(0,0,0,0.2); opacity: 0; transition: opacity .3s; pointer-events: none; }
+.toast.show { opacity: 1; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .kandidat-grid { grid-template-columns: 1fr; }
+  .content { padding: 16px 16px 60px; }
+  .page-banner { flex-direction: column; align-items: flex-start; }
+  .modal-info-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .t-name { display: none; }
+  .filter-row { gap: 8px; }
+  .filter-select { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar hidden" id="sidebar">
+  <div class="sidebar-logo">
+    <span class="logo-text">MATCHU</span>
+    <button class="sidebar-close" id="sidebarClose">✕</button>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Menu Utama</div>
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><rect x="3" y="3" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/></svg></span>
+      Dashboard
+    </a>
+    <a href="profil.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+      Profil Saya
+    </a>
+    <a href="kandidat.html" class="nav-item active">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M2 20c0-3.3 3.1-6 7-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="15" r="4" stroke="currentColor" stroke-width="1.8"/></svg></span>
+      Kandidat
+      <span class="nav-badge">5</span>
+    </a>
+    <a href="permintaan-perkenalan.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg></span>
+      Permintaan Perkenalan
+      <span class="nav-badge">2</span>
+    </a>
+    <a href="chat.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+      Chat
+      <span class="nav-badge">1</span>
+    </a>
+    <a href="notifikasi.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+      Notifikasi
+    </a>
+    <div class="nav-label" style="margin-top:8px">Akun</div>
+    <a href="premium.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+      Premium
+    </a>
+    <a href="pengaturan.html" class="nav-item">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" stroke-width="1.8"/></svg></span>
+      Pengaturan
+    </a>
+    <a href="logout.html" class="nav-item" style="color:#c0392b;">
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round"/><polyline points="16,17 21,12 16,7" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="21" y1="12" x2="9" y2="12" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+      Keluar
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="s-avatar">A</div>
+      <div><div class="s-name">Alif Ramadhan</div><div class="s-role">Member Reguler</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- NOTIF DROPDOWN -->
+<div class="notif-dropdown" id="notifDropdown">
+  <div class="notif-drop-head">
+    <div class="notif-drop-title">Notifikasi</div>
+    <span class="notif-drop-clear">Tandai semua dibaca</span>
+  </div>
+  <div class="notif-drop-item">
+    <div class="notif-drop-icon"><svg fill="none" viewBox="0 0 24 24"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg></div>
+    <div><div class="notif-drop-text"><b>Manda</b> menerima surat perkenalan Anda.</div><div class="notif-drop-time">2 jam lalu</div></div>
+  </div>
+  <div class="notif-drop-item">
+    <div class="notif-drop-icon"><svg fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+    <div><div class="notif-drop-text">5 kandidat baru tersedia minggu ini.</div><div class="notif-drop-time">1 hari lalu</div></div>
+  </div>
+</div>
+
+<!-- PROFILE DETAIL MODAL -->
+<div class="modal-bg" id="profileModal">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-photo" id="modalPhoto">
+      <div class="modal-photo-text">
+        <svg fill="none" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/></svg>
+        <p>FOTO DISAMARKAN</p>
+      </div>
+      <div class="modal-match" id="modalMatch">92%</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-vbadge">✓ Pendidikan Terverifikasi via PDDikti</div>
+      <div class="modal-name" id="modalName">Ahmad Fauzan</div>
+      <div class="modal-alias-note">Nama panggilan / samaran. Nama asli terbuka setelah Mutual Interest.</div>
+
+      <div class="modal-info-grid" id="modalInfoGrid">
+        <!-- filled by JS -->
+      </div>
+
+      <div class="pddikti-box">
+        <div class="pddikti-icon"><svg fill="none" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2"/></svg></div>
+        <div class="pddikti-text">
+          <strong>Pendidikan Terverifikasi via PDDikti</strong>
+          Data pendidikan kandidat ini telah diverifikasi melalui database resmi Kemdikbud. Setelah Mutual Interest dan nama asli terbuka, Anda dapat verifikasi mandiri di
+          <span class="pddikti-link">pddikti.kemdikbud.go.id</span>
+        </div>
+      </div>
+
+      <div class="mutual-info">
+        🔒 <strong>Nama asli, Instagram, dan foto profil asli</strong> baru terbuka setelah kedua pihak menekan tombol <strong>Interest</strong> di ruang chat.
+      </div>
+
+      <div id="suratFormWrap">
+        <div class="modal-actions" id="modalActions">
+          <button class="modal-btn-sec" onclick="closeModal()">Tutup</button>
+          <button class="modal-btn-pri" onclick="showSuratForm()">
+            <svg fill="none" viewBox="0 0 24 24"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg>
+            Kirim Surat Perkenalan
+          </button>
+        </div>
+
+        <div class="surat-form" id="suratForm">
+          <div class="modal-divider"></div>
+          <div class="modal-section-title">Tulis Surat Perkenalan</div>
+          <textarea class="surat-textarea" id="suratText" rows="5" maxlength="500" placeholder="Halo, perkenalkan saya Alif. Saya tertarik dengan profil Anda karena..." oninput="updateCounter()"></textarea>
+          <div class="surat-counter"><span id="suratCounter">0</span> / 500 karakter</div>
+          <button class="surat-send-btn" onclick="sendSurat()">Kirim Surat →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MAIN -->
+<div class="main" id="main">
+  <header class="topbar">
+    <button class="hamburger" id="hamburger" aria-label="Buka menu">
+      <span></span><span></span><span></span>
+    </button>
+    <span class="topbar-brand">MATCHU</span>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-right">
+      <button class="notif-btn" id="notifBtn" aria-label="Notifikasi">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke-linecap="round"/></svg>
+        <span class="notif-dot"></span>
+      </button>
+      <button class="user-pill">
+        <div class="t-avatar">A</div>
+        <span class="t-name">Alif</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- BANNER -->
+    <div class="page-banner">
+      <div class="banner-left">
+        <div class="banner-tag">Kandidat Minggu Ini</div>
+        <h1>Kandidat Untuk Anda</h1>
+        <p>Rekomendasi berdasarkan pendidikan, profesi, lokasi, dan preferensi yang paling sesuai dengan profil Anda. Foto disamarkan sampai Mutual Interest tercapai.</p>
+      </div>
+      <div class="banner-meta">
+        <div class="banner-meta-num">5/5</div>
+        <div class="banner-meta-label">Kandidat Minggu Ini</div>
+        <div class="banner-reset">Reset Senin depan</div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs-row">
+      <button class="tab-btn active" onclick="switchTab(this,'rekomendasi')">Rekomendasi</button>
+      <button class="tab-btn" onclick="switchTab(this,'cari')">Cari Kandidat</button>
+    </div>
+
+    <!-- WEEKLY RESET BAR -->
+    <div class="reset-bar">
+      <div class="reset-left">
+        <div class="reset-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3" stroke-linecap="round"/></svg></div>
+        <div class="reset-text"><strong>Reguler:</strong> 5 kandidat per minggu. Upgrade Premium untuk kandidat tanpa batas.</div>
+      </div>
+      <div class="reset-counter">
+        <div class="slot-dot"></div>
+        <div class="slot-dot"></div>
+        <div class="slot-dot"></div>
+        <div class="slot-dot"></div>
+        <div class="slot-dot"></div>
+      </div>
+    </div>
+
+    <!-- FILTER (hanya tampil di tab Cari) -->
+    <div class="filter-row" id="filterRow" style="display:none;">
+      <select class="filter-select">
+        <option>Semua Kota</option>
+        <option>Jakarta</option>
+        <option>Bandung</option>
+        <option>Surabaya</option>
+        <option>Yogyakarta</option>
+      </select>
+      <select class="filter-select">
+        <option>Semua Pendidikan</option>
+        <option>D3</option><option>S1</option><option>S2</option><option>S3</option>
+      </select>
+      <select class="filter-select">
+        <option>Semua Profesi</option>
+        <option>Dokter</option><option>Dosen</option><option>Engineer</option><option>ASN</option>
+      </select>
+      <select class="filter-select">
+        <option>Semua Usia</option>
+        <option>22–25</option><option>26–30</option><option>31–35</option>
+      </select>
+      <button class="filter-btn">Cari</button>
+      <button class="filter-clear">Reset</button>
+    </div>
+
+    <!-- PREMIUM LOCK (hanya di tab Cari) -->
+    <div class="premium-lock-card" id="premiumLock" style="display:none;">
+      <div class="premium-lock-icon">⭐</div>
+      <div class="premium-lock-title">Fitur Khusus Premium</div>
+      <div class="premium-lock-desc">Pencarian dan filter kandidat berdasarkan universitas, domisili, profesi, usia, dan agama tersedia untuk anggota Premium. Kandidat Reguler mendapat 5 rekomendasi per minggu secara otomatis.</div>
+      <button class="premium-lock-btn" onclick="window.location='premium.html'">Upgrade Premium →</button>
+    </div>
+
+    <!-- KANDIDAT GRID -->
+    <div class="kandidat-grid" id="kandidatGrid">
+
+      <!-- CARD 1 -->
+      <div class="k-card" onclick="openModal(0)">
+        <div class="k-photo">
+          <div class="k-photo-blur-text">
+            <svg fill="none" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/></svg>
+            <p>FOTO DISAMARKAN</p>
+          </div>
+          <div class="k-verified-badge">✓ Terverifikasi</div>
+          <div class="k-match-badge">92%</div>
+        </div>
+        <div class="k-body">
+          <div class="k-name">Manda</div>
+          <div class="k-alias-note">Nama panggilan · nama asli terbuka setelah Mutual Interest</div>
+          <div class="k-info">
+            <span><svg fill="none" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Institut Teknologi Bandung</span>
+            <span><svg fill="none" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 14l6.16-3.422a12 12 0 01.484 5.422L12 21l-6.644-4.998a12 12 0 01.484-5.422L12 14z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> S1 Teknik Informatika</span>
+            <span><svg fill="none" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.8"/></svg> Bandung · 24 Tahun</span>
+          </div>
+          <div class="k-actions">
+            <button class="k-btn-sec" onclick="event.stopPropagation(); openModal(0)">Lihat Profil</button>
+            <button class="k-btn-pri" onclick="event.stopPropagation(); openModalSurat(0)">
+              <svg fill="none" viewBox="0 0 24 24"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg>
+              Perkenalan
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 2 -->
+      <div class="k-card" onclick="openModal(1)">
+        <div class="k-photo">
+          <div class="k-photo-blur-text">
+            <svg fill="none" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/></svg>
+            <p>FOTO DISAMARKAN</p>
+          </div>
+          <div class="k-verified-badge">✓ Terverifikasi</div>
+          <div class="k-match-badge">89%</div>
+        </div>
+        <div class="k-body">
+          <div class="k-name">Rara</div>
+          <div class="k-alias-note">Nama panggilan · nama asli terbuka setelah Mutual Interest</div>
+          <div class="k-info">
+            <span><svg fill="none" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Universitas Indonesia</span>
+            <span><svg fill="none" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 14l6.16-3.422a12 12 0 01.484 5.422L12 21l-6.644-4.998a12 12 0 01.484-5.422L12 14z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> S1 Psikologi</span>
+            <span><svg fill="none" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.8"/></svg> Depok · 25 Tahun</span>
+          </div>
+          <div class="k-actions">
+            <button class="k-btn-sec" onclick="event.stopPropagation(); openModal(1)">Lihat Profil</button>
+            <button class="k-btn-pri" onclick="event.stopPropagation(); openModalSurat(1)">
+              <svg fill="none" viewBox="0 0 24 24"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg>
+              Perkenalan
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3 -->
+      <div class="k-card" onclick="openModal(2)">
+        <div class="k-photo">
+          <div class="k-photo-blur-text">
+            <svg fill="none" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/></svg>
+            <p>FOTO DISAMARKAN</p>
+          </div>
+          <div class="k-verified-badge">✓ Terverifikasi</div>
+          <div class="k-match-badge">87%</div>
+        </div>
+        <div class="k-body">
+          <div class="k-name">Sari</div>
+          <div class="k-alias-note">Nama panggilan · nama asli terbuka setelah Mutual Interest</div>
+          <div class="k-info">
+            <span><svg fill="none" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Universitas Gadjah Mada</span>
+            <span><svg fill="none" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 14l6.16-3.422a12 12 0 01.484 5.422L12 21l-6.644-4.998a12 12 0 01.484-5.422L12 14z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> S2 Manajemen</span>
+            <span><svg fill="none" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.8"/></svg> Yogyakarta · 26 Tahun</span>
+          </div>
+          <div class="k-actions">
+            <button class="k-btn-sec" onclick="event.stopPropagation(); openModal(2)">Lihat Profil</button>
+            <button class="k-btn-pri" onclick="event.stopPropagation(); openModalSurat(2)">
+              <svg fill="none" viewBox="0 0 24 24"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg>
+              Perkenalan
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 4 -->
+      <div class="k-card" onclick="openModal(3)">
+        <div class="k-photo">
+          <div class="k-photo-blur-text">
+            <svg fill="none" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/></svg>
+            <p>FOTO DISAMARKAN</p>
+          </div>
+          <div class="k-verified-badge">✓ Terverifikasi</div>
+          <div class="k-match-badge">85%</div>
+        </div>
+        <div class="k-body">
+          <div class="k-name">Dina</div>
+          <div class="k-alias-note">Nama panggilan · nama asli terbuka setelah Mutual Interest</div>
+          <div class="k-info">
+            <span><svg fill="none" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Universitas Airlangga</span>
+            <span><svg fill="none" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 14l6.16-3.422a12 12 0 01.484 5.422L12 21l-6.644-4.998a12 12 0 01.484-5.422L12 14z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> S1 Kedokteran · Dokter Umum</span>
+            <span><svg fill="none" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.8"/></svg> Surabaya · 27 Tahun</span>
+          </div>
+          <div class="k-actions">
+            <button class="k-btn-sec" onclick="event.stopPropagation(); openModal(3)">Lihat Profil</button>
+            <button class="k-btn-pri" onclick="event.stopPropagation(); openModalSurat(3)">
+              <svg fill="none" viewBox="0 0 24 24"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg>
+              Perkenalan
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 5 -->
+      <div class="k-card" onclick="openModal(4)">
+        <div class="k-photo">
+          <div class="k-photo-blur-text">
+            <svg fill="none" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/></svg>
+            <p>FOTO DISAMARKAN</p>
+          </div>
+          <div class="k-verified-badge">✓ Terverifikasi</div>
+          <div class="k-match-badge">80%</div>
+        </div>
+        <div class="k-body">
+          <div class="k-name">Nisa</div>
+          <div class="k-alias-note">Nama panggilan · nama asli terbuka setelah Mutual Interest</div>
+          <div class="k-info">
+            <span><svg fill="none" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Universitas Brawijaya</span>
+            <span><svg fill="none" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 14l6.16-3.422a12 12 0 01.484 5.422L12 21l-6.644-4.998a12 12 0 01.484-5.422L12 14z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> S1 Hukum · Associate Lawyer</span>
+            <span><svg fill="none" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.8"/></svg> Malang · 25 Tahun</span>
+          </div>
+          <div class="k-actions">
+            <button class="k-btn-sec" onclick="event.stopPropagation(); openModal(4)">Lihat Profil</button>
+            <button class="k-btn-pri" onclick="event.stopPropagation(); openModalSurat(4)">
+              <svg fill="none" viewBox="0 0 24 24"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg>
+              Perkenalan
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end grid -->
+
+  </div>
+</div>
+
+<script>
+/* ===== DATA ===== */
+const kandidat = [
+  { name: 'Manda',        match: '92%', univ: 'Institut Teknologi Bandung', jurusan: 'S1 Teknik Informatika', profesi: 'Fresh Graduate (Data Science)', kota: 'Bandung', usia: '24 Tahun', agama: 'Islam', status: 'Belum Menikah' },
+  { name: 'Rara',         match: '89%', univ: 'Universitas Indonesia',      jurusan: 'S1 Psikologi',          profesi: 'Psikolog Klinis',               kota: 'Depok',   usia: '25 Tahun', agama: 'Islam', status: 'Belum Menikah' },
+  { name: 'Sari',         match: '85%', univ: 'Universitas Gadjah Mada',    jurusan: 'S2 Manajemen',          profesi: 'Marketing Analyst',             kota: 'Yogyakarta', usia: '26 Tahun', agama: 'Islam', status: 'Belum Menikah' },
+  { name: 'Dina',         match: '82%', univ: 'Universitas Airlangga',      jurusan: 'S1 Kedokteran',         profesi: 'Dokter Umum',                   kota: 'Surabaya', usia: '27 Tahun', agama: 'Islam', status: 'Belum Menikah' },
+  { name: 'Nisa',         match: '80%', univ: 'Universitas Brawijaya',      jurusan: 'S1 Hukum',              profesi: 'Associate Lawyer',              kota: 'Malang',  usia: '25 Tahun', agama: 'Islam', status: 'Belum Menikah' },
+];
+
+/* ===== SIDEBAR ===== */
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const hamburger = document.getElementById('hamburger');
+const sidebarClose = document.getElementById('sidebarClose');
+
+function openSidebar() { sidebar.classList.remove('hidden'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+function closeSidebar() { sidebar.classList.add('hidden'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
+hamburger.addEventListener('click', () => sidebar.classList.contains('hidden') ? openSidebar() : closeSidebar());
+sidebarClose.addEventListener('click', closeSidebar);
+overlay.addEventListener('click', () => { closeSidebar(); closeNotif(); });
+
+/* ===== NOTIF ===== */
+const notifBtn = document.getElementById('notifBtn');
+const notifDropdown = document.getElementById('notifDropdown');
+function closeNotif() { notifDropdown.classList.remove('open'); }
+notifBtn.addEventListener('click', e => { e.stopPropagation(); notifDropdown.classList.toggle('open'); });
+document.addEventListener('click', e => { if (!notifDropdown.contains(e.target) && e.target !== notifBtn) closeNotif(); });
+
+/* ===== TABS ===== */
+function switchTab(btn, type) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const isCari = type === 'cari';
+  document.getElementById('filterRow').style.display = isCari ? 'flex' : 'none';
+  document.getElementById('premiumLock').style.display = isCari ? 'block' : 'none';
+  document.getElementById('kandidatGrid').style.display = isCari ? 'none' : 'grid';
+  document.querySelector('.reset-bar').style.display = isCari ? 'none' : 'flex';
+}
+
+/* ===== MODAL ===== */
+const profileModal = document.getElementById('profileModal');
+
+function buildModalInfo(idx) {
+  const k = kandidat[idx];
+  document.getElementById('modalName').textContent = k.name;
+  document.getElementById('modalMatch').textContent = k.match;
+  document.getElementById('modalInfoGrid').innerHTML = `
+    <div class="modal-info-item"><div class="modal-info-label">Universitas</div><div class="modal-info-value">${k.univ}</div></div>
+    <div class="modal-info-item"><div class="modal-info-label">Pendidikan</div><div class="modal-info-value">${k.jurusan}</div></div>
+    <div class="modal-info-item"><div class="modal-info-label">Profesi</div><div class="modal-info-value">${k.profesi}</div></div>
+    <div class="modal-info-item"><div class="modal-info-label">Domisili</div><div class="modal-info-value">${k.kota}</div></div>
+    <div class="modal-info-item"><div class="modal-info-label">Usia</div><div class="modal-info-value">${k.usia}</div></div>
+    <div class="modal-info-item"><div class="modal-info-label">Agama</div><div class="modal-info-value">${k.agama}</div></div>
+    <div class="modal-info-item"><div class="modal-info-label">Status</div><div class="modal-info-value">${k.status}</div></div>
+    <div class="modal-info-item"><div class="modal-info-label">Kecocokan</div><div class="modal-info-value brand">${k.match}</div></div>
+  `;
+}
+
+function openModal(idx) {
+  buildModalInfo(idx);
+  document.getElementById('suratForm').classList.remove('open');
+  document.getElementById('modalActions').style.display = 'flex';
+  document.getElementById('suratText').value = '';
+  updateCounter();
+  profileModal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('modalBox').scrollTop = 0;
+}
+
+function openModalSurat(idx) {
+  openModal(idx);
+  setTimeout(showSuratForm, 100);
+}
+
+function closeModal() {
+  profileModal.classList.remove('open');
+  document.body.style.overflow = '';
+}
+profileModal.addEventListener('click', e => { if (e.target === profileModal) closeModal(); });
+
+function showSuratForm() {
+  document.getElementById('suratForm').classList.add('open');
+  document.getElementById('modalActions').style.display = 'none';
+  document.getElementById('suratText').focus();
+  document.getElementById('modalBox').scrollTop = 9999;
+}
+
+function updateCounter() {
+  const len = document.getElementById('suratText').value.length;
+  document.getElementById('suratCounter').textContent = len;
+}
+
+function sendSurat() {
+  const txt = document.getElementById('suratText').value.trim();
+  if (!txt) { showToast('Tulis surat perkenalan terlebih dahulu.'); return; }
+  const name = document.getElementById('modalName').textContent;
+  closeModal();
+  showToast(`✓ Surat terkirim ke ${name}! Menunggu respon.`);
+}
+
+/* ===== TOAST ===== */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/* ===== SCROLL REVEAL ===== */
+const cards = document.querySelectorAll('.k-card');
+cards.forEach((c, i) => {
+  c.style.opacity = '0'; c.style.transform = 'translateY(20px)';
+  setTimeout(() => { c.style.transition = '.5s ease'; c.style.opacity = '1'; c.style.transform = 'translateY(0)'; }, i * 100 + 80);
+});
+
+/* ===== AUTO OPEN FROM DASHBOARD ===== */
+// Jika datang dari dashboard dengan ?open=N, langsung buka modal kandidat ke-N
+const urlParams = new URLSearchParams(window.location.search);
+const autoOpen = urlParams.get('open');
+if (autoOpen !== null) {
+  const idx = parseInt(autoOpen);
+  if (!isNaN(idx) && idx >= 0 && idx < kandidat.length) {
+    // Tunggu animasi card selesai dulu
+    setTimeout(() => openModal(idx), 500);
+  }
+}
+</script>
+</body>
+</html>

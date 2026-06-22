@@ -12,55 +12,30 @@
 body{ background:var(--bg); font-family:'Inter',sans-serif; color:var(--text); }
 .container{ max-width:620px; margin:0 auto; padding:36px 20px 80px; }
 .card{ background:white; padding:44px; border-radius:28px; box-shadow:0 20px 40px rgba(0,0,0,.05); }
-
-/* Header */
 .logo{ text-align:center; font-family:'Playfair Display',serif; font-size:50px; color:var(--primary); margin-bottom:6px; }
 .tagline{ text-align:center; color:var(--primary); font-style:italic; font-size:13px; margin-bottom:24px; }
 .step-label{ text-align:center; color:var(--primary); font-weight:600; font-size:12px; margin-bottom:8px; }
 .progress-bar{ width:100%; height:6px; background:#eee; border-radius:20px; margin-bottom:32px; overflow:hidden; }
 .progress-fill{ width:50%; height:100%; background:var(--primary); border-radius:20px; }
-
-/* Trust score banner */
-.trust-banner{
-  background:linear-gradient(135deg,#7A2236 0%,#a83254 100%);
-  border-radius:16px; padding:20px 22px; margin-bottom:24px; color:white;
-}
+.trust-banner{ background:linear-gradient(135deg,#7A2236 0%,#a83254 100%); border-radius:16px; padding:20px 22px; margin-bottom:24px; color:white; }
 .trust-banner-title{ font-size:13px; font-weight:600; opacity:.85; margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em; }
 .trust-items{ display:flex; gap:8px; flex-wrap:wrap; }
-.trust-item{
-  background:rgba(255,255,255,.15); border-radius:8px;
-  padding:7px 12px; font-size:12px; font-weight:600;
-  display:flex; align-items:center; gap:5px;
-}
+.trust-item{ background:rgba(255,255,255,.15); border-radius:8px; padding:7px 12px; font-size:12px; font-weight:600; display:flex; align-items:center; gap:5px; }
 .trust-item.done{ background:rgba(30,166,114,.35); }
 .trust-item.active{ background:rgba(255,255,255,.3); border:1.5px solid white; }
-
-/* Badge box */
-.badge-box{
-  display:flex; align-items:center; gap:14px;
-  background:#f0faf5; border:2px solid var(--green);
-  border-radius:16px; padding:18px 20px; margin-bottom:20px;
-}
+.badge-box{ display:flex; align-items:center; gap:14px; background:#f0faf5; border:2px solid var(--green); border-radius:16px; padding:18px 20px; margin-bottom:20px; }
 .badge-icon{ font-size:36px; flex-shrink:0; }
 .badge-title{ font-weight:700; color:var(--green); font-size:15px; margin-bottom:4px; }
 .badge-pts{ display:inline-block; background:var(--green); color:white; border-radius:20px; padding:2px 10px; font-size:11px; font-weight:700; margin-left:6px; }
 .badge-sub{ font-size:13px; color:#555; line-height:1.5; }
-
-/* Steps */
 .steps-box{ background:#f9f4f5; border-radius:14px; padding:16px 18px; margin-bottom:20px; }
 .steps-title{ font-weight:700; color:var(--primary); font-size:13px; margin-bottom:12px; }
 .step-item{ display:flex; gap:10px; align-items:flex-start; margin-bottom:10px; font-size:13px; color:#444; line-height:1.6; }
 .step-item:last-child{ margin-bottom:0; }
 .step-num{ background:var(--primary); color:white; border-radius:50%; width:22px; height:22px; min-width:22px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; margin-top:1px; }
 .step-item a{ color:var(--primary); font-weight:600; text-decoration:none; }
-.step-item a:hover{ text-decoration:underline; }
-
 .note-box{ background:#fff8e1; border-left:3px solid #f59e0b; border-radius:8px; padding:12px 14px; font-size:13px; color:#555; line-height:1.6; margin-bottom:24px; }
-
-/* Section */
 .section-label{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--primary); margin:22px 0 12px; padding-bottom:6px; border-bottom:1px solid #f0e8ea; }
-
-/* Form */
 .form-group{ margin-bottom:14px; }
 label{ display:block; margin-bottom:5px; font-weight:600; font-size:13px; }
 .req{ color:#e53e3e; margin-left:2px; }
@@ -69,8 +44,6 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
 .hint{ font-size:12px; color:var(--muted); margin-top:4px; line-height:1.5; }
 .err{ color:#e53e3e; font-size:12px; margin-top:4px; display:none; }
 .row-2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-
-/* Autocomplete */
 .ac-wrap{ position:relative; }
 .ac-dd{ position:absolute; top:100%; left:0; right:0; z-index:300; background:white; border:1.5px solid var(--primary); border-top:none; border-radius:0 0 10px 10px; max-height:210px; overflow-y:auto; box-shadow:0 8px 24px rgba(0,0,0,.12); display:none; }
 .ac-dd.show{ display:block; }
@@ -83,13 +56,7 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
 .pill.show{ display:flex; align-items:center; gap:6px; }
 .btn-manual{ display:none; margin-top:5px; background:none; border:1.5px dashed var(--primary); color:var(--primary); padding:6px 12px; border-radius:7px; font-size:12px; cursor:pointer; font-family:'Inter',sans-serif; width:100%; text-align:left; }
 .btn-manual.show{ display:block; }
-
-/* Upload area */
-.upload-area{
-  border:2px dashed var(--border); border-radius:14px;
-  padding:28px 20px; text-align:center; cursor:pointer;
-  transition:.2s; background:#fafafa; position:relative;
-}
+.upload-area{ border:2px dashed var(--border); border-radius:14px; padding:28px 20px; text-align:center; cursor:pointer; transition:.2s; background:#fafafa; position:relative; }
 .upload-area:hover{ border-color:var(--primary); background:#f9f4f5; }
 .upload-area.has-file{ border-style:solid; border-color:var(--green); background:#f0faf5; }
 .upload-icon{ font-size:32px; margin-bottom:8px; }
@@ -98,14 +65,11 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
 .preview-img{ max-width:100%; border-radius:10px; margin-top:14px; max-height:280px; object-fit:contain; display:none; border:1px solid #eee; }
 .upload-success{ display:none; align-items:center; gap:8px; background:#f0faf5; border-radius:8px; padding:8px 12px; margin-top:10px; font-size:13px; color:var(--green); font-weight:600; }
 .upload-success.show{ display:flex; }
-
-/* Buttons */
 .btn{ width:100%; margin-top:20px; background:var(--primary); color:white; border:none; padding:15px; border-radius:13px; cursor:pointer; font-size:15px; font-weight:600; font-family:'Inter',sans-serif; transition:.2s; }
 .btn:hover{ opacity:.9; }
 .btn:disabled{ opacity:.6; cursor:not-allowed; }
 .back-link{ text-align:center; margin-top:12px; font-size:13px; color:var(--muted); }
 .back-link a{ color:var(--primary); text-decoration:none; font-weight:600; }
-
 @media(max-width:560px){
   .container{ padding:16px 14px 60px; }
   .card{ padding:24px 16px; border-radius:20px; }
@@ -125,7 +89,6 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
   <div class="step-label">LANGKAH 2 DARI 4 — Verifikasi Pendidikan</div>
   <div class="progress-bar"><div class="progress-fill"></div></div>
 
-  <!-- Trust Score Banner -->
   <div class="trust-banner">
     <div class="trust-banner-title">Cara Mendapatkan Trust Score 100/100</div>
     <div class="trust-items">
@@ -137,7 +100,6 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
     </div>
   </div>
 
-  <!-- Badge Preview -->
   <div class="badge-box">
     <div class="badge-icon">🎓</div>
     <div>
@@ -146,7 +108,6 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
     </div>
   </div>
 
-  <!-- Steps -->
   <div class="steps-box">
     <div class="steps-title">Cara Verifikasi — 3 Langkah Mudah</div>
     <div class="step-item">
@@ -165,7 +126,6 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
 
   <div class="note-box">Matchu hanya meminta screenshot PDDikti — bukan KTP, ijazah, atau dokumen pribadi lainnya. Data kamu aman dan tidak dibagikan ke pihak manapun.</div>
 
-  <!-- Data Pendidikan -->
   <div class="section-label">Data Pendidikan</div>
 
   <div class="form-group">
@@ -204,9 +164,7 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
     </div>
   </div>
 
-  <!-- Upload Screenshot -->
   <div class="section-label">Screenshot PDDikti <span class="req">*</span></div>
-
   <div class="upload-area" id="upload-area" onclick="document.getElementById('ss-input').click()">
     <input type="file" id="ss-input" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleUpload(this)">
     <div class="upload-icon" id="upload-icon">📸</div>
@@ -224,9 +182,13 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
 </div>
 
 <script>
-// Cek sesi
+// ── CEK SESI ──────────────────────────────────────────────
+// Baca dari matchu_user (objek) untuk ambil email
 const userData = JSON.parse(localStorage.getItem('matchu_user') || '{}');
-if (!userData.email) { alert('Sesi tidak ditemukan.'); window.location.href = 'register.html'; }
+if (!userData.email) {
+  alert('Sesi tidak ditemukan.');
+  window.location.href = 'register.html';
+}
 
 const PDDIKTI = 'https://pddikti.kemdiktisaintek.go.id/api';
 let kampusTimeout, jurusanTimeout;
@@ -244,51 +206,18 @@ async function searchKampus(q) {
       const r = await fetch(`${PDDIKTI}/pt/search/${encodeURIComponent(q)}`, { signal: AbortSignal.timeout(4000) });
       const j = await r.json();
       const raw = j.data || j.pt || [];
-      if (raw.length > 0) {
-        renderAc('kampus-dd', raw.slice(0,12).map(i => ({ label: i.nama||i.nama_pt||String(i), val: i.id||'' })), q, pilihKampus);
-        return;
-      }
+      if (raw.length > 0) { renderAc('kampus-dd', raw.slice(0,12).map(i => ({ label: i.nama||i.nama_pt||String(i), val: i.id||'' })), q, pilihKampus); return; }
     } catch {}
     kampusFallback(q);
   }, 350);
 }
-
 function kampusFallback(q) {
-  const list = [
-    'Institut Pertanian Bogor (IPB University)','Universitas Indonesia','Universitas Gadjah Mada',
-    'Institut Teknologi Bandung','Institut Teknologi Sepuluh Nopember','Universitas Airlangga',
-    'Universitas Diponegoro','Universitas Brawijaya','Universitas Padjadjaran',
-    'Universitas Hasanuddin','Universitas Sumatera Utara','Universitas Sebelas Maret',
-    'Universitas Pendidikan Indonesia','Universitas Andalas','Universitas Sriwijaya',
-    'Universitas Udayana','Universitas Riau','Universitas Syiah Kuala',
-    'Universitas Negeri Yogyakarta','Universitas Negeri Malang','Universitas Negeri Jakarta',
-    'Universitas Negeri Semarang','Universitas Negeri Surabaya','Universitas Negeri Makassar',
-    'BINUS University','Universitas Pelita Harapan','Universitas Trisakti',
-    'Universitas Tarumanagara','Universitas Gunadarma','Universitas Telkom',
-    'Universitas Mercu Buana','President University','Universitas Islam Indonesia',
-    'Universitas Muhammadiyah Yogyakarta','Universitas Muhammadiyah Malang',
-    'Universitas Ahmad Dahlan','Universitas Kristen Satya Wacana','Universitas Sanata Dharma',
-    'Universitas Islam Negeri Syarif Hidayatullah Jakarta',
-    'Universitas Islam Negeri Sunan Kalijaga Yogyakarta',
-    'Universitas Islam Negeri Maulana Malik Ibrahim Malang',
-    'Politeknik Negeri Jakarta','Politeknik Negeri Bandung',
-    'Politeknik Keuangan Negara STAN (PKN STAN)',
-    'Institut Pemerintahan Dalam Negeri (IPDN)',
-    'Sekolah Tinggi Meteorologi Klimatologi dan Geofisika (STMKG)',
-    'Sekolah Tinggi Ilmu Statistik (STIS)',
-    'Akademi Kepolisian (Akpol)','Akademi Militer (Akmil)',
-    'Akademi Angkatan Laut (AAL)','Akademi Angkatan Udara (AAU)','Universitas Terbuka'
-  ];
+  const list = ['Institut Pertanian Bogor (IPB University)','Universitas Indonesia','Universitas Gadjah Mada','Institut Teknologi Bandung','Institut Teknologi Sepuluh Nopember','Universitas Airlangga','Universitas Diponegoro','Universitas Brawijaya','Universitas Padjadjaran','Universitas Hasanuddin','Universitas Sumatera Utara','Universitas Sebelas Maret','Universitas Pendidikan Indonesia','Universitas Andalas','Universitas Sriwijaya','Universitas Udayana','Universitas Riau','Universitas Syiah Kuala','Universitas Negeri Yogyakarta','Universitas Negeri Malang','Universitas Negeri Jakarta','Universitas Negeri Semarang','Universitas Negeri Surabaya','Universitas Negeri Makassar','BINUS University','Universitas Pelita Harapan','Universitas Trisakti','Universitas Tarumanagara','Universitas Gunadarma','Universitas Telkom','Universitas Mercu Buana','President University','Universitas Islam Indonesia','Universitas Muhammadiyah Yogyakarta','Universitas Muhammadiyah Malang','Universitas Ahmad Dahlan','Universitas Kristen Satya Wacana','Universitas Sanata Dharma','Universitas Islam Negeri Syarif Hidayatullah Jakarta','Universitas Islam Negeri Sunan Kalijaga Yogyakarta','Universitas Islam Negeri Maulana Malik Ibrahim Malang','Politeknik Negeri Jakarta','Politeknik Negeri Bandung','Politeknik Keuangan Negara STAN (PKN STAN)','Institut Pemerintahan Dalam Negeri (IPDN)','Sekolah Tinggi Meteorologi Klimatologi dan Geofisika (STMKG)','Sekolah Tinggi Ilmu Statistik (STIS)','Akademi Kepolisian (Akpol)','Akademi Militer (Akmil)','Akademi Angkatan Laut (AAL)','Akademi Angkatan Udara (AAU)','Universitas Terbuka'];
   const f = list.filter(u => u.toLowerCase().includes(q.toLowerCase())).slice(0,12).map(u => ({ label: u, val: u }));
   document.getElementById('kampus-manual-btn').className = 'btn-manual show';
-  if (f.length === 0) {
-    document.getElementById('kampus-dd').innerHTML = '<div class="ac-msg">Tidak ditemukan. Gunakan tombol tambah manual.</div>';
-    document.getElementById('kampus-dd').className = 'ac-dd show';
-    return;
-  }
+  if (f.length === 0) { document.getElementById('kampus-dd').innerHTML = '<div class="ac-msg">Tidak ditemukan. Gunakan tombol tambah manual.</div>'; document.getElementById('kampus-dd').className = 'ac-dd show'; return; }
   renderAc('kampus-dd', f, q, pilihKampus);
 }
-
 function pilihKampus(val, label) {
   document.getElementById('kampus-input').value = label;
   document.getElementById('kampus-dd').className = 'ac-dd';
@@ -302,13 +231,8 @@ function manualKampus() {
   if (!v) { alert('Ketik nama kampus terlebih dahulu.'); return; }
   pilihKampus(v, v);
 }
-
 document.getElementById('kampus-input').addEventListener('blur', function() {
-  setTimeout(() => {
-    if (this.value.length >= 2 && !document.getElementById('kampus-pill').classList.contains('show')) {
-      document.getElementById('kampus-manual-btn').className = 'btn-manual show';
-    }
-  }, 200);
+  setTimeout(() => { if (this.value.length >= 2 && !document.getElementById('kampus-pill').classList.contains('show')) document.getElementById('kampus-manual-btn').className = 'btn-manual show'; }, 200);
 });
 
 // ── JURUSAN ──
@@ -325,30 +249,19 @@ async function searchJurusan(q) {
       const raw = j.data || j.prodi || [];
       if (raw.length > 0) {
         const seen = new Set();
-        const list = raw.filter(i => { const n=i.nama||i.nama_prodi||String(i); if(seen.has(n))return false; seen.add(n); return true; })
-          .slice(0,12).map(i => ({ label: i.nama||i.nama_prodi||String(i), val: i.id||'' }));
+        const list = raw.filter(i => { const n=i.nama||i.nama_prodi||String(i); if(seen.has(n))return false; seen.add(n); return true; }).slice(0,12).map(i => ({ label: i.nama||i.nama_prodi||String(i), val: i.id||'' }));
         renderAc('jurusan-dd', list, q, pilihJurusan); return;
       }
     } catch {}
     jurusanFallback(q);
   }, 350);
 }
-
 function jurusanFallback(q) {
-  const list = ['Akuntansi','Administrasi Bisnis','Agribisnis','Arsitektur','Biologi','Bisnis Digital',
-    'Desain Komunikasi Visual','Ekonomi Pembangunan','Farmasi','Fisika','Gizi',
-    'Hubungan Internasional','Hukum','Ilmu Komunikasi','Ilmu Komputer','Jurnalistik',
-    'Kebidanan','Kedokteran','Kedokteran Gigi','Keperawatan','Kesehatan Masyarakat',
-    'Kimia','Manajemen','Matematika','Pendidikan Guru Sekolah Dasar',
-    'Pendidikan Bahasa Inggris','Pendidikan Bahasa Indonesia','Pendidikan Matematika',
-    'Perikanan','Psikologi','Sastra Indonesia','Sastra Inggris','Sistem Informasi',
-    'Sosiologi','Statistika','Teknik Elektro','Teknik Informatika','Teknik Industri',
-    'Teknik Kimia','Teknik Mesin','Teknik Sipil','Teknologi Informasi','Teknologi Pangan'];
+  const list = ['Akuntansi','Administrasi Bisnis','Agribisnis','Arsitektur','Biologi','Bisnis Digital','Desain Komunikasi Visual','Ekonomi Pembangunan','Farmasi','Fisika','Gizi','Hubungan Internasional','Hukum','Ilmu Komunikasi','Ilmu Komputer','Jurnalistik','Kebidanan','Kedokteran','Kedokteran Gigi','Keperawatan','Kesehatan Masyarakat','Kimia','Manajemen','Matematika','Pendidikan Guru Sekolah Dasar','Pendidikan Bahasa Inggris','Pendidikan Bahasa Indonesia','Pendidikan Matematika','Perikanan','Psikologi','Sastra Indonesia','Sastra Inggris','Sistem Informasi','Sosiologi','Statistika','Teknik Elektro','Teknik Informatika','Teknik Industri','Teknik Kimia','Teknik Mesin','Teknik Sipil','Teknologi Informasi','Teknologi Pangan'];
   const f = list.filter(p => p.toLowerCase().includes(q.toLowerCase())).slice(0,12).map(p => ({ label: p, val: p }));
   document.getElementById('jurusan-manual-btn').className = 'btn-manual show';
   renderAc('jurusan-dd', f, q, pilihJurusan);
 }
-
 function pilihJurusan(val, label) {
   document.getElementById('jurusan-input').value = label;
   document.getElementById('jurusan-dd').className = 'ac-dd';
@@ -362,32 +275,21 @@ function manualJurusan() {
   if (!v) { alert('Ketik nama jurusan terlebih dahulu.'); return; }
   pilihJurusan(v, v);
 }
-
 document.getElementById('jurusan-input').addEventListener('blur', function() {
-  setTimeout(() => {
-    if (this.value.length >= 2 && !document.getElementById('jurusan-pill').classList.contains('show')) {
-      document.getElementById('jurusan-manual-btn').className = 'btn-manual show';
-    }
-  }, 200);
+  setTimeout(() => { if (this.value.length >= 2 && !document.getElementById('jurusan-pill').classList.contains('show')) document.getElementById('jurusan-manual-btn').className = 'btn-manual show'; }, 200);
 });
 
 // ── RENDER AUTOCOMPLETE ──
 function renderAc(ddId, items, q, onSelect) {
   const dd = document.getElementById(ddId);
-  if (!items || items.length === 0) {
-    dd.innerHTML = '<div class="ac-msg">Tidak ditemukan.</div>';
-    dd.className = 'ac-dd show'; return;
-  }
+  if (!items || items.length === 0) { dd.innerHTML = '<div class="ac-msg">Tidak ditemukan.</div>'; dd.className = 'ac-dd show'; return; }
   dd.innerHTML = items.map(item => {
     const hl = q ? item.label.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<span class="m">$1</span>') : item.label;
     return `<div class="ac-item" onclick="(${onSelect.toString()})('${String(item.val).replace(/'/g,"\\'")}','${item.label.replace(/'/g,"\\'")}');document.getElementById('${ddId}').className='ac-dd'">${hl}</div>`;
   }).join('');
   dd.className = 'ac-dd show';
 }
-
-document.addEventListener('click', e => {
-  if (!e.target.closest('.ac-wrap')) document.querySelectorAll('.ac-dd').forEach(d => d.className = 'ac-dd');
-});
+document.addEventListener('click', e => { if (!e.target.closest('.ac-wrap')) document.querySelectorAll('.ac-dd').forEach(d => d.className = 'ac-dd'); });
 
 // ── UPLOAD SCREENSHOT ──
 function handleUpload(input) {
@@ -398,8 +300,7 @@ function handleUpload(input) {
   reader.onload = e => {
     ssBase64 = e.target.result;
     const prev = document.getElementById('ss-preview');
-    prev.src = e.target.result;
-    prev.style.display = 'block';
+    prev.src = e.target.result; prev.style.display = 'block';
     document.getElementById('upload-area').classList.add('has-file');
     document.getElementById('upload-icon').textContent = '✓';
     document.getElementById('upload-text').textContent = file.name;
@@ -410,35 +311,26 @@ function handleUpload(input) {
   reader.readAsDataURL(file);
 }
 
-// ── SUBMIT ──
+// ── SUBMIT ──────────────────────────────────────────────
 function submitStep() {
   let valid = true;
   const show = id => { document.getElementById(id).style.display = 'block'; valid = false; };
-
   const kampus = document.getElementById('kampus-input').value.trim();
   const jurusan = document.getElementById('jurusan-input').value.trim();
   const jenjang = document.getElementById('jenjang').value;
-
   if (!kampus) show('kampus-err');
   if (!jurusan) show('jurusan-err');
   if (!jenjang) show('jenjang-err');
   if (!ssBase64) show('ss-err');
+  if (!valid) { document.querySelector('.err[style*="block"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
 
-  if (!valid) {
-    document.querySelector('.err[style*="block"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    return;
-  }
+  // ✅ Simpan ke matchu_user (untuk kompatibilitas)
+  // ✅ Simpan juga matchu_user_id agar register-step3.html bisa baca
+  const updatedUser = { ...userData, kampus, jurusan, jenjang, education_screenshot: ssBase64 };
+  localStorage.setItem('matchu_user', JSON.stringify(updatedUser));
+  localStorage.setItem('matchu_user_id', userData.userId || ''); // ← INI YANG FIX
 
-  // Simpan ke localStorage — semua dikirim sekaligus di step upload-photo
-  localStorage.setItem('matchu_user', JSON.stringify({
-    ...userData,
-    kampus,
-    jurusan,
-    jenjang,
-    education_screenshot: ssBase64,
-  }));
-
-  window.location.href = 'complete-profile.html';
+  window.location.href = 'register-step3.html';
 }
 </script>
 </body>

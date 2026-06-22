@@ -1,18 +1,8 @@
 // app/api/send-otp/route.ts
-// Dipanggil dari register.html setelah user isi form Step 1
-// Yang dilakukan:
-//   1. Validasi input
-//   2. Cek apakah email sudah terdaftar di profiles DAN auth.users
-//   3. Generate OTP 6 digit (crypto-secure)
-//   4. Simpan OTP + semua data user ke tabel email_otps (sementara)
-//   5. Kirim email OTP via Nodemailer/SMTP
-//
-// ⚠️  Akun auth.users TIDAK dibuat di sini.
-//     Akun baru dibuat hanya setelah registrasi selesai di Step 4.
 
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import { randomInt } from 'crypto'; // ✅ crypto-secure, bukan Math.random()
+import { randomInt } from 'crypto';
 
 const MAX_RESEND_PER_HOUR = 5;
 
@@ -21,7 +11,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { nama, nama_panggilan, email, password, tanggal_lahir, jenis_kelamin } = body;
 
-    // ── Validasi input dasar ──────────────────────────────────
+    // ── Validasi input ────────────────────────────────────────
     if (!nama || !nama_panggilan || !email || !password || !tanggal_lahir || !jenis_kelamin) {
       return NextResponse.json(
         { success: false, error: 'Semua field wajib diisi.' },
@@ -52,12 +42,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── Cek di auth.users (mencegah ghost account) ────────────
+    // ── Cek ghost account di auth.users ───────────────────────
     const { data: authList } = await supabase.auth.admin.listUsers();
     const authExists = authList?.users?.find(u => u.email === emailLower);
 
     if (authExists) {
-      // Cek apakah profiles-nya juga ada
       const { data: profileCheck } = await supabase
         .from('profiles')
         .select('id')
@@ -65,18 +54,17 @@ export async function POST(req: NextRequest) {
         .limit(1);
 
       if (profileCheck && profileCheck.length > 0) {
-        // Akun sudah lengkap → tolak
         return NextResponse.json(
           { success: false, error: 'Email sudah terdaftar. Silakan login.' },
           { status: 409 }
         );
       } else {
-        // Ghost account (auth ada, profiles tidak) → hapus supaya bisa register ulang
+        // Ghost account → hapus
         await supabase.auth.admin.deleteUser(authExists.id);
       }
     }
 
-    // ── Rate limiting: maksimal 5x kirim OTP per jam ──────────
+    // ── Rate limiting: maks 5x per jam ───────────────────────
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
     const { count: recentCount } = await supabase
       .from('email_otps')
@@ -99,26 +87,22 @@ export async function POST(req: NextRequest) {
       .eq('is_used', false);
 
     // ── Generate OTP 6 digit (crypto-secure) ─────────────────
-    const otp = randomInt(100000, 999999 + 1).toString(); // 100000–999999, tidak perlu padStart
+    const otp = randomInt(100000, 999999).toString();
 
-    // ── Hitung expires_at dalam UTC eksplisit ─────────────────
-    // ✅ Aman di semua timezone server (termasuk JST/WIB)
-    const nowUtc     = Date.now();
-    const expiresAt  = new Date(nowUtc + 15 * 60 * 1000).toISOString(); // +10 menit UTC
+    // ── expires_at dalam UTC (aman untuk semua timezone) ──────
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString(); // 15 menit
 
-    // ── Simpan OTP + data user ke email_otps ─────────────────
-    // Password disimpan plaintext di sini, di-hash nanti di step 4
-    // ✅ Tidak di-hash di sini agar tidak ada bug double-hash
+    // ── Simpan OTP ke database ────────────────────────────────
     const { error: insertError } = await supabase
       .from('email_otps')
       .insert({
         email:      emailLower,
-        otp:        otp,           // text, 6 digit, padded
+        otp:        otp,
         user_data: {
           nama:           nama.trim(),
           nama_panggilan: nama_panggilan.trim(),
           email:          emailLower,
-          password:       password,  // plaintext, hash di step 4
+          password:       password, // plaintext, di-hash di step 4
           tanggal_lahir,
           jenis_kelamin,
         },
@@ -140,36 +124,41 @@ export async function POST(req: NextRequest) {
       console.log(`[DEV] expires_at (UTC): ${expiresAt}\n`);
     }
 
-    // ── Kirim email via Nodemailer ────────────────────────────
-    const nodemailer = await import('nodemailer').catch(() => null);
-    if (nodemailer && process.env.SMTP_HOST) {
-      const transporter = nodemailer.default.createTransport({
-        host:   process.env.SMTP_HOST,
-        port:   parseInt(process.env.SMTP_PORT || '587'),
-        secure: false,
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-      });
+    // ── Kirim email via Resend ────────────────────────────────
+    const { Resend } = await import('resend');
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
-      await transporter.sendMail({
-        from:    `"Matchu" <${process.env.SMTP_USER}>`,
-        to:      emailLower,
-        subject: `Kode Verifikasi Matchu: ${otp}`,
-        html: `
-          <div style="font-family:Inter,sans-serif;max-width:480px;margin:0 auto;">
-            <h1 style="color:#7A2236;font-size:36px;text-align:center;">MATCHU</h1>
-            <p style="font-size:16px;">Halo <strong>${nama.trim()}</strong>,</p>
-            <p>Masukkan kode verifikasi berikut di halaman Matchu:</p>
-            <div style="text-align:center;margin:32px 0;">
-              <span style="font-size:40px;font-weight:700;letter-spacing:10px;color:#7A2236;">${otp}</span>
-            </div>
-            <p style="color:#888;font-size:13px;">Kode berlaku <strong>10 menit</strong>. Jangan bagikan ke siapapun.</p>
-            <p style="color:#888;font-size:13px;">Jika kamu tidak merasa mendaftar, abaikan email ini.</p>
+    const { error: emailError } = await resend.emails.send({
+      from:    'Matchu <verify@matchu.id>',
+      to:      emailLower,
+      subject: `Kode Verifikasi Matchu: ${otp}`,
+      html: `
+        <div style="font-family:Inter,sans-serif;max-width:480px;margin:0 auto;padding:32px;">
+          <h1 style="color:#7A2236;font-size:36px;text-align:center;margin-bottom:0;">MATCHU</h1>
+          <p style="text-align:center;color:#888;font-style:italic;margin-top:4px;">Beyond Matching. Toward Marriage.</p>
+          <hr style="border:none;border-top:1px solid #eee;margin:24px 0;" />
+          <p style="font-size:16px;">Halo <strong>${nama.trim()}</strong>,</p>
+          <p style="font-size:15px;color:#444;">Masukkan kode verifikasi berikut untuk melanjutkan pendaftaran:</p>
+          <div style="text-align:center;margin:32px 0;padding:24px;background:#FFF5F7;border-radius:12px;">
+            <span style="font-size:44px;font-weight:700;letter-spacing:12px;color:#7A2236;">${otp}</span>
           </div>
-        `,
-      });
+          <p style="color:#888;font-size:13px;text-align:center;">
+            Kode berlaku <strong>15 menit</strong>. Jangan bagikan ke siapapun.
+          </p>
+          <hr style="border:none;border-top:1px solid #eee;margin:24px 0;" />
+          <p style="color:#bbb;font-size:12px;text-align:center;">
+            Jika kamu tidak merasa mendaftar di Matchu, abaikan email ini.
+          </p>
+        </div>
+      `,
+    });
+
+    if (emailError) {
+      console.error('Resend error:', emailError);
+      return NextResponse.json(
+        { success: false, error: 'Gagal mengirim email. Coba lagi.' },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ success: true });

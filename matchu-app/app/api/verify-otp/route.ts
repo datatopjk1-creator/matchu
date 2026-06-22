@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     const emailLower = email.trim().toLowerCase();
 
     // ✅ Normalize OTP: trim whitespace + padStart untuk handle leading zero
-    const otpString = otp.toString().trim();
+    const otpString = otp.toString().trim().padStart(6, '0');
 
     // ── Gunakan UTC eksplisit untuk perbandingan waktu ────────
     // ✅ Aman di semua timezone (JST, WIB, dll) karena selalu UTC
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Normalize stored OTP untuk perbandingan ───────────────
-    const storedOtp = record.otp.toString().trim();
+    const storedOtp = record.otp.toString().trim().padStart(6, '0');
 
     // ── Debug log (hapus di production) ──────────────────────
     if (process.env.NODE_ENV === 'development') {

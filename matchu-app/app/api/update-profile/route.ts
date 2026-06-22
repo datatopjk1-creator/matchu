@@ -1,31 +1,12 @@
 // app/api/update-profile/route.ts
-// +30 poin diberikan di sini (profil lengkap dari complete-profile.html)
-// Syarat dapat +30: SEMUA field wajib terisi
+// Dipanggil dari register-step3.html setelah user isi form profil
+// Yang dilakukan:
+//   1. Validasi userId dari pending_registrations
+//   2. Update data profil ke tabel pending_registrations
+//   3. Return success agar frontend lanjut ke step 4
 
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-
-// Field wajib yang harus semua terisi untuk dapat +30
-// Sesuai field required (*) di complete-profile.html
-const REQUIRED_FIELDS = [
-  'bulan_lahir',
-  'tahun_lahir',
-  'status_nikah',
-  'universitas',
-  'program_studi',
-  'jenjang',
-  'tahun_masuk',
-  'status_pendidikan',
-  'status_kerja',
-  'kota_domisili',
-  'tinggi_badan',
-  'agama',
-  'target_menikah',
-  'kepribadian',
-  'mbti',
-  'hobi',
-  'bio',
-];
 
 export async function POST(req: NextRequest) {
   try {
@@ -34,90 +15,50 @@ export async function POST(req: NextRequest) {
 
     if (!userId) {
       return NextResponse.json(
-        { success: false, error: 'userId wajib ada.' },
+        { success: false, error: 'userId wajib diisi.' },
         { status: 400 }
       );
     }
 
-    // ── Validasi field wajib ──────────────────────────────────
-    for (const field of REQUIRED_FIELDS) {
-      if (!profileData[field]) {
-        return NextResponse.json(
-          { success: false, error: `Field ${field} wajib diisi.` },
-          { status: 400 }
-        );
-      }
-    }
+    // ── Cari pending registration berdasarkan userId ───────
+    // userId dari /api/register adalah "pending_<email>"
+    const email = userId.replace('pending_', '');
 
-    // ── Ambil profil saat ini ─────────────────────────────────
-    const { data: profile, error: fetchErr } = await supabase
-      .from('profiles')
-      .select('id, trust_score, profile_score_given, registration_step')
-      .eq('id', userId)
-      .single();
+    const { data: pending, error: fetchError } = await supabase
+      .from('pending_registrations')
+      .select('id, email')
+      .eq('email', email)
+      .limit(1);
 
-    if (fetchErr || !profile) {
+    if (fetchError || !pending || pending.length === 0) {
       return NextResponse.json(
         { success: false, error: 'User tidak ditemukan.' },
         { status: 404 }
       );
     }
 
-    // ── Hitung trust_score ────────────────────────────────────
-    // +30 hanya SATU KALI (flag profile_score_given)
-    // Syarat: semua REQUIRED_FIELDS terisi (sudah divalidasi di atas)
-    const scoreGained = !profile.profile_score_given ? 30 : 0;
-    const newScore = profile.trust_score + scoreGained;
-
-    // ── Update profiles ───────────────────────────────────────
+    // ── Update data profil di pending_registrations ────────
     const { error: updateError } = await supabase
-      .from('profiles')
+      .from('pending_registrations')
       .update({
-        bulan_lahir:       profileData.bulan_lahir,
-        tahun_lahir:       profileData.tahun_lahir,
-        status_nikah:      profileData.status_nikah,
-        universitas:       profileData.universitas?.trim(),
-        program_studi:     profileData.program_studi?.trim(),
-        jenjang:           profileData.jenjang,
-        tahun_masuk:       profileData.tahun_masuk,
-        status_pendidikan: profileData.status_pendidikan,
-        status_kerja:      profileData.status_kerja,
-        profesi:           profileData.profesi?.trim() || null,
-        perusahaan:        profileData.perusahaan?.trim() || null,
-        kota_domisili:     profileData.kota_domisili?.trim(),
-        kota_asal:         profileData.kota_asal?.trim() || null,
-        tinggi_badan:      profileData.tinggi_badan || null,
-        berat_badan:       profileData.berat_badan || null,
-        agama:             profileData.agama,
-        target_menikah:    profileData.target_menikah,
-        kepribadian:       profileData.kepribadian,
-        mbti:              profileData.mbti,
-        hobi:              profileData.hobi,
-        bahasa:            profileData.bahasa || null,
-        bio:               profileData.bio?.trim(),
-        trust_score:       newScore,
-        // Flag: sudah dapat poin profil, tidak bisa dobel
-        ...(scoreGained > 0 && { profile_score_given: true }),
-        registration_step: 4,
+        step: 3, // sudah selesai step 3
+        // Simpan semua data profil sebagai JSON di kolom profile_data
+        profile_data: profileData,
       })
-      .eq('id', userId);
+      .eq('email', email);
 
     if (updateError) {
       console.error('update-profile error:', updateError);
       return NextResponse.json(
-        { success: false, error: 'Gagal menyimpan profil.' },
+        { success: false, error: updateError.message },
         { status: 500 }
       );
     }
 
-    return NextResponse.json({
-      success: true,
-      trust_score: newScore,
-      score_gained: scoreGained,
-    });
+    return NextResponse.json({ success: true });
 
   } catch (err) {
-    console.error('update-profile catch:', err);
+    console.error('update-profile error:', err);
     return NextResponse.json(
       { success: false, error: 'Server error.' },
       { status: 500 }
