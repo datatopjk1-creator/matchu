@@ -1,289 +1,155 @@
-import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+// app/api/verify-otp/route.ts
+// Dipanggil setelah user input kode OTP 6 digit
+// Yang dilakukan:
+//   1. Validasi input
+//   2. Cari OTP valid (belum expired, belum terpakai) — perbandingan UTC eksplisit
+//   3. Cek rate limit percobaan salah (max 5x)
+//   4. Bandingkan kode OTP (string, trim, padStart)
+//   5. Tandai OTP terpakai
+//   6. Return data user (untuk dilanjutkan ke step 2, 3, 4)
+//
+// ⚠️  Akun auth.users TIDAK dibuat di sini.
+//     Akun dibuat hanya setelah step 4 selesai via /api/complete-registration
 
-console.log('VERIFY OTP ROUTE HIT');
-const supabase = createClient(
-process.env.NEXT_PUBLIC_SUPABASE_URL!,
-process.env.SUPABASE_SERVICE_ROLE_KEY!,
-{
-auth: {
-autoRefreshToken: false,
-persistSession: false,
-},
-}
-);
+import { NextRequest, NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
 
-console.log(
-  'SUPABASE_URL:',
-  process.env.NEXT_PUBLIC_SUPABASE_URL
-);
+const MAX_ATTEMPTS = 5;
 
-console.log(
-  'SERVICE_ROLE_EXISTS:',
-  !!process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+export async function POST(req: NextRequest) {
+  try {
+    const { email, otp } = await req.json();
 
-console.log(
-  'SERVICE_ROLE_PREFIX:',
-  process.env.SUPABASE_SERVICE_ROLE_KEY?.substring(0, 20)
-);
+    // ── Validasi input ────────────────────────────────────────
+    if (!email || !otp) {
+      return NextResponse.json(
+        { success: false, message: 'Email dan OTP wajib diisi.' },
+        { status: 400 }
+      );
+    }
 
-export async function POST(req: Request) {
-try {
-const { email, otp } = await req.json();
+    const emailLower = email.trim().toLowerCase();
 
+    // ✅ Normalize OTP: trim whitespace + padStart untuk handle leading zero
+    const otpString = otp.toString().trim();
 
-if (!email || !otp) {
-  return NextResponse.json(
-    {
-      success: false,
-      message: 'Email dan kode OTP wajib diisi.',
-    },
-    { status: 400 }
-  );
-}
+    // ── Gunakan UTC eksplisit untuk perbandingan waktu ────────
+    // ✅ Aman di semua timezone (JST, WIB, dll) karena selalu UTC
+    const nowUtc = new Date().toISOString();
 
-const cleanEmail = email.trim().toLowerCase();
+    // ── Cari OTP yang masih valid ─────────────────────────────
+    const { data: otpRows, error: fetchError } = await supabase
+      .from('email_otps')
+      .select('*')
+      .eq('email', emailLower)
+      .eq('is_used', false)
+      .gt('expires_at', nowUtc)   // ✅ dibanding UTC eksplisit
+      .order('created_at', { ascending: false })
+      .limit(1);
 
-// Ambil OTP terbaru
-const { data: record, error: otpError } = await supabase
-  .from('email_otps')
-  .select('*')
-  .eq('email', cleanEmail)
-  .order('created_at', { ascending: false })
-  .limit(1)
-  .single();
+    // ── Debug log (hapus di production) ──────────────────────
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[DEBUG] nowUtc         :', nowUtc);
+      console.log('[DEBUG] otpRows        :', otpRows);
+      console.log('[DEBUG] fetchError     :', fetchError);
+    }
 
-if (otpError || !record) {
-  return NextResponse.json(
-    {
-      success: false,
-      message: 'Kode OTP tidak ditemukan.',
-    },
-    { status: 400 }
-  );
-}
+    if (fetchError || !otpRows || otpRows.length === 0) {
+      return NextResponse.json(
+        { success: false, message: 'OTP tidak ditemukan atau sudah expired. Silakan kirim ulang.' },
+        { status: 400 }
+      );
+    }
 
-// Maks 3 percobaan
-if ((record.attempts || 0) >= 3) {
-  await supabase
-    .from('email_otps')
-    .delete()
-    .eq('id', record.id);
+    const record = otpRows[0];
 
-  return NextResponse.json(
-    {
-      success: false,
-      message: 'Terlalu banyak percobaan. Silakan minta kode baru.',
-    },
-    { status: 400 }
-  );
-}
+    // ── Cek rate limit percobaan salah ────────────────────────
+    // ✅ Maksimal 5x salah, setelah itu OTP dikunci
+    if ((record.attempts ?? 0) >= MAX_ATTEMPTS) {
+      await supabase
+        .from('email_otps')
+        .update({ is_used: true })
+        .eq('id', record.id);
 
-// Expired
-if (new Date(record.expires_at).getTime() < Date.now()) {
-  await supabase
-    .from('email_otps')
-    .delete()
-    .eq('id', record.id);
+      return NextResponse.json(
+        { success: false, message: 'Terlalu banyak percobaan salah. Silakan minta OTP baru.' },
+        { status: 429 }
+      );
+    }
 
-  return NextResponse.json(
-    {
-      success: false,
-      message: 'Kode OTP sudah kadaluarsa.',
-    },
-    { status: 400 }
-  );
-}
+    // ── Normalize stored OTP untuk perbandingan ───────────────
+    const storedOtp = record.otp.toString().trim();
 
-// OTP salah
-if (record.otp !== otp) {
-  await supabase
-    .from('email_otps')
-    .update({
-      attempts: (record.attempts || 0) + 1,
-    })
-    .eq('id', record.id);
+    // ── Debug log (hapus di production) ──────────────────────
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[DEBUG] input OTP  :', otpString);
+      console.log('[DEBUG] stored OTP :', storedOtp);
+      console.log('[DEBUG] match      :', storedOtp === otpString);
+      console.log('[DEBUG] attempts   :', record.attempts);
+      console.log('[DEBUG] expires_at :', record.expires_at);
+    }
 
-  return NextResponse.json(
-    {
-      success: false,
-      message: 'Kode OTP salah.',
-    },
-    { status: 400 }
-  );
-}
+    // ── Bandingkan OTP ────────────────────────────────────────
+    if (storedOtp !== otpString) {
+      // Increment attempts setiap kali salah
+      const newAttempts = (record.attempts ?? 0) + 1;
+      await supabase
+        .from('email_otps')
+        .update({ attempts: newAttempts })
+        .eq('id', record.id);
 
-// Ambil data registrasi
-const ud = record.user_data;
+      const sisaCoba = MAX_ATTEMPTS - newAttempts;
 
-if (!ud) {
-  return NextResponse.json(
-    {
-      success: false,
-      message:
-        'user_data kosong. Periksa endpoint send-otp.',
-    },
-    { status: 400 }
-  );
-}
+      return NextResponse.json(
+        {
+          success: false,
+          message: sisaCoba > 0
+            ? `Kode OTP salah. Sisa percobaan: ${sisaCoba}x.`
+            : 'Kode OTP salah. Tidak ada sisa percobaan, silakan minta OTP baru.',
+        },
+        { status: 400 }
+      );
+    }
 
-if (!ud.email || !ud.password) {
-  return NextResponse.json(
-    {
-      success: false,
-      message:
-        'Email atau password tidak ditemukan di user_data.',
-    },
-    { status: 400 }
-  );
-}
+    // ── OTP benar: tandai sudah dipakai ──────────────────────
+    await supabase
+      .from('email_otps')
+      .update({ is_used: true })
+      .eq('id', record.id);
 
-// Cek email sudah ada
-const { data: existing } = await supabase
-  .from('users')
-  .select('id')
-  .eq('email', cleanEmail)
-  .maybeSingle();
+    // ── Ambil data user dari user_data ────────────────────────
+    const ud = record.user_data as {
+      nama:           string;
+      nama_panggilan: string;
+      email:          string;
+      password:       string; // plaintext, akan di-hash di step 4
+      tanggal_lahir:  string;
+      jenis_kelamin:  string;
+    };
 
-if (existing) {
-  await supabase
-    .from('email_otps')
-    .delete()
-    .eq('id', record.id);
+    // ── Return sukses ─────────────────────────────────────────
+    // ✅ Akun auth.users TIDAK dibuat di sini
+    // ✅ Password TIDAK dikembalikan ke frontend
+    // Frontend simpan user_data di sessionStorage untuk lanjut ke step 2-4
+    // Akun dibuat di /api/complete-registration setelah step 4 selesai
+    return NextResponse.json({
+      success:  true,
+      message:  'Email berhasil diverifikasi.',
+      user_data: {
+        nama:           ud.nama,
+        nama_panggilan: ud.nama_panggilan,
+        email:          ud.email,
+        tanggal_lahir:  ud.tanggal_lahir,
+        jenis_kelamin:  ud.jenis_kelamin,
+        // password tidak dikembalikan
+      },
+    });
 
-  return NextResponse.json(
-    {
-      success: false,
-      message: 'Email sudah terdaftar.',
-    },
-    { status: 400 }
-  );
-}
-
-// Buat akun auth
-const { data: authData, error: authError } =
-  await supabase.auth.admin.createUser({
-    email: ud.email,
-    password: ud.password,
-    email_confirm: true,
-  });
-
-if (authError || !authData.user) {
-  console.error(
-    'AUTH CREATE USER ERROR:',
-    JSON.stringify(authError, null, 2)
-  );
-
-  return NextResponse.json(
-    {
-      success: false,
-      message: authError?.message,
-      details: authError,
-    },
-    { status: 500 }
-  );
-}
-
-const userId = authData.user.id;
-
-console.log('USER ID:', userId);
-
-console.log(
-  'USER DATA:',
-  JSON.stringify(
-    {
-      id: userId,
-      email: ud.email,
-      nama_lengkap: ud.nama,
-      nama_panggilan: ud.nama_panggilan,
-      tanggal_lahir: ud.tanggal_lahir,
-      jenis_kelamin: ud.jenis_kelamin,
-      trust_score: 20,
-      status: 'aktif',
-    },
-    null,
-    2
-  )
-);
-
-// Simpan profil
-const { error: profileError } = await supabase
-  .from('users')
-  .insert({
-    id: userId,
-    email: ud.email,
-
-    nama_lengkap:
-      ud.nama ||
-      ud.nama_lengkap ||
-      null,
-
-    nama_panggilan:
-      ud.nama_panggilan || null,
-
-    tanggal_lahir:
-      ud.tanggal_lahir || null,
-
-    jenis_kelamin:
-      ud.jenis_kelamin || null,
-
-    universitas:
-      ud.universitas || null,
-
-    program_studi:
-      ud.program_studi || null,
-
-    jenjang:
-      ud.jenjang || null,
-
-    tahun_masuk:
-      ud.tahun_masuk || null,
-
-    trust_score: 20,
-    status: 'aktif',
-  });
-
-if (profileError) {
-  console.error(
-    'PROFILE ERROR FULL:',
-    JSON.stringify(profileError, null, 2)
-  );
-
-  return NextResponse.json(
-    {
-      success: false,
-      error: profileError,
-    },
-    { status: 500 }
-  );
-}
-
-// Hapus OTP
-await supabase
-  .from('email_otps')
-  .delete()
-  .eq('id', record.id);
-
-return NextResponse.json({
-  success: true,
-  userId,
-});
-
-
-} catch (error: any) {
-console.error(error);
-
-
-return NextResponse.json(
-  {
-    success: false,
-    message:
-      error?.message || 'Server error.',
-  },
-  { status: 500 }
-);
-
-
-}
+  } catch (err) {
+    console.error('verify-otp error:', err);
+    return NextResponse.json(
+      { success: false, message: 'Server error.' },
+      { status: 500 }
+    );
+  }
 }
