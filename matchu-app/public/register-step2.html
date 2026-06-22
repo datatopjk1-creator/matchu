@@ -543,7 +543,11 @@ function handleUpload(input) {
 }
 
 // ── SUBMIT ────────────────────────────────────────────────
-function submitStep() {
+// ── GANTI fungsi submitStep() yang lama dengan ini ──────────
+// Perubahan: sekarang BENAR-BENAR mengirim data (termasuk screenshot)
+// ke /api/save-education saat itu juga, bukan cuma simpan ke localStorage.
+
+async function submitStep() {
   let valid = true;
   const show = id => { document.getElementById(id).style.display = 'block'; valid = false; };
 
@@ -564,6 +568,52 @@ function submitStep() {
     document.querySelector('.err[style*="block"]')?.scrollIntoView({ behavior:'smooth', block:'center' });
     return;
   }
+
+  const btn = document.getElementById('btn-next');
+  btn.disabled = true;
+  btn.textContent = 'Mengirim...';
+
+  try {
+    // ✅ INI YANG SEBELUMNYA TIDAK ADA — kirim langsung ke server
+    const res = await fetch('/api/save-education', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: userData.userId,
+        kampus, jurusan, jenjang,
+        tahun_masuk: parseInt(tahunMasuk),
+        status_pendidikan: statusPend,
+        education_screenshot: ssBase64,
+      }),
+    });
+    const data = await res.json();
+
+    if (!data.success) {
+      alert(data.error || 'Gagal menyimpan data pendidikan. Coba lagi.');
+      btn.disabled = false;
+      btn.textContent = 'Lanjutkan ke Profil';
+      return;
+    }
+
+    // Simpan juga ke localStorage untuk dipakai step berikutnya (kalau perlu)
+    const updatedUser = {
+      ...userData,
+      kampus, jurusan, jenjang,
+      tahun_masuk: parseInt(tahunMasuk),
+      status_pendidikan: statusPend,
+    };
+    localStorage.setItem('matchu_user', JSON.stringify(updatedUser));
+    localStorage.setItem('matchu_user_id', userData.userId || '');
+
+    window.location.href = 'register-step3.html';
+
+  } catch (err) {
+    console.error('submitStep error:', err);
+    alert('Gagal terhubung ke server. Coba lagi.');
+    btn.disabled = false;
+    btn.textContent = 'Lanjutkan ke Profil';
+  }
+}
 
   // Simpan ke localStorage
   const updatedUser = {

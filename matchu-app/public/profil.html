@@ -10,7 +10,7 @@
 :root{
   --brand:#7A2236;--brand-dark:#5E1A2A;--brand-light:#f9f0f3;
   --bg:#F5F2EF;--white:#fff;--text:#1C1C1E;--text-2:#6B7280;
-  --border:#E8E3DF;--green:#1ea672;--yellow:#f59e0b;
+  --border:#E8E3DF;--green:#1ea672;--yellow:#f59e0b;--red:#B71C1C;
   --topbar-h:68px;--radius:16px;--shadow:0 2px 16px rgba(0,0,0,0.06);
 }
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
@@ -114,6 +114,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .info-value.empty{color:#ccc;font-weight:400;font-style:italic;font-size:13px;}
 .info-value.verified{color:var(--green);}
 .info-value.pending-v{color:var(--yellow);}
+.info-value.rejected-v{color:var(--red);}
 
 /* BIO */
 .bio-box{background:var(--bg);border-radius:12px;padding:14px 16px;border-left:3px solid #c4677e;font-size:14px;color:#555;line-height:1.8;}
@@ -134,6 +135,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .verif-banner{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;margin-bottom:4px;}
 .verif-banner.pending{background:#fff8e1;border:1px solid #f59e0b;}
 .verif-banner.done{background:#e8f5e9;border:1px solid var(--green);}
+.verif-banner.rejected{background:#FFF0F0;border:1px solid var(--red);}
 .verif-banner-icon{font-size:20px;flex-shrink:0;}
 .verif-banner-text{font-size:13px;line-height:1.5;}
 .verif-banner-title{font-weight:700;margin-bottom:2px;}
@@ -162,6 +164,16 @@ textarea.field-input{resize:vertical;min-height:80px;line-height:1.6;}
 .tag-sel{padding:6px 14px;border:1.5px solid var(--border);border-radius:50px;font-size:13px;cursor:pointer;user-select:none;transition:.15s;}
 .tag-sel:hover{border-color:var(--brand);color:var(--brand);}
 .tag-sel.on{border-color:var(--brand);background:var(--brand-light);color:var(--brand);font-weight:600;}
+
+/* ✅ UPLOAD SCREENSHOT (modal Pendidikan) */
+.edu-upload-area{border:2px dashed var(--border);border-radius:14px;padding:20px;text-align:center;cursor:pointer;background:var(--bg);transition:.15s;}
+.edu-upload-area:hover{border-color:var(--brand);}
+.edu-upload-area.has-file{border-style:solid;border-color:var(--brand);}
+.edu-upload-icon{font-size:24px;margin-bottom:6px;}
+.edu-upload-text{font-size:13px;font-weight:600;}
+.edu-upload-sub{font-size:11px;color:var(--text-2);margin-top:3px;}
+.edu-preview-img{max-width:100%;border-radius:10px;margin-top:10px;max-height:200px;object-fit:contain;display:none;border:1px solid #eee;}
+.reject-reason-box{background:#FFF0F0;border:1px solid var(--red);border-radius:10px;padding:12px 14px;font-size:13px;color:#444;line-height:1.6;margin-bottom:14px;}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--brand);color:white;padding:12px 28px;border-radius:50px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.2);transition:opacity .3s;pointer-events:none;}
@@ -542,10 +554,17 @@ textarea.field-input{resize:vertical;min-height:80px;line-height:1.6;}
 </div>
 </div>
 
-<!-- ====== MODAL: PENDIDIKAN ====== -->
+<!-- ====== MODAL: PENDIDIKAN (✅ diperbarui: ada alasan ditolak + upload ulang screenshot) ====== -->
 <div class="modal-bg" id="modalPendidikan">
 <div class="modal">
   <div class="modal-head"><span class="modal-title">🎓 Edit Pendidikan</span><button class="modal-close" onclick="closeModal('modalPendidikan')">✕</button></div>
+
+  <div id="modalRejectReasonBox" class="reject-reason-box" style="display:none;">
+    <b>⚠ Verifikasi sebelumnya ditolak.</b><br>
+    <span id="modalRejectReasonText"></span><br>
+    Perbaiki data di bawah lalu simpan untuk dikirim ulang ke admin.
+  </div>
+
   <div class="field-group"><label class="field-label">Universitas / Institusi</label><input class="field-input" id="editUniv" placeholder="Nama universitas"></div>
   <div class="field-group"><label class="field-label">Program Studi / Jurusan</label><input class="field-input" id="editProdi" placeholder="Nama program studi"></div>
   <div class="field-row">
@@ -565,9 +584,22 @@ textarea.field-input{resize:vertical;min-height:80px;line-height:1.6;}
       <option>Fresh graduate</option><option>Alumni</option>
     </select>
   </div>
+
+  <!-- ✅ BARU: upload ulang screenshot PDDikti -->
+  <div class="field-group">
+    <label class="field-label">Screenshot PDDikti</label>
+    <div class="edu-upload-area" id="eduUploadArea" onclick="document.getElementById('eduSsInput').click()">
+      <input type="file" id="eduSsInput" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleEduUpload(this)">
+      <div class="edu-upload-icon" id="eduUploadIcon">📸</div>
+      <div class="edu-upload-text" id="eduUploadText">Klik untuk upload / ganti screenshot</div>
+      <div class="edu-upload-sub">Kosongkan kalau tidak ingin mengganti screenshot yang sudah ada</div>
+      <img id="eduSsPreview" class="edu-preview-img">
+    </div>
+  </div>
+
   <div class="modal-footer">
     <button class="btn-cancel" onclick="closeModal('modalPendidikan')">Batal</button>
-    <button class="btn-save" onclick="saveSection('pendidikan')">Simpan</button>
+    <button class="btn-save" onclick="saveSection('pendidikan')">Simpan & Kirim Verifikasi</button>
   </div>
 </div>
 </div>
@@ -667,6 +699,7 @@ textarea.field-input{resize:vertical;min-height:80px;line-height:1.6;}
 // ── STATE ─────────────────────────────────────────────────
 let profile = null;
 let trustBreakdown = null;
+let eduSsBase64 = null; // ✅ base64 screenshot baru (kalau user upload ulang)
 const userId = localStorage.getItem('matchu_user_id');
 if (!userId) { alert('Sesi tidak ditemukan. Silakan login.'); window.location.href = 'login.html'; }
 
@@ -743,6 +776,11 @@ function renderTrust() {
   }).join('');
 }
 
+function escapeHtml(str){
+  if(!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
 function renderSections() {
   const p = profile;
   // PRIBADI
@@ -761,14 +799,18 @@ function renderSections() {
   setVal('infoTinggi', p.tinggi_badan ? p.tinggi_badan + ' cm' : null);
   setVal('infoBerat', p.berat_badan ? p.berat_badan + ' kg' : null);
 
-  // PENDIDIKAN
-  // Update verifikasi banner
+  // PENDIDIKAN — ✅ sekarang ada 3 kondisi: approved / pending / rejected
   const vb = document.getElementById('verifBanner');
   const vp = document.getElementById('infoVerifPend');
+
   if (p.education_score_given) {
     vb.className = 'verif-banner done';
     vb.innerHTML = `<div class="verif-banner-icon">✅</div><div class="verif-banner-text"><div class="verif-banner-title">Pendidikan Terverifikasi +30 Poin</div><div style="font-size:12px;">Data pendidikanmu telah diverifikasi oleh tim Matchu. Trust score bertambah +30 poin.</div></div>`;
     vp.textContent = '✓ Terverifikasi'; vp.className = 'info-value verified';
+  } else if (p.education_verification_status === 'rejected') {
+    vb.className = 'verif-banner rejected';
+    vb.innerHTML = `<div class="verif-banner-icon">✕</div><div class="verif-banner-text"><div class="verif-banner-title">Verifikasi Ditolak</div><div style="font-size:12px;"><b>Alasan:</b> ${escapeHtml(p.education_rejection_reason || 'Tidak ada alasan diberikan.')}<br>Klik tombol <b>Edit</b> di atas untuk memperbaiki data dan mengirim ulang.</div></div>`;
+    vp.textContent = '✕ Ditolak'; vp.className = 'info-value rejected-v';
   } else {
     vb.className = 'verif-banner pending';
     vb.innerHTML = `<div class="verif-banner-icon">⏳</div><div class="verif-banner-text"><div class="verif-banner-title">Menunggu Verifikasi PDDikti</div><div style="font-size:12px;">Tim Matchu sedang memverifikasi. Proses ini 1×24 jam. Setelah terverifikasi, trust score kamu akan bertambah +30 poin.</div></div>`;
@@ -852,6 +894,23 @@ function fillModal(id) {
     setF('editJenjang', p.jenjang);
     setF('editAngkatan', p.tahun_masuk);
     setF('editStatusPend', p.status_pendidikan);
+
+    // ✅ reset upload state setiap modal dibuka
+    eduSsBase64 = null;
+    document.getElementById('eduSsInput').value = '';
+    document.getElementById('eduSsPreview').style.display = 'none';
+    document.getElementById('eduUploadArea').classList.remove('has-file');
+    document.getElementById('eduUploadIcon').textContent = '📸';
+    document.getElementById('eduUploadText').textContent = 'Klik untuk upload / ganti screenshot';
+
+    // ✅ tampilkan kotak alasan ditolak kalau memang statusnya rejected
+    const rejectBox = document.getElementById('modalRejectReasonBox');
+    if (p.education_verification_status === 'rejected') {
+      rejectBox.style.display = 'block';
+      document.getElementById('modalRejectReasonText').textContent = p.education_rejection_reason || 'Tidak ada alasan diberikan.';
+    } else {
+      rejectBox.style.display = 'none';
+    }
   } else if (id === 'modalPekerjaan') {
     setF('editStatusKerja', p.status_kerja);
     setF('editProfesi', p.profesi);
@@ -869,6 +928,23 @@ function fillModal(id) {
   }
 }
 function setF(id, val) { const el = document.getElementById(id); if (el) el.value = val || ''; }
+
+// ✅ BARU: handle upload screenshot di modal Pendidikan
+function handleEduUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { alert('Ukuran file maksimal 5MB.'); input.value = ''; return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    eduSsBase64 = e.target.result;
+    const prev = document.getElementById('eduSsPreview');
+    prev.src = e.target.result; prev.style.display = 'block';
+    document.getElementById('eduUploadArea').classList.add('has-file');
+    document.getElementById('eduUploadIcon').textContent = '✓';
+    document.getElementById('eduUploadText').textContent = file.name;
+  };
+  reader.readAsDataURL(file);
+}
 
 // ── TAG SELECTOR ──────────────────────────────────────────
 function renderTagSel(cId, list, cur) {
@@ -894,6 +970,53 @@ async function saveSection(section) {
 
   const modalMap = { identitas:'modalIdentitas', lokasiFisik:'modalLokasiFisik', pendidikan:'modalPendidikan', pekerjaan:'modalPekerjaan', kepribadian:'modalKepribadian', bio:'modalBio', hobi:'modalHobi' };
 
+  // ✅ PENDIDIKAN sekarang punya jalur sendiri: kirim ke /api/save-education
+  // supaya screenshot ikut terupload dan status verifikasi reset ke 'pending'
+  if (section === 'pendidikan') {
+    const universitas = document.getElementById('editUniv').value.trim();
+    const prodi = document.getElementById('editProdi').value.trim();
+    const jenjang = document.getElementById('editJenjang').value;
+    const tahunMasuk = document.getElementById('editAngkatan').value;
+    const statusPend = document.getElementById('editStatusPend').value;
+
+    if (!universitas || !prodi || !jenjang) {
+      alert('Universitas, Program Studi, dan Jenjang wajib diisi.');
+      btn.disabled = false; btn.textContent = 'Simpan & Kirim Verifikasi';
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/save-education', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          kampus: universitas,
+          jurusan: prodi,
+          jenjang,
+          tahun_masuk: tahunMasuk ? parseInt(tahunMasuk) : null,
+          status_pendidikan: statusPend || null,
+          education_screenshot: eduSsBase64, // null kalau tidak ganti screenshot
+        }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        closeModal('modalPendidikan');
+        const fr = await fetch(`/api/get-profile?userId=${userId}`);
+        const fd = await fr.json();
+        if (fd.success) { profile = fd.profile; trustBreakdown = fd.trust_breakdown; }
+        renderAll();
+        showToast('✓ Data pendidikan dikirim untuk verifikasi ulang');
+      } else {
+        alert('Gagal: ' + (data.error || 'Coba lagi.'));
+      }
+    } catch(e) { alert('Gagal terhubung ke server.'); console.error(e); }
+    btn.disabled = false; btn.textContent = 'Simpan & Kirim Verifikasi';
+    return;
+  }
+
+  // ── Section lain tetap lewat /api/save-profile seperti semula ──
   let payload = { userId };
   if (section === 'identitas') {
     payload = { ...payload,
@@ -908,14 +1031,6 @@ async function saveSection(section) {
       kota_asal:     document.getElementById('editKotaAsal').value.trim(),
       tinggi_badan:  parseInt(document.getElementById('editTinggi').value) || null,
       berat_badan:   parseInt(document.getElementById('editBerat').value) || null,
-    };
-  } else if (section === 'pendidikan') {
-    payload = { ...payload,
-      universitas:       document.getElementById('editUniv').value.trim(),
-      program_studi:     document.getElementById('editProdi').value.trim(),
-      jenjang:           document.getElementById('editJenjang').value,
-      tahun_masuk:       parseInt(document.getElementById('editAngkatan').value) || null,
-      status_pendidikan: document.getElementById('editStatusPend').value,
     };
   } else if (section === 'pekerjaan') {
     payload = { ...payload,
@@ -943,7 +1058,6 @@ async function saveSection(section) {
     const data = await res.json();
     if (data.success) {
       closeModal(modalMap[section]);
-      // Reload fresh dari server
       const fr = await fetch(`/api/get-profile?userId=${userId}`);
       const fd = await fr.json();
       if (fd.success) { profile = fd.profile; trustBreakdown = fd.trust_breakdown; }

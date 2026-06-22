@@ -9,7 +9,7 @@ import { supabase } from '@/lib/supabase';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { userId, kampus, jurusan, jenjang, education_screenshot } = body;
+    const { userId, kampus, jurusan, jenjang, education_screenshot, tahun_masuk, status_pendidikan } = body;
 
     if (!userId || !kampus || !jurusan || !jenjang) {
       return NextResponse.json(
@@ -73,6 +73,11 @@ export async function POST(req: NextRequest) {
         kampus: kampus.trim(),
         jurusan: jurusan.trim(),
         jenjang,
+        // ✅ disinkronkan juga ke kolom yang dibaca profil.html
+        universitas: kampus.trim(),
+        program_studi: jurusan.trim(),
+        ...(tahun_masuk && { tahun_masuk }),
+        ...(status_pendidikan && { status_pendidikan }),
         education_screenshot_url: screenshotUrl,
         education_verification_status: 'pending',
         education_rejection_reason: null,
