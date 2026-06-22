@@ -1,1 +1,376 @@
-# admin-verifikasi-pendidikan.html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verifikasi Pendidikan | Matchu Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; }
+:root{
+  --brand:#B71C1C; --brand-dark:#7F0000; --brand-light:#FFE7E7;
+  --sidebar:#2B0A0A; --bg:#F7F4F4; --white:#fff; --text:#222; --text2:#777; --border:#E8E8E8;
+}
+body{ font-family:'Inter',sans-serif; background:var(--bg); }
+.sidebar{ position:fixed; left:0; top:0; width:280px; height:100vh; background:var(--sidebar); overflow-y:auto; }
+.logo{ padding:28px; border-bottom:1px solid rgba(255,255,255,.08); }
+.logo h1{ font-family:'Playfair Display',serif; font-size:28px; color:white; }
+.logo span{ display:block; margin-top:5px; font-size:11px; letter-spacing:2px; color:#ccc; }
+.nav{ padding:20px 0; }
+.nav-title{ padding:18px 28px 8px; font-size:11px; letter-spacing:2px; color:#999; text-transform:uppercase; }
+.nav a{ display:flex; align-items:center; gap:12px; padding:14px 28px; text-decoration:none; color:#eee; font-size:14px; }
+.nav a:hover{ background:rgba(255,255,255,.05); }
+.nav a.active{ background:rgba(183,28,28,.25); border-left:4px solid #ff6b6b; }
+.main{ margin-left:280px; }
+.topbar{ height:75px; background:white; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; padding:0 28px; }
+.content{ padding:28px; }
+.stats-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:24px; }
+.stat-card{ background:white; padding:22px; border-radius:20px; border:1px solid var(--border); }
+.stat-label{ font-size:13px; color:#777; }
+.stat-number{ font-size:34px; font-weight:700; color:#B71C1C; margin-top:10px; }
+.section-card{ background:white; border-radius:22px; padding:24px; border:1px solid var(--border); margin-bottom:24px; }
+.section-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
+.section-title{ font-size:24px; font-weight:700; }
+.search-area{ display:flex; gap:10px; }
+.search-area input{ width:280px; padding:12px 14px; border:1px solid #ddd; border-radius:12px; font-family:'Inter',sans-serif; }
+.search-area select{ padding:12px 14px; border:1px solid #ddd; border-radius:12px; font-family:'Inter',sans-serif; }
+.admin-table{ width:100%; border-collapse:collapse; }
+.admin-table th{ background:#fafafa; padding:14px; text-align:left; font-size:13px; border-bottom:1px solid #eee; }
+.admin-table td{ padding:16px 14px; border-bottom:1px solid #eee; font-size:14px; }
+.badge-pending{ background:#FFF5D9; color:#B78103; padding:5px 10px; border-radius:20px; font-size:12px; font-weight:600; }
+.badge-approved{ background:#DFF8E7; color:#0A8A40; padding:5px 10px; border-radius:20px; font-size:12px; font-weight:600; }
+.badge-rejected{ background:#FFE4E4; color:#B71C1C; padding:5px 10px; border-radius:20px; font-size:12px; font-weight:600; }
+.btn{ border:none; padding:8px 14px; border-radius:10px; cursor:pointer; font-size:12px; font-weight:600; font-family:'Inter',sans-serif; }
+.btn:disabled{ opacity:.5; cursor:not-allowed; }
+.btn-view{ background:#f1f1f1; }
+.btn-approve{ background:#DFF8E7; color:#0A8A40; }
+.btn-reject{ background:#FFE4E4; color:#B71C1C; }
+.loading-text, .empty-text{ text-align:center; padding:30px; color:#777; }
+textarea{ width:100%; padding:11px; border:1.5px solid #ddd; border-radius:10px; font-family:'Inter',sans-serif; font-size:14px; resize:vertical; min-height:80px; }
+</style>
+</head>
+
+<body>
+
+<script>
+  (function(){
+    const userData = JSON.parse(localStorage.getItem('matchu_user') || 'null');
+    if (!userData || !userData.isAdmin) {
+      window.location.href = 'login.html';
+    }
+  })();
+</script>
+
+<aside class="sidebar">
+<div class="logo"><h1>MATCHU</h1><span>ADMIN PANEL</span></div>
+<div class="nav">
+<div class="nav-title">Dashboard</div>
+<a href="admin-dashboard.html">📊 Dashboard</a>
+<div class="nav-title">User</div>
+<a href="admin-users.html">👥 Semua User</a>
+<a href="admin-premium.html">⭐ User Premium</a>
+<a href="admin-suspended.html">🚫 User Ditangguhkan</a>
+<div class="nav-title">Verifikasi</div>
+<a href="admin-verifikasi-pendidikan.html" class="active">🎓 Verifikasi Pendidikan</a>
+<div class="nav-title">Monitoring</div>
+<a href="admin-report.html">🚨 Report User</a>
+</div>
+</aside>
+
+<div class="main">
+
+<header class="topbar">
+<div>
+<h2>Verifikasi Pendidikan</h2>
+<p style="font-size:13px;color:#777;">Verifikasi data pendidikan PDDIKTI pengguna</p>
+</div>
+</header>
+
+<div class="content">
+
+<div class="stats-grid">
+<div class="stat-card">
+<div class="stat-label">Menunggu Verifikasi</div>
+<div class="stat-number" id="statPending">–</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Disetujui</div>
+<div class="stat-number" id="statApproved">–</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Ditolak</div>
+<div class="stat-number" id="statRejected">–</div>
+</div>
+</div>
+
+<div class="section-card">
+<div class="section-header">
+<div class="section-title">🎓 Daftar Verifikasi Pendidikan</div>
+<div class="search-area">
+<input type="text" id="searchVerification" placeholder="Cari nama, email, atau kampus...">
+<select id="statusFilter">
+<option value="pending">Menunggu</option>
+<option value="approved">Disetujui</option>
+<option value="rejected">Ditolak</option>
+<option value="all">Semua Status</option>
+</select>
+</div>
+</div>
+
+<table class="admin-table">
+<thead>
+<tr>
+<th>User</th>
+<th>Kampus</th>
+<th>Jurusan</th>
+<th>Tanggal Submit</th>
+<th>Status</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody id="verificationTable">
+<tr><td colspan="6" class="loading-text">Memuat data...</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="section-card">
+<div class="section-header"><div class="section-title">📊 Top Kampus (Disetujui)</div></div>
+<div id="topKampusGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;">
+<div class="empty-text" style="grid-column:1/-1;">Memuat...</div>
+</div>
+</div>
+
+<div class="section-card">
+<div class="section-header"><div class="section-title">📜 Riwayat Verifikasi Terbaru</div></div>
+<table class="admin-table">
+<thead><tr><th>User</th><th>Kampus</th><th>Status</th><th>Tanggal</th></tr></thead>
+<tbody id="riwayatTable">
+<tr><td colspan="4" class="loading-text">Memuat...</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+
+<!-- MODAL DETAIL -->
+<div id="verificationModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;justify-content:center;align-items:center;">
+<div style="width:1100px;max-width:95%;background:white;border-radius:24px;padding:30px;max-height:90vh;overflow-y:auto;">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+<h2>Verifikasi Pendidikan</h2>
+<button onclick="closeModal()" class="btn btn-view">Tutup</button>
+</div>
+
+<div style="display:grid;grid-template-columns:420px 1fr;gap:30px;">
+<div>
+<div id="modalScreenshotWrap" style="height:520px;background:#f5f5f5;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#777;overflow:hidden;">
+Memuat screenshot...
+</div>
+</div>
+
+<div>
+<table style="width:100%;" id="modalDataTable"></table>
+
+<div id="modalActionArea" style="margin-top:30px;"></div>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+const API_BASE = '/api/admin';
+const adminData = JSON.parse(localStorage.getItem('matchu_user') || '{}');
+let currentList = [];
+
+function escapeHtml(str){
+  if(!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function formatTanggal(iso){
+  if(!iso) return '-';
+  return new Date(iso).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+}
+
+function badgeFor(status){
+  if (status === 'approved') return '<span class="badge-approved">Disetujui</span>';
+  if (status === 'rejected') return '<span class="badge-rejected">Ditolak</span>';
+  return '<span class="badge-pending">Menunggu</span>';
+}
+
+async function loadData(){
+  const status = document.getElementById('statusFilter').value;
+  const search = document.getElementById('searchVerification').value.trim();
+  const tbody = document.getElementById('verificationTable');
+  tbody.innerHTML = '<tr><td colspan="6" class="loading-text">Memuat data...</td></tr>';
+
+  try {
+    const params = new URLSearchParams({ status });
+    if (search) params.set('search', search);
+
+    const res = await fetch(`${API_BASE}/education-verifications?${params.toString()}`);
+    const data = await res.json();
+
+    if (!data.success) {
+      tbody.innerHTML = `<tr><td colspan="6" class="empty-text">Gagal memuat data: ${escapeHtml(data.error)}</td></tr>`;
+      return;
+    }
+
+    currentList = data.list;
+
+    document.getElementById('statPending').textContent = data.stats.pending;
+    document.getElementById('statApproved').textContent = data.stats.approved;
+    document.getElementById('statRejected').textContent = data.stats.rejected;
+
+    if (currentList.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-text">Tidak ada data.</td></tr>';
+    } else {
+      tbody.innerHTML = currentList.map(v => `
+        <tr>
+          <td>${escapeHtml(v.nama)}</td>
+          <td>${escapeHtml(v.kampus)}</td>
+          <td>${escapeHtml(v.jurusan)}</td>
+          <td>${formatTanggal(v.created_at)}</td>
+          <td>${badgeFor(v.status)}</td>
+          <td><button class="btn btn-view" onclick="openModal('${v.id}')">Lihat Detail</button></td>
+        </tr>
+      `).join('');
+    }
+
+    // Top kampus
+    const kampusGrid = document.getElementById('topKampusGrid');
+    if (data.topKampus.length === 0) {
+      kampusGrid.innerHTML = '<div class="empty-text" style="grid-column:1/-1;">Belum ada data kampus yang disetujui.</div>';
+    } else {
+      kampusGrid.innerHTML = data.topKampus.map(k => `
+        <div class="stat-card">
+          <div class="stat-label">${escapeHtml(k.nama)}</div>
+          <div class="stat-number">${k.jumlah}</div>
+        </div>
+      `).join('');
+    }
+
+    // Riwayat
+    const riwayatBody = document.getElementById('riwayatTable');
+    if (data.riwayat.length === 0) {
+      riwayatBody.innerHTML = '<tr><td colspan="4" class="empty-text">Belum ada riwayat.</td></tr>';
+    } else {
+      riwayatBody.innerHTML = data.riwayat.map(r => `
+        <tr>
+          <td>${escapeHtml(r.nama)}</td>
+          <td>${escapeHtml(r.kampus)}</td>
+          <td>${badgeFor(r.status)}</td>
+          <td>${formatTanggal(r.updated_at)}</td>
+        </tr>
+      `).join('');
+    }
+
+  } catch (err) {
+    console.error(err);
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-text">Gagal terhubung ke server.</td></tr>';
+  }
+}
+
+function openModal(id){
+  const v = currentList.find(item => item.id === id);
+  if (!v) return;
+
+  document.getElementById('modalScreenshotWrap').innerHTML = v.screenshot_url
+    ? `<img src="${v.screenshot_url}" style="width:100%;height:100%;object-fit:contain;">`
+    : 'Screenshot tidak tersedia';
+
+  document.getElementById('modalDataTable').innerHTML = `
+    <tr><td><b>Nama</b></td><td>${escapeHtml(v.nama)}</td></tr>
+    <tr><td><b>Email</b></td><td>${escapeHtml(v.email)}</td></tr>
+    <tr><td><b>Kampus</b></td><td>${escapeHtml(v.kampus)}</td></tr>
+    <tr><td><b>Jurusan</b></td><td>${escapeHtml(v.jurusan)}</td></tr>
+    <tr><td><b>Jenjang</b></td><td>${escapeHtml(v.jenjang)}</td></tr>
+    <tr><td><b>Trust Score Saat Ini</b></td><td>${v.trust_score}</td></tr>
+    <tr><td><b>Status</b></td><td>${badgeFor(v.status)}</td></tr>
+    ${v.status === 'rejected' ? `<tr><td><b>Alasan Ditolak</b></td><td>${escapeHtml(v.rejection_reason || '-')}</td></tr>` : ''}
+  `;
+
+  const actionArea = document.getElementById('modalActionArea');
+
+  if (v.status === 'pending') {
+    actionArea.innerHTML = `
+      <div style="display:flex;gap:12px;">
+        <button class="btn btn-approve" id="modalApproveBtn">✓ Setujui Verifikasi (+30 Poin)</button>
+        <button class="btn btn-reject" id="modalRejectBtn">✕ Tolak Verifikasi</button>
+      </div>
+      <div id="rejectReasonArea" style="display:none;margin-top:14px;">
+        <label style="display:block;margin-bottom:6px;font-size:13px;font-weight:600;">Alasan Penolakan <span style="color:#e53e3e;">*</span></label>
+        <textarea id="rejectReasonInput" placeholder="Contoh: Screenshot tidak jelas / nama tidak sesuai dengan data PDDikti..."></textarea>
+        <button class="btn btn-reject" id="confirmRejectBtn" style="margin-top:10px;">Kirim Penolakan</button>
+      </div>
+      <div style="margin-top:20px;padding:15px;background:#FFF5D9;border-radius:12px;font-size:13px;line-height:1.7;">
+        Jika verifikasi disetujui maka:<br><br>
+        ✓ Badge Alumni Terverifikasi aktif<br>
+        ✓ Trust Score bertambah 30 poin<br>
+        ✓ User masuk kategori terverifikasi
+      </div>
+    `;
+
+    document.getElementById('modalApproveBtn').addEventListener('click', () => handleAction(v.id, 'approve'));
+    document.getElementById('modalRejectBtn').addEventListener('click', () => {
+      document.getElementById('rejectReasonArea').style.display = 'block';
+    });
+    document.getElementById('confirmRejectBtn').addEventListener('click', () => {
+      const reason = document.getElementById('rejectReasonInput').value.trim();
+      if (!reason) { alert('Alasan penolakan wajib diisi.'); return; }
+      handleAction(v.id, 'reject', reason);
+    });
+  } else {
+    actionArea.innerHTML = '<div class="empty-text">Verifikasi ini sudah diproses.</div>';
+  }
+
+  document.getElementById('verificationModal').style.display = 'flex';
+}
+
+function closeModal(){
+  document.getElementById('verificationModal').style.display = 'none';
+}
+
+async function handleAction(id, action, reason){
+  const confirmText = action === 'approve' ? 'Setujui verifikasi pendidikan ini?' : 'Tolak verifikasi pendidikan ini?';
+  if (!confirm(confirmText)) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/education-verifications`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, action, reason, adminId: adminData.userId }),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      alert(action === 'approve' ? 'Verifikasi berhasil disetujui. Trust Score +30' : 'Verifikasi berhasil ditolak.');
+      closeModal();
+      loadData();
+    } else {
+      alert(data.error || 'Gagal memperbarui verifikasi.');
+    }
+  } catch (err) {
+    alert('Gagal terhubung ke server.');
+  }
+}
+
+document.getElementById('statusFilter').addEventListener('change', loadData);
+let searchTimeout = null;
+document.getElementById('searchVerification').addEventListener('input', () => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(loadData, 400);
+});
+
+window.onclick = function(e){
+  const modal = document.getElementById('verificationModal');
+  if (e.target === modal) closeModal();
+};
+
+loadData();
+</script>
+
+</div>
+
+</body>
+</html>

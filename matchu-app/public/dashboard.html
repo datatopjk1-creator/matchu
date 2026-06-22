@@ -69,6 +69,24 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 /* CONTENT */
 .content{padding:28px 28px 60px;max-width:1100px;}
 
+/* REJECT BANNER */
+.reject-edu-banner{
+  background:#FFF0F0;
+  border:1.5px solid #B71C1C;
+  border-radius:16px;
+  padding:18px 22px;
+  margin-bottom:20px;
+  display:none;
+  align-items:flex-start;
+  gap:14px;
+}
+.reject-edu-banner.show{ display:flex; }
+.reject-edu-icon{ font-size:24px; flex-shrink:0; }
+.reject-edu-title{ font-weight:700; color:#B71C1C; font-size:14px; margin-bottom:4px; }
+.reject-edu-text{ font-size:13px; color:#444; line-height:1.6; }
+.reject-edu-link{ display:inline-block; margin-top:10px; background:#B71C1C; color:white; text-decoration:none; padding:8px 16px; border-radius:50px; font-size:12.5px; font-weight:600; }
+.reject-edu-link:hover{ opacity:.9; }
+
 /* WELCOME BANNER */
 .welcome-banner{background:linear-gradient(130deg,var(--brand) 0%,#9E304D 60%,#c4677e 100%);border-radius:20px;padding:32px 36px;color:white;display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:24px;position:relative;overflow:hidden;}
 .welcome-banner::before{content:'';position:absolute;right:-40px;top:-40px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.06);}
@@ -220,6 +238,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <div class="notif-drop-title">Notifikasi</div>
     <span class="notif-drop-clear">Tandai semua dibaca</span>
   </div>
+  <div id="notifDropdownExtra"></div>
   <div class="notif-drop-item">
     <div class="notif-drop-icon"><svg fill="none" viewBox="0 0 24 24"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg></div>
     <div><div class="notif-drop-text"><b>Manda</b> menerima surat perkenalan Anda.</div><div class="notif-drop-time">2 jam lalu</div></div>
@@ -242,7 +261,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <div class="topbar-right">
     <button class="notif-btn" id="notifBtn">
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke-linecap="round"/></svg>
-      <span class="notif-dot"></span>
+      <span class="notif-dot" id="notifDot"></span>
     </button>
     <button class="user-pill" onclick="window.location='profil.html'">
       <div class="t-avatar" id="topbarAvatar">?</div>
@@ -253,6 +272,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 <!-- CONTENT -->
 <div class="content">
+
+  <!-- ✅ BANNER VERIFIKASI PENDIDIKAN DITOLAK -->
+  <div class="reject-edu-banner" id="rejectEduBanner">
+    <div class="reject-edu-icon">⚠️</div>
+    <div>
+      <div class="reject-edu-title">Verifikasi Pendidikan Ditolak</div>
+      <div class="reject-edu-text" id="rejectEduReason">Alasan tidak tersedia.</div>
+      <a href="perbaiki-verifikasi-pendidikan.html" class="reject-edu-link">Perbaiki Sekarang →</a>
+    </div>
+  </div>
+
   <div class="welcome-banner">
     <div>
       <div class="welcome-tag">Member Matchu</div>
@@ -373,6 +403,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 const userId = localStorage.getItem('matchu_user_id');
 if (!userId) { window.location.href = 'login.html'; }
 
+function escapeHtml(str){
+  if(!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
 async function loadDashboard() {
   try {
     const res = await fetch(`/api/get-profile?userId=${userId}`);
@@ -408,6 +443,26 @@ async function loadDashboard() {
           <span class="trust-pts ${item.done ? 'trust-done' : ''}">${item.done ? '+' : ''}${item.poin}/${item.max}</span>
         </div>`).join('');
     }
+
+    // ✅ BANNER & NOTIFIKASI: tampil hanya kalau verifikasi pendidikan ditolak
+    if (p.education_verification_status === 'rejected') {
+      document.getElementById('rejectEduBanner').classList.add('show');
+      document.getElementById('rejectEduReason').innerHTML =
+        `<b>Alasan:</b> ${escapeHtml(p.education_rejection_reason || 'Tidak ada alasan diberikan.')}`;
+
+      // tambah satu item di dropdown notifikasi, tanpa mengubah item yang sudah ada
+      document.getElementById('notifDropdownExtra').innerHTML = `
+        <div class="notif-drop-item">
+          <div class="notif-drop-icon"><svg fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div>
+            <div class="notif-drop-text">Verifikasi pendidikan kamu <b>ditolak</b>. Klik untuk perbaiki.</div>
+            <div class="notif-drop-time"><a href="perbaiki-verifikasi-pendidikan.html" style="color:var(--brand);font-weight:600;text-decoration:none;">Perbaiki sekarang →</a></div>
+          </div>
+        </div>`;
+    }
+    // kalau status BUKAN rejected (pending/approved/null), banner & item extra
+    // tidak ditambahkan — perilaku lain di halaman ini tidak berubah sama sekali.
+
   } catch(e) { console.error('loadDashboard:', e); }
 }
 

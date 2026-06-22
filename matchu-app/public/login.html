@@ -84,23 +84,30 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     });
 
     const data = await res.json();
+    console.log('LOGIN RESPONSE:', data); 
 
     if (data.success) {
-      // ✅ Simpan ke localStorage — sesuai dengan response /api/login
-      localStorage.setItem('matchu_user_id', data.userId);
-      localStorage.setItem('matchu_token',   data.access_token  || '');
-      localStorage.setItem('matchu_refresh',  data.refresh_token || '');
-      localStorage.setItem('matchu_user', JSON.stringify({
-        userId:         data.userId,
-        email:          data.email,
-        nama:           data.nama,
-        nama_panggilan: data.nama_panggilan,
-        trust_score:    data.trust_score,
-        foto_url_1:     data.foto_url_1,
-      }));
+    localStorage.setItem('matchu_user_id', data.userId);
+    localStorage.setItem('matchu_token',   data.access_token  || '');
+    localStorage.setItem('matchu_refresh',  data.refresh_token || '');
+    localStorage.setItem('matchu_user', JSON.stringify({
+      userId:         data.userId,
+      email:          data.email,
+      nama:           data.nama,
+      nama_panggilan: data.nama_panggilan,
+      trust_score:    data.trust_score,
+      foto_url_1:     data.foto_url_1,
+      isAdmin:        data.isAdmin || false,
+      adminRole:      data.adminRole || null,
+    }));
 
-      window.location.href = 'dashboard.html';
+    // ✅ Redirect sesuai role
+    if (data.isAdmin) {
+      window.location.href = 'admin-dashboard.html';
     } else {
+    window.location.href = 'dashboard.html';
+  }
+} else {
       errMsg.textContent = data.error || 'Email/username atau password salah.';
       btn.disabled = false;
       btn.textContent = 'Masuk';

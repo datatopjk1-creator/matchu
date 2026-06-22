@@ -1,6 +1,7 @@
 // app/api/save-education/route.ts
-// +30 poin diberikan di sini (data pendidikan lengkap)
-// Syarat dapat +30: kampus, jurusan, jenjang, DAN screenshot semuanya ada
+// Dipakai untuk: (1) submit pertama kali saat registrasi, (2) submit ulang
+// setelah ditolak admin. Tidak lagi memberi +30 poin otomatis di sini —
+// poin baru diberikan saat admin APPROVE di /api/admin/education-verifications.
 
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
@@ -20,7 +21,7 @@ export async function POST(req: NextRequest) {
     // ── Ambil profil saat ini ─────────────────────────────────
     const { data: profile, error: fetchErr } = await supabase
       .from('profiles')
-      .select('id, trust_score, education_score_given')
+      .select('id, email, education_screenshot_url')
       .eq('id', userId)
       .single();
 
@@ -31,8 +32,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── Upload screenshot PDDikti ─────────────────────────────
-    let screenshotUrl: string | null = null;
+    // ── Upload screenshot PDDikti (kalau ada yang baru) ───────
+    let screenshotUrl: string | null = profile.education_screenshot_url || null;
 
     if (education_screenshot) {
       const matches = education_screenshot.match(/^data:([A-Za-z-+/]+);base64,(.+)$/);
@@ -57,44 +58,67 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // ── Hitung trust_score ────────────────────────────────────
-    // +30 hanya diberikan SATU KALI (cek flag education_score_given)
-    // Syarat: kampus + jurusan + jenjang + screenshot semua terisi
-    const hasAllEducationData = kampus && jurusan && jenjang && screenshotUrl;
-    const scoreGained = hasAllEducationData && !profile.education_score_given ? 30 : 0;
-    const newScore = profile.trust_score + scoreGained;
+    if (!screenshotUrl) {
+      return NextResponse.json(
+        { success: false, error: 'Screenshot PDDikti wajib diupload.' },
+        { status: 400 }
+      );
+    }
 
-    // ── Update profiles ───────────────────────────────────────
-    const { error: updateError } = await supabase
+    // ── Update data pendidikan di profiles ────────────────────
+    // Status verifikasi di-reset ke 'pending', alasan tolak (jika ada) dihapus
+    const { error: updateProfileError } = await supabase
       .from('profiles')
       .update({
-        kampus:                  kampus.trim(),
-        jurusan:                 jurusan.trim(),
+        kampus: kampus.trim(),
+        jurusan: jurusan.trim(),
         jenjang,
-        ...(screenshotUrl && { education_screenshot_url: screenshotUrl }),
-        trust_score:             newScore,
-        // Flag: sudah dapat poin pendidikan, tidak bisa dobel
-        ...(scoreGained > 0 && { education_score_given: true }),
-        registration_step:       3,
+        education_screenshot_url: screenshotUrl,
+        education_verification_status: 'pending',
+        education_rejection_reason: null,
+        registration_step: 3,
       })
       .eq('id', userId);
 
-    if (updateError) {
-      console.error('Update education error:', updateError);
+    if (updateProfileError) {
+      console.error('Update profile education error:', updateProfileError);
       return NextResponse.json(
         { success: false, error: 'Gagal menyimpan data pendidikan.' },
         { status: 500 }
       );
     }
 
+    // ── Upsert ke tabel education_verifications (untuk admin review) ──
+    const { error: upsertError } = await supabase
+      .from('education_verifications')
+      .upsert(
+        {
+          user_id: userId,
+          email: profile.email,
+          kampus: kampus.trim(),
+          jurusan: jurusan.trim(),
+          jenjang,
+          screenshot_url: screenshotUrl,
+          status: 'pending',
+          rejection_reason: null,
+          reviewed_at: null,
+          reviewed_by: null,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'user_id' }
+      );
+
+    if (upsertError) {
+      console.error('Upsert education_verifications error:', upsertError);
+      return NextResponse.json(
+        { success: false, error: 'Gagal mengirim data untuk verifikasi.' },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({
       success: true,
-      trust_score: newScore,
-      score_gained: scoreGained,
-      // Jika screenshot tidak diupload, belum dapat +30
-      note: !hasAllEducationData
-        ? 'Upload screenshot PDDikti untuk mendapat +30 poin.'
-        : null,
+      message: 'Data pendidikan berhasil dikirim. Tim kami akan verifikasi dalam 1x24 jam.',
     });
 
   } catch (err) {

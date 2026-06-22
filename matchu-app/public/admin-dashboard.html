@@ -1,16 +1,11 @@
 <!DOCTYPE html>
-
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Admin Dashboard | Matchu</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-
 <style>
-
 *,
 *::before,
 *::after{
@@ -20,26 +15,18 @@ box-sizing:border-box;
 }
 
 :root{
-
 --brand:#B71C1C;
 --brand-dark:#7F0000;
 --brand-light:#FFE7E7;
-
 --sidebar:#2B0A0A;
-
 --bg:#F7F4F4;
 --white:#FFFFFF;
-
 --text:#222;
 --text2:#777;
-
 --border:#E8E8E8;
-
 --radius:18px;
-
 --sidebar-width:280px;
 --topbar-height:75px;
-
 }
 
 body{
@@ -50,55 +37,81 @@ min-height:100vh;
 }
 
 .sidebar{
-
 position:fixed;
 left:0;
 top:0;
-
 width:var(--sidebar-width);
 height:100vh;
-
 background:var(--sidebar);
-
 overflow-y:auto;
-
 z-index:999;
+transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
 
+.sidebar.collapsed{
+transform:translateX(-100%);
+}
+
+.hamburger-btn{
+width:42px;
+height:42px;
+border:1px solid var(--border);
+border-radius:12px;
+background:#fafafa;
+cursor:pointer;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+gap:4px;
+flex-shrink:0;
+margin-right:14px;
+}
+
+.hamburger-btn span{
+display:block;
+width:18px;
+height:2px;
+background:var(--text);
+border-radius:2px;
+transition:.2s;
+}
+
+.hamburger-btn:hover span{
+background:var(--brand);
+}
+
+.sidebar-overlay{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.35);
+z-index:998;
+}
+
+.sidebar-overlay.active{
+display:block;
 }
 
 .logo{
-
 padding:28px;
-
 border-bottom:1px solid rgba(255,255,255,.08);
-
 }
 
 .logo h1{
-
 font-family:'Playfair Display',serif;
 font-size:28px;
-
 color:white;
-
 letter-spacing:2px;
-
 }
 
 .logo span{
-
 display:block;
-
 margin-top:6px;
-
 font-size:11px;
-
 color:#cfcfcf;
-
 letter-spacing:2px;
-
 text-transform:uppercase;
-
 }
 
 .nav{
@@ -106,146 +119,100 @@ padding:18px 0;
 }
 
 .nav-title{
-
 padding:18px 28px 8px;
-
 font-size:11px;
-
 color:#9d9d9d;
-
 letter-spacing:2px;
-
 text-transform:uppercase;
-
 }
 
 .nav a{
-
 display:flex;
 align-items:center;
 gap:12px;
-
 padding:14px 28px;
-
 color:#ececec;
-
 text-decoration:none;
-
 font-size:14px;
 font-weight:500;
-
 transition:.2s;
-
+cursor:pointer;
 }
 
 .nav a:hover{
-
 background:rgba(255,255,255,.05);
-
 }
 
 .nav a.active{
-
 background:rgba(183,28,28,.20);
-
 border-left:4px solid #ff6d6d;
-
 }
 
 .main{
-
-margin-left:280px;
-
+margin-left:0;
 min-height:100vh;
-
 }
 
 .topbar{
-
 height:var(--topbar-height);
-
 background:white;
-
 border-bottom:1px solid var(--border);
-
 display:flex;
-
 justify-content:space-between;
-
 align-items:center;
-
 padding:0 28px;
+}
 
+.topbar-left-wrap{
+display:flex;
+align-items:center;
 }
 
 .topbar-left h2{
-
 font-size:24px;
 font-weight:700;
-
 }
 
 .topbar-left p{
-
 font-size:13px;
 color:var(--text2);
-
 margin-top:3px;
-
 }
 
 .topbar-right{
-
 display:flex;
 align-items:center;
 gap:16px;
-
 }
 
 .notif{
-
 width:42px;
 height:42px;
-
 border-radius:12px;
-
 background:#fafafa;
-
 border:1px solid var(--border);
-
 display:flex;
 align-items:center;
 justify-content:center;
-
 cursor:pointer;
-
 }
 
 .admin-user{
-
 display:flex;
 align-items:center;
 gap:10px;
-
 }
 
 .admin-avatar{
-
 width:42px;
 height:42px;
-
 border-radius:50%;
-
 background:var(--brand);
-
 color:white;
-
 font-weight:700;
-
 display:flex;
 align-items:center;
 justify-content:center;
-
 }
 
 .content{
@@ -253,324 +220,262 @@ padding:28px;
 }
 
 .hero-card{
-
 background:
 linear-gradient(
 135deg,
 #7F0000,
 #B71C1C
 );
-
 padding:32px;
-
 border-radius:24px;
-
 color:white;
-
 margin-bottom:24px;
-
 }
 
 .hero-card h1{
-
 font-size:32px;
-
 margin-bottom:8px;
-
 font-family:'Playfair Display',serif;
-
 }
 
 .hero-card p{
-
 opacity:.9;
-
 line-height:1.7;
-
 font-size:14px;
-
 max-width:700px;
-
 }
 
 .stats-grid{
-
 display:grid;
-
 grid-template-columns:
 repeat(3,1fr);
-
 gap:18px;
-
 margin-bottom:24px;
-
 }
 
 .stat-card{
-
 background:white;
-
 padding:24px;
-
 border-radius:20px;
-
 border:1px solid var(--border);
-
 }
 
 .stat-icon{
-
 width:46px;
 height:46px;
-
 border-radius:12px;
-
 background:var(--brand-light);
-
 display:flex;
 align-items:center;
 justify-content:center;
-
 font-size:22px;
-
 margin-bottom:14px;
-
 }
 
 .stat-label{
-
 font-size:13px;
 color:var(--text2);
-
 margin-bottom:8px;
-
 }
 
 .stat-number{
-
 font-size:36px;
 font-weight:700;
-
 color:var(--brand);
-
 line-height:1;
-
 }
 
 .stat-sub{
-
 font-size:12px;
-
 margin-top:8px;
-
 color:#999;
-
 }
 
 .section-card{
-
 background:white;
-
 border-radius:20px;
-
 padding:24px;
-
 border:1px solid var(--border);
-
 margin-bottom:24px;
-
 }
 
 .section-header{
-
 display:flex;
-
 justify-content:space-between;
-
 align-items:center;
-
 margin-bottom:20px;
-
+flex-wrap:wrap;
+gap:12px;
 }
 
 .section-title{
-
 font-size:22px;
 font-weight:700;
-
 }
 
 .search-area{
-
 display:flex;
 gap:10px;
-
 }
 
 .search-area input{
-
 width:280px;
-
 padding:12px 14px;
-
 border:1px solid var(--border);
-
 border-radius:12px;
-
+font-family:'Inter',sans-serif;
+font-size:14px;
 }
 
 .search-area select{
-
 padding:12px 14px;
-
 border:1px solid var(--border);
-
 border-radius:12px;
-
+font-family:'Inter',sans-serif;
+font-size:14px;
 }
 
 .admin-table{
-
 width:100%;
-
 border-collapse:collapse;
-
 }
 
 .admin-table th{
-
 background:#fafafa;
-
 padding:14px;
-
 text-align:left;
-
 font-size:13px;
-
 font-weight:700;
-
 border-bottom:1px solid #eee;
-
 }
 
 .admin-table td{
-
 padding:16px 14px;
-
 border-bottom:1px solid #eee;
-
 font-size:14px;
-
 }
 
 .user-box{
-
 display:flex;
 align-items:center;
 gap:12px;
-
 }
 
 .user-avatar{
-
 width:44px;
 height:44px;
-
 border-radius:50%;
-
 background:#ddd;
-
 display:flex;
 align-items:center;
 justify-content:center;
-
 font-weight:700;
-
+flex-shrink:0;
 }
 
 .badge{
-
 padding:5px 10px;
-
 border-radius:20px;
-
 font-size:12px;
-
 font-weight:600;
-
+white-space:nowrap;
 }
 
 .badge-premium{
-
 background:#FFF4D7;
 color:#A56900;
-
 }
 
 .badge-free{
-
 background:#EFEFEF;
 color:#666;
-
 }
 
 .badge-pending{
-
 background:#FFE4E4;
 color:#B71C1C;
+}
 
+.badge-approved{
+background:#DFF9E7;
+color:#118A43;
+}
+
+.badge-rejected{
+background:#FFE4E4;
+color:#B71C1C;
+}
+
+.badge-suspended{
+background:#F1F1F1;
+color:#666;
 }
 
 .btn{
-
 border:none;
-
 cursor:pointer;
-
 padding:9px 14px;
-
 border-radius:10px;
-
 font-size:12px;
-
 font-weight:600;
-
+font-family:'Inter',sans-serif;
 }
 
 .btn-view{
-
 background:#F1F1F1;
-
 }
 
 .btn-approve{
-
 background:#DFF9E7;
 color:#118A43;
-
 }
 
 .btn-reject{
-
 background:#FFE4E4;
 color:#B71C1C;
-
 }
 
 .btn-suspend{
-
 background:#FFF0F0;
 color:#B71C1C;
-
 }
 
-</style>
+.btn:disabled{
+opacity:.5;
+cursor:not-allowed;
+}
 
+.loading-text{
+text-align:center;
+padding:30px;
+color:var(--text2);
+font-size:14px;
+}
+
+.empty-text{
+text-align:center;
+padding:30px;
+color:var(--text2);
+font-size:14px;
+}
+</style>
 </head>
 
 <body>
 
-<aside class="sidebar">
+<!-- ✅ PROTEKSI: cek apakah user login & isAdmin = true -->
+<script>
+  (function(){
+    const userData = JSON.parse(localStorage.getItem('matchu_user') || 'null');
+    if (!userData || !userData.isAdmin) {
+      window.location.href = 'login.html';
+    }
+  })();
+</script>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar collapsed" id="sidebar">
 
 <div class="logo">
 <h1>MATCHU</h1>
@@ -579,77 +484,28 @@ color:#B71C1C;
 
 <div class="nav">
 
-<div class="nav-title">
-Dashboard
-</div>
+<div class="nav-title">Dashboard</div>
+<a href="admin-dashboard.html" class="active">📊 Dashboard</a>
 
-<a href="#" class="active">
-📊 Dashboard
-</a>
+<div class="nav-title">User</div>
+<a href="admin-users.html">👥 Semua User</a>
+<a href="admin-premium.html">⭐ User Premium</a>
+<a href="admin-suspended.html">🚫 User Ditangguhkan</a>
 
-<div class="nav-title">
-User
-</div>
+<div class="nav-title">Verifikasi</div>
+<a href="admin-verifikasi-pendidikan.html">🎓 Verifikasi Pendidikan</a>
 
-<a href="#">
-👥 Semua User
-</a>
+<div class="nav-title">Monitoring</div>
+<a href="admin-report.html">🚨 Report User</a>
+<a href="admin-matchmaking.html">💌 Aktivitas Matchmaking</a>
 
-<a href="#">
-⭐ User Premium
-</a>
+<div class="nav-title">Keuangan</div>
+<a href="admin-pendapatan.html">💰 Pendapatan</a>
+<a href="admin-subscription.html">📦 Subscription</a>
 
-<a href="#">
-🚫 User Ditangguhkan
-</a>
-
-<div class="nav-title">
-Verifikasi
-</div>
-
-<a href="#">
-🎓 Verifikasi Pendidikan
-</a>
-
-<a href="#">
-🪪 Verifikasi Identitas
-</a>
-
-<div class="nav-title">
-Monitoring
-</div>
-
-<a href="#">
-🚨 Report User
-</a>
-
-<a href="#">
-💌 Aktivitas Matchmaking
-</a>
-
-<div class="nav-title">
-Keuangan
-</div>
-
-<a href="#">
-💰 Pendapatan
-</a>
-
-<a href="#">
-📦 Subscription
-</a>
-
-<div class="nav-title">
-Sistem
-</div>
-
-<a href="#">
-⚙ Pengaturan
-</a>
-
-<a href="#">
-🚪 Logout
-</a>
+<div class="nav-title">Sistem</div>
+<a href="admin-pengaturan.html">⚙ Pengaturan</a>
+<a href="#" id="logoutBtn">🚪 Logout</a>
 
 </div>
 
@@ -659,33 +515,27 @@ Sistem
 
 <header class="topbar">
 
+<div class="topbar-left-wrap">
+<button class="hamburger-btn" id="hamburgerBtn">
+<span></span><span></span><span></span>
+</button>
+
 <div class="topbar-left">
 <h2>Dashboard Admin</h2>
 <p>Matchu Management System</p>
 </div>
+</div>
 
 <div class="topbar-right">
 
-<div class="notif">
-🔔
-</div>
+<div class="notif">🔔</div>
 
 <div class="admin-user">
-
-<div class="admin-avatar">
-A
-</div>
-
+<div class="admin-avatar" id="adminAvatar">A</div>
 <div>
-<div style="font-size:14px;font-weight:700;">
-Super Admin
+<div style="font-size:14px;font-weight:700;" id="adminName">Super Admin</div>
+<div style="font-size:12px;color:#888;" id="adminRoleLabel">Administrator</div>
 </div>
-
-<div style="font-size:12px;color:#888;">
-Administrator
-</div>
-</div>
-
 </div>
 
 </div>
@@ -695,171 +545,79 @@ Administrator
 <div class="content">
 
 <div class="hero-card">
-
 <h1>Selamat Datang Admin 👋</h1>
-
 <p>
 Kelola pengguna, verifikasi pendidikan,
 verifikasi identitas, laporan akun,
 dan pendapatan premium dari satu dashboard.
 </p>
-
 </div>
 
+<!-- ✅ STATS: diisi otomatis dari /api/admin/stats -->
 <div class="stats-grid">
 
 <div class="stat-card">
-
-<div class="stat-icon">
-👥
-</div>
-
-<div class="stat-label">
-TOTAL USER
-</div>
-
-<div class="stat-number">
-12.483
-</div>
-
-<div class="stat-sub">
-+52 user hari ini
-</div>
-
+<div class="stat-icon">👥</div>
+<div class="stat-label">TOTAL USER</div>
+<div class="stat-number" id="statTotalUser">–</div>
+<div class="stat-sub" id="statUserBaru">Memuat...</div>
 </div>
 
 <div class="stat-card">
-
-<div class="stat-icon">
-⭐
-</div>
-
-<div class="stat-label">
-USER PREMIUM
-</div>
-
-<div class="stat-number">
-1.822
-</div>
-
-<div class="stat-sub">
-14.6% dari total user
-</div>
-
+<div class="stat-icon">⭐</div>
+<div class="stat-label">USER PREMIUM</div>
+<div class="stat-number" id="statUserPremium">–</div>
+<div class="stat-sub" id="statPersenPremium">Memuat...</div>
 </div>
 
 <div class="stat-card">
-
-<div class="stat-icon">
-💰
-</div>
-
-<div class="stat-label">
-PENDAPATAN BULAN INI
-</div>
-
-<div class="stat-number">
-42JT
-</div>
-
-<div class="stat-sub">
-Juni 2026
-</div>
-
+<div class="stat-icon">💰</div>
+<div class="stat-label">PENDAPATAN BULAN INI</div>
+<div class="stat-number" id="statPendapatanBulanIni" style="font-size:24px;">–</div>
+<div class="stat-sub" id="statBulanLabel">Memuat...</div>
 </div>
 
 <div class="stat-card">
-
-<div class="stat-icon">
-🎓
-</div>
-
-<div class="stat-label">
-VERIFIKASI MENUNGGU
-</div>
-
-<div class="stat-number">
-34
-</div>
-
-<div class="stat-sub">
-Perlu direview
-</div>
-
+<div class="stat-icon">🎓</div>
+<div class="stat-label">VERIFIKASI MENUNGGU</div>
+<div class="stat-number" id="statVerifikasiMenunggu">–</div>
+<div class="stat-sub">Perlu direview</div>
 </div>
 
 <div class="stat-card">
-
-<div class="stat-icon">
-🚨
-</div>
-
-<div class="stat-label">
-REPORT MASUK
-</div>
-
-<div class="stat-number">
-8
-</div>
-
-<div class="stat-sub">
-Belum diproses
-</div>
-
+<div class="stat-icon">🚨</div>
+<div class="stat-label">REPORT MASUK</div>
+<div class="stat-number">–</div>
+<div class="stat-sub">Belum tersedia</div>
 </div>
 
 <div class="stat-card">
-
-<div class="stat-icon">
-❤️
-</div>
-
-<div class="stat-label">
-MATCH BERHASIL
-</div>
-
-<div class="stat-number">
-421
-</div>
-
-<div class="stat-sub">
-Total pasangan
+<div class="stat-icon">❤️</div>
+<div class="stat-label">MATCH BERHASIL</div>
+<div class="stat-number">–</div>
+<div class="stat-sub">Belum tersedia</div>
 </div>
 
 </div>
 
-</div>
+<!-- ✅ TABEL SEMUA USER: search & filter jalan ke server -->
 <div class="section-card">
 
 <div class="section-header">
-
-<div class="section-title">
-👥 Semua User
-</div>
-
+<div class="section-title">👥 Semua User</div>
 <div class="search-area">
-
-<input
-type="text"
-placeholder="Cari nama atau email user..."
-
->
-
-<select>
-<option>Semua User</option>
-<option>User Premium</option>
-<option>User Free</option>
-<option>User Ditangguhkan</option>
+<input type="text" id="userSearchInput" placeholder="Cari nama atau email user...">
+<select id="userFilterSelect">
+<option value="all">Semua User</option>
+<option value="premium">User Premium</option>
+<option value="free">User Free</option>
+<option value="suspended">User Ditangguhkan</option>
 </select>
-
 </div>
-
 </div>
 
 <table class="admin-table">
-
 <thead>
-
 <tr>
 <th>User</th>
 <th>Email</th>
@@ -868,352 +626,47 @@ placeholder="Cari nama atau email user..."
 <th>Tanggal Daftar</th>
 <th>Aksi</th>
 </tr>
-
 </thead>
-
-<tbody>
-
-<tr>
-
-<td>
-
-<div class="user-box">
-
-<div class="user-avatar">
-A
-</div>
-
-<div>
-
-<div style="font-weight:700;">
-Aulia Putri
-</div>
-
-<div style="font-size:12px;color:#888;">
-USR-001
-</div>
-
-</div>
-
-</div>
-
-</td>
-
-<td>
-aulia@gmail.com
-</td>
-
-<td>
-<span class="badge badge-premium">
-Premium
-</span>
-</td>
-
-<td>
-95
-</td>
-
-<td>
-22 Juni 2026
-</td>
-
-<td>
-
-<button class="btn btn-view">
-Detail
-</button>
-
-<button class="btn btn-suspend">
-Suspend
-</button>
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>
-
-<div class="user-box">
-
-<div class="user-avatar">
-N
-</div>
-
-<div>
-
-<div style="font-weight:700;">
-Nisa Rahma
-</div>
-
-<div style="font-size:12px;color:#888;">
-USR-002
-</div>
-
-</div>
-
-</div>
-
-</td>
-
-<td>
-nisa@gmail.com
-</td>
-
-<td>
-<span class="badge badge-free">
-Free
-</span>
-</td>
-
-<td>
-72
-</td>
-
-<td>
-21 Juni 2026
-</td>
-
-<td>
-
-<button class="btn btn-view">
-Detail
-</button>
-
-<button class="btn btn-suspend">
-Suspend
-</button>
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>
-
-<div class="user-box">
-
-<div class="user-avatar">
-R
-</div>
-
-<div>
-
-<div style="font-weight:700;">
-Rara Amelia
-</div>
-
-<div style="font-size:12px;color:#888;">
-USR-003
-</div>
-
-</div>
-
-</div>
-
-</td>
-
-<td>
-rara@gmail.com
-</td>
-
-<td>
-<span class="badge badge-premium">
-Premium
-</span>
-</td>
-
-<td>
-88
-</td>
-
-<td>
-20 Juni 2026
-</td>
-
-<td>
-
-<button class="btn btn-view">
-Detail
-</button>
-
-<button class="btn btn-suspend">
-Suspend
-</button>
-
-</td>
-
-</tr>
-
+<tbody id="userTableBody">
+<tr><td colspan="6" class="loading-text">Memuat data user...</td></tr>
 </tbody>
-
 </table>
-
 </div>
 
+<!-- ✅ RINGKASAN PENDAPATAN: diisi dari /api/admin/stats -->
 <div class="section-card">
-
 <div class="section-header">
-
-<div class="section-title">
-⭐ User Premium Aktif
-</div>
-
-</div>
-
-<table class="admin-table">
-
-<thead>
-
-<tr>
-<th>Nama</th>
-<th>Paket</th>
-<th>Mulai</th>
-<th>Berakhir</th>
-<th>Status</th>
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr>
-
-<td>
-Aulia Putri
-</td>
-
-<td>
-Premium 1 Bulan
-</td>
-
-<td>
-1 Juni 2026
-</td>
-
-<td>
-1 Juli 2026
-</td>
-
-<td>
-
-<span class="badge badge-premium">
-Aktif
-</span>
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>
-Rara Amelia
-</td>
-
-<td>
-Premium 3 Bulan
-</td>
-
-<td>
-15 Mei 2026
-</td>
-
-<td>
-15 Agustus 2026
-</td>
-
-<td>
-
-<span class="badge badge-premium">
-Aktif
-</span>
-
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
-
-</div>
-
-<div class="section-card">
-
-<div class="section-header">
-
-<div class="section-title">
-💰 Ringkasan Pendapatan
-</div>
-
+<div class="section-title">💰 Ringkasan Pendapatan</div>
 </div>
 
 <div class="stats-grid">
-
 <div class="stat-card">
-
-<div class="stat-label">
-Hari Ini
+<div class="stat-label">Hari Ini</div>
+<div class="stat-number" id="statPendapatanHariIni" style="font-size:22px;">–</div>
 </div>
-
-<div class="stat-number">
-1.2JT
-</div>
-
-</div>
-
 <div class="stat-card">
-
-<div class="stat-label">
-Minggu Ini
+<div class="stat-label">Minggu Ini</div>
+<div class="stat-number" id="statPendapatanMingguIni" style="font-size:22px;">–</div>
 </div>
-
-<div class="stat-number">
-7.4JT
-</div>
-
-</div>
-
 <div class="stat-card">
-
-<div class="stat-label">
-Bulan Ini
+<div class="stat-label">Bulan Ini</div>
+<div class="stat-number" id="statPendapatanBulanIni2" style="font-size:22px;">–</div>
+</div>
+</div>
 </div>
 
-<div class="stat-number">
-42JT
-</div>
-
-</div>
-
-</div>
-
-</div>
+<!-- ✅ TABEL VERIFIKASI PENDIDIKAN: data live + approve/reject jalan ke database -->
 <div class="section-card">
 
 <div class="section-header">
-
-<div class="section-title">
-🎓 Verifikasi Pendidikan
-</div>
-
+<div class="section-title">🎓 Verifikasi Pendidikan</div>
 <div>
-
-<span class="badge badge-pending">
-34 Menunggu Verifikasi
-</span>
-
+<span class="badge badge-pending" id="eduPendingBadge">– Menunggu Verifikasi</span>
 </div>
-
 </div>
 
 <table class="admin-table">
-
 <thead>
-
 <tr>
 <th>User</th>
 <th>Kampus</th>
@@ -1222,469 +675,19 @@ Bulan Ini
 <th>Status</th>
 <th>Aksi</th>
 </tr>
-
 </thead>
-
-<tbody>
-
-<tr>
-
-<td>
-
-<div class="user-box">
-
-<div class="user-avatar">
-A
-</div>
-
-<div>
-
-<div style="font-weight:700;">
-Aulia Putri
-</div>
-
-<div style="font-size:12px;color:#888;">
-USR-001
-</div>
-
-</div>
-
-</div>
-
-</td>
-
-<td>
-Universitas Indonesia
-</td>
-
-<td>
-Hukum
-</td>
-
-<td>
-
-<button class="btn btn-view">
-Lihat Screenshot
-</button>
-
-</td>
-
-<td>
-
-<span class="badge badge-pending">
-Menunggu
-</span>
-
-</td>
-
-<td>
-
-<button class="btn btn-approve">
-✓ Verifikasi
-</button>
-
-<button class="btn btn-reject">
-✕ Tolak
-</button>
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>
-
-<div class="user-box">
-
-<div class="user-avatar">
-N
-</div>
-
-<div>
-
-<div style="font-weight:700;">
-Nisa Rahma
-</div>
-
-<div style="font-size:12px;color:#888;">
-USR-002
-</div>
-
-</div>
-
-</div>
-
-</td>
-
-<td>
-ITB
-</td>
-
-<td>
-Teknik Industri
-</td>
-
-<td>
-
-<button class="btn btn-view">
-Lihat Screenshot
-</button>
-
-</td>
-
-<td>
-
-<span class="badge badge-pending">
-Menunggu
-</span>
-
-</td>
-
-<td>
-
-<button class="btn btn-approve">
-✓ Verifikasi
-</button>
-
-<button class="btn btn-reject">
-✕ Tolak
-</button>
-
-</td>
-
-</tr>
-
+<tbody id="eduVerifTableBody">
+<tr><td colspan="6" class="loading-text">Memuat data verifikasi...</td></tr>
 </tbody>
-
 </table>
-
 </div>
 
-<div class="section-card">
-
-<div class="section-header">
-
-<div class="section-title">
-🪪 Verifikasi Identitas
+<div id="previewModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;align-items:center;justify-content:center;">
+<div style="background:white;padding:20px;border-radius:20px;max-width:800px;width:95%;">
+<h3 style="margin-bottom:15px;">Preview Dokumen</h3>
+<img id="previewImage" src="" style="width:100%;border-radius:12px;">
+<button onclick="closePreview()" class="btn btn-reject" style="margin-top:15px;">Tutup</button>
 </div>
-
-</div>
-
-<table class="admin-table">
-
-<thead>
-
-<tr>
-<th>User</th>
-<th>Dokumen</th>
-<th>Tanggal Upload</th>
-<th>Status</th>
-<th>Aksi</th>
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr>
-
-<td>
-Aulia Putri
-</td>
-
-<td>
-
-<button class="btn btn-view">
-Lihat Dokumen
-</button>
-
-</td>
-
-<td>
-22 Juni 2026
-</td>
-
-<td>
-
-<span class="badge badge-pending">
-Menunggu
-</span>
-
-</td>
-
-<td>
-
-<button class="btn btn-approve">
-✓ Verifikasi
-</button>
-
-<button class="btn btn-reject">
-✕ Tolak
-</button>
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>
-Nisa Rahma
-</td>
-
-<td>
-
-<button class="btn btn-view">
-Lihat Dokumen
-</button>
-
-</td>
-
-<td>
-22 Juni 2026
-</td>
-
-<td>
-
-<span class="badge badge-pending">
-Menunggu
-</span>
-
-</td>
-
-<td>
-
-<button class="btn btn-approve">
-✓ Verifikasi
-</button>
-
-<button class="btn btn-reject">
-✕ Tolak
-</button>
-
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
-
-</div>
-
-<div class="section-card">
-
-<div class="section-header">
-
-<div class="section-title">
-🚨 Report User
-</div>
-
-</div>
-
-<table class="admin-table">
-
-<thead>
-
-<tr>
-<th>Pelapor</th>
-<th>Dilaporkan</th>
-<th>Alasan</th>
-<th>Tanggal</th>
-<th>Aksi</th>
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr>
-
-<td>
-Aulia Putri
-</td>
-
-<td>
-Budi Santoso
-</td>
-
-<td>
-Fake Account
-</td>
-
-<td>
-22 Juni 2026
-</td>
-
-<td>
-
-<button class="btn btn-view">
-Detail
-</button>
-
-<button class="btn btn-suspend">
-Suspend
-</button>
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>
-Nisa Rahma
-</td>
-
-<td>
-Andi Saputra
-</td>
-
-<td>
-Spam
-</td>
-
-<td>
-22 Juni 2026
-</td>
-
-<td>
-
-<button class="btn btn-view">
-Detail
-</button>
-
-<button class="btn btn-suspend">
-Suspend
-</button>
-
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
-
-</div>
-
-<div id="previewModal"
-style="
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.65);
-z-index:9999;
-align-items:center;
-justify-content:center;
-">
-
-<div
-style="
-background:white;
-padding:20px;
-border-radius:20px;
-max-width:800px;
-width:95%;
-">
-
-<h3 style="margin-bottom:15px;">
-Preview Dokumen
-</h3>
-
-<img
-src="https://via.placeholder.com/700x500"
-style="
-width:100%;
-border-radius:12px;
-">
-
-<button
-onclick="closePreview()"
-class="btn btn-reject"
-style="margin-top:15px;"
-
->
-
-Tutup </button>
-
-</div>
-
-</div>
-<div class="section-card">
-
-<div class="section-header">
-
-<div class="section-title">
-📈 Statistik Platform
-</div>
-
-</div>
-
-<div
-style="
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:20px;
-">
-
-<div
-style="
-background:#fafafa;
-padding:20px;
-border-radius:16px;
-">
-
-<h3 style="margin-bottom:20px;">
-Pertumbuhan User
-</h3>
-
-<div
-style="
-height:250px;
-display:flex;
-align-items:flex-end;
-gap:12px;
-">
-
-<div style="flex:1;height:40%;background:#B71C1C;border-radius:8px 8px 0 0;"></div>
-<div style="flex:1;height:55%;background:#B71C1C;border-radius:8px 8px 0 0;"></div>
-<div style="flex:1;height:70%;background:#B71C1C;border-radius:8px 8px 0 0;"></div>
-<div style="flex:1;height:85%;background:#B71C1C;border-radius:8px 8px 0 0;"></div>
-<div style="flex:1;height:100%;background:#B71C1C;border-radius:8px 8px 0 0;"></div>
-
-</div>
-
-</div>
-
-<div
-style="
-background:#fafafa;
-padding:20px;
-border-radius:16px;
-">
-
-<h3 style="margin-bottom:20px;">
-Pendapatan Premium
-</h3>
-
-<div
-style="
-height:250px;
-display:flex;
-align-items:flex-end;
-gap:12px;
-">
-
-<div style="flex:1;height:30%;background:#2ecc71;border-radius:8px 8px 0 0;"></div>
-<div style="flex:1;height:45%;background:#2ecc71;border-radius:8px 8px 0 0;"></div>
-<div style="flex:1;height:60%;background:#2ecc71;border-radius:8px 8px 0 0;"></div>
-<div style="flex:1;height:80%;background:#2ecc71;border-radius:8px 8px 0 0;"></div>
-<div style="flex:1;height:100%;background:#2ecc71;border-radius:8px 8px 0 0;"></div>
-
-</div>
-
 </div>
 
 </div>
@@ -1693,122 +696,341 @@ gap:12px;
 
 <script>
 
+const API_BASE = '/api/admin';
+
+// ───────────────────────────────────────────────────────
+// SIDEBAR TOGGLE (hide/show)
+// ───────────────────────────────────────────────────────
+const sidebarEl = document.getElementById('sidebar');
+const sidebarOverlayEl = document.getElementById('sidebarOverlay');
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+
+function openSidebar(){
+  sidebarEl.classList.remove('collapsed');
+  sidebarOverlayEl.classList.add('active');
+}
+function closeSidebar(){
+  sidebarEl.classList.add('collapsed');
+  sidebarOverlayEl.classList.remove('active');
+}
+hamburgerBtn.addEventListener('click', () => {
+  if (sidebarEl.classList.contains('collapsed')) openSidebar();
+  else closeSidebar();
+});
+sidebarOverlayEl.addEventListener('click', closeSidebar);
+
+// ───────────────────────────────────────────────────────
+// Helper format
+// ───────────────────────────────────────────────────────
+function formatRupiah(num){
+  return 'Rp ' + (num || 0).toLocaleString('id-ID');
+}
+
+function formatTanggal(isoString){
+  if(!isoString) return '-';
+  const d = new Date(isoString);
+  return d.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+}
+
+function escapeHtml(str){
+  if(!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ───────────────────────────────────────────────────────
+// Info admin yang login
+// ───────────────────────────────────────────────────────
+(function(){
+  const userData = JSON.parse(localStorage.getItem('matchu_user') || 'null');
+  if (userData) {
+    const displayName = userData.nama || userData.nama_panggilan || userData.email || 'Admin';
+    document.getElementById('adminName').textContent = displayName;
+    document.getElementById('adminRoleLabel').textContent = userData.adminRole || 'Administrator';
+    document.getElementById('adminAvatar').textContent = displayName.charAt(0).toUpperCase();
+  }
+})();
+
+document.getElementById('logoutBtn').addEventListener('click', function(e){
+  e.preventDefault();
+  if (confirm('Yakin ingin logout?')) {
+    localStorage.removeItem('matchu_user_id');
+    localStorage.removeItem('matchu_token');
+    localStorage.removeItem('matchu_refresh');
+    localStorage.removeItem('matchu_user');
+    window.location.href = 'login.html';
+  }
+});
+
 function closePreview(){
-
-document.getElementById(
-'previewModal'
-).style.display='none';
-
+  document.getElementById('previewModal').style.display='none';
 }
 
-document
-.querySelectorAll('.btn-view')
-.forEach(btn=>{
+// ───────────────────────────────────────────────────────
+// 1. LOAD STATS
+// ───────────────────────────────────────────────────────
+async function loadStats(){
+  try {
+    const res = await fetch(`${API_BASE}/stats`);
+    const data = await res.json();
 
-btn.addEventListener(
-'click',
-function(){
+    if (!data.success) {
+      console.error('Gagal memuat stats:', data.error);
+      return;
+    }
 
-const modal=
-document.getElementById(
-'previewModal'
-);
+    const s = data.stats;
 
-if(modal){
+    document.getElementById('statTotalUser').textContent = s.totalUser.toLocaleString('id-ID');
+    document.getElementById('statUserBaru').textContent = `+${s.userBaruHariIni} user hari ini`;
 
-modal.style.display='flex';
+    document.getElementById('statUserPremium').textContent = s.userPremium.toLocaleString('id-ID');
+    const persenPremium = s.totalUser > 0 ? ((s.userPremium / s.totalUser) * 100).toFixed(1) : '0.0';
+    document.getElementById('statPersenPremium').textContent = `${persenPremium}% dari total user`;
 
+    document.getElementById('statPendapatanBulanIni').textContent = formatRupiah(s.pendapatanBulanIni);
+    document.getElementById('statPendapatanBulanIni2').textContent = formatRupiah(s.pendapatanBulanIni);
+    document.getElementById('statPendapatanHariIni').textContent = formatRupiah(s.pendapatanHariIni);
+    document.getElementById('statPendapatanMingguIni').textContent = formatRupiah(s.pendapatanMingguIni);
+
+    const namaBulan = new Date().toLocaleDateString('id-ID', { month:'long', year:'numeric' });
+    document.getElementById('statBulanLabel').textContent = namaBulan;
+
+    document.getElementById('statVerifikasiMenunggu').textContent = s.verifikasiMenunggu;
+
+  } catch (err) {
+    console.error('Error loadStats:', err);
+  }
 }
 
-}
-);
+// ───────────────────────────────────────────────────────
+// 2. LOAD USERS (dengan search & filter)
+// ───────────────────────────────────────────────────────
+let userSearchTimeout = null;
 
+async function loadUsers(){
+  const tbody = document.getElementById('userTableBody');
+  tbody.innerHTML = '<tr><td colspan="6" class="loading-text">Memuat data user...</td></tr>';
+
+  const search = document.getElementById('userSearchInput').value.trim();
+  const filter = document.getElementById('userFilterSelect').value;
+
+  try {
+    const params = new URLSearchParams();
+    if (search) params.set('search', search);
+    if (filter !== 'all') params.set('filter', filter);
+
+    const res = await fetch(`${API_BASE}/users?${params.toString()}`);
+    const data = await res.json();
+
+    if (!data.success) {
+      tbody.innerHTML = `<tr><td colspan="6" class="empty-text">Gagal memuat data: ${escapeHtml(data.error || '')}</td></tr>`;
+      return;
+    }
+
+    if (data.users.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-text">Tidak ada user yang cocok.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = data.users.map(u => {
+      const initial = (u.nama || u.email || '?').charAt(0).toUpperCase();
+      const isSuspended = u.status === 'suspended';
+
+      let statusBadge;
+      if (isSuspended) {
+        statusBadge = '<span class="badge badge-suspended">Ditangguhkan</span>';
+      } else if (u.isPremium) {
+        statusBadge = '<span class="badge badge-premium">Premium</span>';
+      } else {
+        statusBadge = '<span class="badge badge-free">Free</span>';
+      }
+
+      return `
+        <tr>
+          <td>
+            <div class="user-box">
+              <div class="user-avatar">${initial}</div>
+              <div>
+                <div style="font-weight:700;">${escapeHtml(u.nama || '-')}</div>
+                <div style="font-size:12px;color:#888;">${u.id.slice(0,8)}</div>
+              </div>
+            </div>
+          </td>
+          <td>${escapeHtml(u.email || '-')}</td>
+          <td>${statusBadge}</td>
+          <td>${u.trust_score ?? 0}</td>
+          <td>${formatTanggal(u.created_at)}</td>
+          <td>
+            <button class="btn btn-view" onclick="alert('Detail user: ${escapeHtml(u.nama || u.email)}')">Detail</button>
+            <button class="btn btn-suspend" data-user-id="${u.id}" data-suspended="${isSuspended}">
+              ${isSuspended ? 'Aktifkan' : 'Suspend'}
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    // pasang event listener tombol suspend/aktifkan
+    tbody.querySelectorAll('.btn-suspend').forEach(btn => {
+      btn.addEventListener('click', handleSuspendToggle);
+    });
+
+  } catch (err) {
+    console.error('Error loadUsers:', err);
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-text">Gagal terhubung ke server.</td></tr>';
+  }
+}
+
+async function handleSuspendToggle(e){
+  const btn = e.currentTarget;
+  const userId = btn.dataset.userId;
+  const isSuspended = btn.dataset.suspended === 'true';
+  const action = isSuspended ? 'aktifkan' : 'suspend';
+
+  if (!confirm(`Yakin ingin ${action} akun ini?`)) return;
+
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${API_BASE}/users/suspend`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, suspend: !isSuspended }),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      loadUsers();
+    } else {
+      alert(data.error || 'Gagal memperbarui status user.');
+      btn.disabled = false;
+    }
+  } catch (err) {
+    alert('Gagal terhubung ke server.');
+    btn.disabled = false;
+  }
+}
+
+document.getElementById('userSearchInput').addEventListener('input', function(){
+  clearTimeout(userSearchTimeout);
+  userSearchTimeout = setTimeout(loadUsers, 400); // debounce 400ms
 });
 
+document.getElementById('userFilterSelect').addEventListener('change', loadUsers);
 
+// ───────────────────────────────────────────────────────
+// 3. LOAD VERIFIKASI PENDIDIKAN + APPROVE/REJECT
+// ───────────────────────────────────────────────────────
+async function loadEducationVerifications(){
+  const tbody = document.getElementById('eduVerifTableBody');
+  tbody.innerHTML = '<tr><td colspan="6" class="loading-text">Memuat data verifikasi...</td></tr>';
 
-document
-.querySelectorAll('.btn-approve')
-.forEach(btn=>{
+  try {
+    const res = await fetch(`${API_BASE}/education-verifications?status=pending`);
+    const data = await res.json();
 
-btn.addEventListener(
-'click',
-function(){
+    if (!data.success) {
+      tbody.innerHTML = `<tr><td colspan="6" class="empty-text">Gagal memuat data: ${escapeHtml(data.error || '')}</td></tr>`;
+      return;
+    }
 
-if(
-confirm(
-'Verifikasi data ini?'
-)
-){
+    document.getElementById('eduPendingBadge').textContent = `${data.verifications.length} Menunggu Verifikasi`;
 
-alert(
-'User berhasil diverifikasi'
-);
+    if (data.verifications.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-text">Tidak ada verifikasi yang menunggu.</td></tr>';
+      return;
+    }
 
+    tbody.innerHTML = data.verifications.map(v => {
+      const initial = (v.nama || v.email || '?').charAt(0).toUpperCase();
+      return `
+        <tr>
+          <td>
+            <div class="user-box">
+              <div class="user-avatar">${initial}</div>
+              <div>
+                <div style="font-weight:700;">${escapeHtml(v.nama || '-')}</div>
+                <div style="font-size:12px;color:#888;">${escapeHtml(v.email || '')}</div>
+              </div>
+            </div>
+          </td>
+          <td>${escapeHtml(v.kampus || '-')}</td>
+          <td>${escapeHtml(v.jurusan || '-')}</td>
+          <td>
+            <button class="btn btn-view" data-screenshot="${escapeHtml(v.screenshot_url || '')}">Lihat Screenshot</button>
+          </td>
+          <td><span class="badge badge-pending">Menunggu</span></td>
+          <td>
+            <button class="btn btn-approve" data-id="${v.id}" data-action="approve">✓ Verifikasi</button>
+            <button class="btn btn-reject" data-id="${v.id}" data-action="reject">✕ Tolak</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    tbody.querySelectorAll('.btn-view').forEach(btn => {
+      btn.addEventListener('click', function(){
+        const url = btn.dataset.screenshot;
+        if (!url) {
+          alert('Tidak ada screenshot tersedia.');
+          return;
+        }
+        document.getElementById('previewImage').src = url;
+        document.getElementById('previewModal').style.display = 'flex';
+      });
+    });
+
+    tbody.querySelectorAll('.btn-approve, .btn-reject').forEach(btn => {
+      btn.addEventListener('click', handleVerifAction);
+    });
+
+  } catch (err) {
+    console.error('Error loadEducationVerifications:', err);
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-text">Gagal terhubung ke server.</td></tr>';
+  }
 }
 
-}
-);
+async function handleVerifAction(e){
+  const btn = e.currentTarget;
+  const id = btn.dataset.id;
+  const action = btn.dataset.action; // 'approve' | 'reject'
 
-});
+  const confirmText = action === 'approve' ? 'Verifikasi data ini?' : 'Tolak verifikasi ini?';
+  if (!confirm(confirmText)) return;
 
+  const row = btn.closest('tr');
+  row.querySelectorAll('button').forEach(b => b.disabled = true);
 
+  try {
+    const res = await fetch(`${API_BASE}/education-verifications`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, action }),
+    });
+    const data = await res.json();
 
-document
-.querySelectorAll('.btn-reject')
-.forEach(btn=>{
-
-btn.addEventListener(
-'click',
-function(){
-
-if(
-confirm(
-'Tolak verifikasi ini?'
-)
-){
-
-alert(
-'Verifikasi ditolak'
-);
-
-}
-
-}
-);
-
-});
-
-
-
-document
-.querySelectorAll('.btn-suspend')
-.forEach(btn=>{
-
-btn.addEventListener(
-'click',
-function(){
-
-if(
-confirm(
-'Suspend akun ini?'
-)
-){
-
-alert(
-'Akun berhasil disuspend'
-);
-
+    if (data.success) {
+      alert(action === 'approve' ? 'User berhasil diverifikasi' : 'Verifikasi ditolak');
+      loadEducationVerifications();
+      loadStats(); // refresh angka "Verifikasi Menunggu"
+    } else {
+      alert(data.error || 'Gagal memperbarui verifikasi.');
+      row.querySelectorAll('button').forEach(b => b.disabled = false);
+    }
+  } catch (err) {
+    alert('Gagal terhubung ke server.');
+    row.querySelectorAll('button').forEach(b => b.disabled = false);
+  }
 }
 
-}
-);
-
-});
+// ───────────────────────────────────────────────────────
+// INIT
+// ───────────────────────────────────────────────────────
+loadStats();
+loadUsers();
+loadEducationVerifications();
 
 </script>
-
-</div>
 
 </div>
 

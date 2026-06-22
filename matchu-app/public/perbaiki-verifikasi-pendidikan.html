@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perbaiki Verifikasi Pendidikan | Matchu</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{ --primary:#7A2236; --bg:#F8F5F2; --text:#222; --muted:#6b7280; --border:#ddd; }
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{ background:var(--bg); font-family:'Inter',sans-serif; color:var(--text); }
+.container{ max-width:620px; margin:0 auto; padding:36px 20px 80px; }
+.card{ background:white; padding:44px; border-radius:28px; box-shadow:0 20px 40px rgba(0,0,0,.05); }
+.logo{ text-align:center; font-family:'Playfair Display',serif; font-size:42px; color:var(--primary); margin-bottom:6px; }
+.tagline{ text-align:center; color:var(--primary); font-style:italic; font-size:13px; margin-bottom:24px; }
+
+.reject-banner{ background:#FFF0F0; border:1.5px solid #B71C1C; border-radius:14px; padding:18px 20px; margin-bottom:24px; }
+.reject-banner-title{ font-weight:700; color:#B71C1C; font-size:14px; margin-bottom:8px; }
+.reject-banner-text{ font-size:13px; color:#444; line-height:1.6; }
+
+.pending-banner{ background:#FFF8E1; border:1.5px solid #B78103; border-radius:14px; padding:18px 20px; margin-bottom:24px; }
+.pending-banner-title{ font-weight:700; color:#B78103; font-size:14px; margin-bottom:6px; }
+.pending-banner-text{ font-size:13px; color:#444; line-height:1.6; }
+
+.approved-banner{ background:#E9F9EF; border:1.5px solid #118A43; border-radius:14px; padding:18px 20px; margin-bottom:24px; }
+.approved-banner-title{ font-weight:700; color:#118A43; font-size:14px; margin-bottom:6px; }
+
+.section-label{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--primary); margin:22px 0 12px; padding-bottom:6px; border-bottom:1px solid #f0e8ea; }
+.form-group{ margin-bottom:14px; }
+label{ display:block; margin-bottom:5px; font-weight:600; font-size:13px; }
+.req{ color:#e53e3e; margin-left:2px; }
+input, select{ width:100%; padding:11px 13px; border:1.5px solid var(--border); border-radius:10px; font-size:14px; font-family:'Inter',sans-serif; color:var(--text); background:white; }
+input:focus, select:focus{ outline:none; border-color:var(--primary); }
+.err{ color:#e53e3e; font-size:12px; margin-top:4px; display:none; }
+.row-2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+.upload-area{ border:2px dashed var(--border); border-radius:14px; padding:28px 20px; text-align:center; cursor:pointer; background:#fafafa; }
+.upload-area:hover{ border-color:var(--primary); background:#f9f4f5; }
+.upload-area.has-file{ border-style:solid; border-color:var(--primary); background:#f9f4f5; }
+.upload-icon{ font-size:32px; margin-bottom:8px; }
+.upload-text{ font-size:14px; font-weight:600; }
+.upload-sub{ font-size:12px; color:var(--muted); margin-top:4px; }
+.preview-img{ max-width:100%; border-radius:10px; margin-top:14px; max-height:280px; object-fit:contain; display:none; border:1px solid #eee; }
+
+.btn{ width:100%; margin-top:20px; background:var(--primary); color:white; border:none; padding:15px; border-radius:13px; cursor:pointer; font-size:15px; font-weight:600; font-family:'Inter',sans-serif; }
+.btn:hover{ opacity:.9; }
+.btn:disabled{ opacity:.6; cursor:not-allowed; }
+.back-link{ text-align:center; margin-top:12px; font-size:13px; }
+.back-link a{ color:var(--primary); text-decoration:none; font-weight:600; }
+.loading-text{ text-align:center; padding:40px; color:var(--muted); }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="card">
+
+  <div class="logo">MATCHU</div>
+  <div class="tagline">Beyond Matching. Toward Marriage.</div>
+
+  <div id="loadingState" class="loading-text">Memuat status verifikasi...</div>
+
+  <div id="formWrapper" style="display:none;">
+
+    <div id="bannerArea"></div>
+
+    <div class="section-label">Data Pendidikan</div>
+
+    <div class="form-group">
+      <label>Kampus / Universitas <span class="req">*</span></label>
+      <input type="text" id="kampus-input" placeholder="Nama kampus">
+      <div class="err" id="kampus-err">Masukkan nama kampus.</div>
+    </div>
+
+    <div class="row-2">
+      <div class="form-group">
+        <label>Jurusan / Program Studi <span class="req">*</span></label>
+        <input type="text" id="jurusan-input" placeholder="Jurusan">
+        <div class="err" id="jurusan-err">Masukkan jurusan.</div>
+      </div>
+      <div class="form-group">
+        <label>Jenjang <span class="req">*</span></label>
+        <select id="jenjang">
+          <option value="">Pilih jenjang</option>
+          <option>D1</option><option>D2</option><option>D3</option><option>D4</option>
+          <option>S1</option><option>S2</option><option>S3</option>
+          <option>Diploma Kedinasan</option><option>Sarjana Terapan</option>
+          <option>Profesi</option><option>Spesialis</option>
+        </select>
+        <div class="err" id="jenjang-err">Pilih jenjang.</div>
+      </div>
+    </div>
+
+    <div class="section-label">Screenshot PDDikti <span class="req">*</span></div>
+    <div class="upload-area" id="upload-area" onclick="document.getElementById('ss-input').click()">
+      <input type="file" id="ss-input" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleUpload(this)">
+      <div class="upload-icon" id="upload-icon">📸</div>
+      <div class="upload-text" id="upload-text">Klik untuk upload screenshot PDDikti baru</div>
+      <div class="upload-sub" id="upload-sub">JPG / PNG / WebP — Maks. 5MB. Kosongkan jika tidak ingin mengganti.</div>
+      <img id="ss-preview" class="preview-img">
+    </div>
+    <div class="err" id="ss-err">Upload screenshot PDDikti terlebih dahulu.</div>
+
+    <button class="btn" id="btn-submit" onclick="submitUlang()">Kirim Ulang untuk Verifikasi</button>
+    <div class="back-link"><a href="dashboard.html">Kembali ke Dashboard</a></div>
+
+  </div>
+
+</div>
+</div>
+
+<script>
+const userData = JSON.parse(localStorage.getItem('matchu_user') || '{}');
+if (!userData.userId) {
+  alert('Sesi tidak ditemukan. Silakan login ulang.');
+  window.location.href = 'login.html';
+}
+
+let ssBase64 = null;
+let existingScreenshotUrl = null;
+
+async function loadStatus(){
+  try {
+    const res = await fetch(`/api/education-status?userId=${userData.userId}`);
+    const data = await res.json();
+
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('formWrapper').style.display = 'block';
+
+    const banner = document.getElementById('bannerArea');
+    const v = data.verification;
+
+    if (!v) {
+      // belum pernah submit sama sekali
+      banner.innerHTML = '';
+    } else if (v.status === 'rejected') {
+      banner.innerHTML = `
+        <div class="reject-banner">
+          <div class="reject-banner-title">✕ Verifikasi Ditolak</div>
+          <div class="reject-banner-text"><b>Alasan:</b> ${escapeHtml(v.rejection_reason || 'Tidak ada alasan diberikan.')}</div>
+        </div>`;
+      document.getElementById('kampus-input').value = v.kampus || '';
+      document.getElementById('jurusan-input').value = v.jurusan || '';
+      document.getElementById('jenjang').value = v.jenjang || '';
+      existingScreenshotUrl = v.screenshot_url || null;
+    } else if (v.status === 'pending') {
+      banner.innerHTML = `
+        <div class="pending-banner">
+          <div class="pending-banner-title">⏳ Sedang Diverifikasi</div>
+          <div class="pending-banner-text">Data kamu sedang ditinjau tim kami. Kamu masih bisa mengubah data di bawah jika diperlukan.</div>
+        </div>`;
+      document.getElementById('kampus-input').value = v.kampus || '';
+      document.getElementById('jurusan-input').value = v.jurusan || '';
+      document.getElementById('jenjang').value = v.jenjang || '';
+      existingScreenshotUrl = v.screenshot_url || null;
+    } else if (v.status === 'approved') {
+      banner.innerHTML = `
+        <div class="approved-banner">
+          <div class="approved-banner-title">✓ Sudah Terverifikasi</div>
+        </div>`;
+      document.getElementById('kampus-input').value = v.kampus || '';
+      document.getElementById('jurusan-input').value = v.jurusan || '';
+      document.getElementById('jenjang').value = v.jenjang || '';
+      document.getElementById('btn-submit').textContent = 'Update Data Pendidikan';
+      existingScreenshotUrl = v.screenshot_url || null;
+    }
+
+  } catch (err) {
+    document.getElementById('loadingState').textContent = 'Gagal memuat status. Coba refresh halaman.';
+  }
+}
+
+function escapeHtml(str){
+  if(!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function handleUpload(input){
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { alert('Ukuran file maksimal 5MB.'); input.value = ''; return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    ssBase64 = e.target.result;
+    const prev = document.getElementById('ss-preview');
+    prev.src = e.target.result; prev.style.display = 'block';
+    document.getElementById('upload-area').classList.add('has-file');
+    document.getElementById('upload-icon').textContent = '✓';
+    document.getElementById('upload-text').textContent = file.name;
+    document.getElementById('ss-err').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function submitUlang(){
+  let valid = true;
+  const show = id => { document.getElementById(id).style.display = 'block'; valid = false; };
+
+  const kampus  = document.getElementById('kampus-input').value.trim();
+  const jurusan = document.getElementById('jurusan-input').value.trim();
+  const jenjang = document.getElementById('jenjang').value;
+
+  if (!kampus)  show('kampus-err');
+  if (!jurusan) show('jurusan-err');
+  if (!jenjang) show('jenjang-err');
+  // screenshot baru wajib HANYA kalau belum pernah ada screenshot tersimpan sebelumnya
+  if (!ssBase64 && !existingScreenshotUrl) show('ss-err');
+
+  if (!valid) return;
+
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = 'Mengirim...';
+
+  try {
+    const res = await fetch('/api/save-education', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: userData.userId,
+        kampus, jurusan, jenjang,
+        education_screenshot: ssBase64, // null kalau tidak ganti foto
+      }),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      alert(data.message || 'Data berhasil dikirim ulang untuk verifikasi.');
+      window.location.href = 'dashboard.html';
+    } else {
+      alert(data.error || 'Gagal mengirim data.');
+      btn.disabled = false;
+      btn.textContent = 'Kirim Ulang untuk Verifikasi';
+    }
+  } catch (err) {
+    alert('Gagal terhubung ke server.');
+    btn.disabled = false;
+    btn.textContent = 'Kirim Ulang untuk Verifikasi';
+  }
+}
+
+loadStatus();
+</script>
+</body>
+</html>
