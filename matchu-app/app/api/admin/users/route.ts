@@ -5,35 +5,32 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const search = searchParams.get('search') || '';
-    const filter = searchParams.get('filter') || 'all'; // all | premium | free | suspended
-    const limit = parseInt(searchParams.get('limit') || '50', 10);
+    const filter = searchParams.get('filter') || 'all'; // all | premium | free | verified | suspended
+    const limit = parseInt(searchParams.get('limit') || '100', 10);
 
     let query = supabase
       .from('profiles')
-      .select('id, nama, nama_panggilan, email, status, trust_score, created_at')
+      .select('id, nama, nama_panggilan, email, status, trust_score, created_at, kampus, jurusan, education_score_given')
       .order('created_at', { ascending: false })
       .limit(limit);
 
     if (search) {
-      // cari di nama ATAU email
       query = query.or(`nama.ilike.%${search}%,email.ilike.%${search}%`);
     }
 
     if (filter === 'suspended') {
       query = query.eq('status', 'suspended');
+    } else if (filter === 'verified') {
+      query = query.eq('education_score_given', true);
     }
 
     const { data: profiles, error } = await query;
 
     if (error) {
       console.error('[ADMIN-USERS] query error:', error);
-      return NextResponse.json(
-        { success: false, error: 'Gagal mengambil data user.' },
-        { status: 500 }
-      );
+      return NextResponse.json({ success: false, error: 'Gagal mengambil data user.' }, { status: 500 });
     }
 
-    // ── Ambil semua subscription aktif untuk cek siapa yang premium ──
     const nowIso = new Date().toISOString();
     const { data: activeSubs } = await supabase
       .from('premium_subscriptions')
@@ -51,26 +48,22 @@ export async function GET(req: NextRequest) {
       status: p.status,
       trust_score: p.trust_score,
       created_at: p.created_at,
+      kampus: p.kampus,
+      jurusan: p.jurusan,
+      educationVerified: !!p.education_score_given,
       isPremium: premiumUserIds.has(p.id),
     }));
 
-    // ── Filter premium/free dilakukan di sini karena butuh data join ──
     if (filter === 'premium') {
       users = users.filter(u => u.isPremium);
     } else if (filter === 'free') {
       users = users.filter(u => !u.isPremium);
     }
 
-    return NextResponse.json({
-      success: true,
-      users,
-    });
+    return NextResponse.json({ success: true, users });
 
   } catch (err) {
     console.error('[ADMIN-USERS] error:', err);
-    return NextResponse.json(
-      { success: false, error: 'Server error.' },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: 'Server error.' }, { status: 500 });
   }
 }

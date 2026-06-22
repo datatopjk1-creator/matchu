@@ -96,6 +96,28 @@ display:block;
 .logo{
 padding:28px;
 border-bottom:1px solid rgba(255,255,255,.08);
+display:flex;
+align-items:flex-start;
+justify-content:space-between;
+}
+
+.sidebar-close-btn{
+width:32px;
+height:32px;
+border:none;
+background:rgba(255,255,255,.08);
+border-radius:8px;
+color:#ececec;
+font-size:16px;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-shrink:0;
+}
+
+.sidebar-close-btn:hover{
+background:rgba(255,255,255,.18);
 }
 
 .logo h1{
@@ -478,8 +500,9 @@ font-size:14px;
 <aside class="sidebar collapsed" id="sidebar">
 
 <div class="logo">
-<h1>MATCHU</h1>
-<span>ADMIN PANEL</span>
+<div><h1>MATCHU</h1>
+<span>ADMIN PANEL</span></div>
+<button class="sidebar-close-btn" id="sidebarCloseBtn">✕</button>
 </div>
 
 <div class="nav">
@@ -717,6 +740,7 @@ hamburgerBtn.addEventListener('click', () => {
   if (sidebarEl.classList.contains('collapsed')) openSidebar();
   else closeSidebar();
 });
+document.getElementById('sidebarCloseBtn').addEventListener('click', closeSidebar);
 sidebarOverlayEl.addEventListener('click', closeSidebar);
 
 // ───────────────────────────────────────────────────────

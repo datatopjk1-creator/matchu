@@ -12,8 +12,39 @@
   --sidebar:#2B0A0A; --bg:#F7F4F4; --white:#fff; --text:#222; --text2:#777; --border:#E8E8E8;
 }
 body{ font-family:'Inter',sans-serif; background:var(--bg); }
-.sidebar{ position:fixed; left:0; top:0; width:280px; height:100vh; background:var(--sidebar); overflow-y:auto; }
-.logo{ padding:28px; border-bottom:1px solid rgba(255,255,255,.08); }
+.sidebar{
+  position:fixed; left:0; top:0; width:280px; height:100vh;
+  background:var(--sidebar); overflow-y:auto;
+  transition:transform .25s cubic-bezier(.4,0,.2,1);
+  z-index:999;
+}
+.sidebar.collapsed{ transform:translateX(-100%); }
+
+.sidebar-overlay{
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.35); z-index:998;
+}
+.sidebar-overlay.active{ display:block; }
+
+.hamburger-btn{
+  width:42px; height:42px; border:1px solid var(--border); border-radius:12px;
+  background:#fafafa; cursor:pointer; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:4px; flex-shrink:0; margin-right:14px;
+}
+.hamburger-btn span{ display:block; width:18px; height:2px; background:var(--text); border-radius:2px; transition:.2s; }
+.hamburger-btn:hover span{ background:var(--brand); }
+
+.topbar-left-wrap{ display:flex; align-items:center; }
+.logo{
+  padding:28px; border-bottom:1px solid rgba(255,255,255,.08);
+  display:flex; align-items:flex-start; justify-content:space-between;
+}
+.sidebar-close-btn{
+  width:32px; height:32px; border:none; background:rgba(255,255,255,.08);
+  border-radius:8px; color:#ececec; font-size:16px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.sidebar-close-btn:hover{ background:rgba(255,255,255,.18); }
 .logo h1{ font-family:'Playfair Display',serif; font-size:28px; color:white; }
 .logo span{ display:block; margin-top:5px; font-size:11px; letter-spacing:2px; color:#ccc; }
 .nav{ padding:20px 0; }
@@ -21,7 +52,7 @@ body{ font-family:'Inter',sans-serif; background:var(--bg); }
 .nav a{ display:flex; align-items:center; gap:12px; padding:14px 28px; text-decoration:none; color:#eee; font-size:14px; }
 .nav a:hover{ background:rgba(255,255,255,.05); }
 .nav a.active{ background:rgba(183,28,28,.25); border-left:4px solid #ff6b6b; }
-.main{ margin-left:280px; }
+.main{ margin-left:0; }
 .topbar{ height:75px; background:white; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; padding:0 28px; }
 .content{ padding:28px; }
 .stats-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:24px; }
@@ -61,8 +92,13 @@ textarea{ width:100%; padding:11px; border:1.5px solid #ddd; border-radius:10px;
   })();
 </script>
 
-<aside class="sidebar">
-<div class="logo"><h1>MATCHU</h1><span>ADMIN PANEL</span></div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar collapsed" id="sidebar">
+<div class="logo">
+<div><h1>MATCHU</h1><span>ADMIN PANEL</span></div>
+<button class="sidebar-close-btn" id="sidebarCloseBtn">✕</button>
+</div>
 <div class="nav">
 <div class="nav-title">Dashboard</div>
 <a href="admin-dashboard.html">📊 Dashboard</a>
@@ -74,15 +110,25 @@ textarea{ width:100%; padding:11px; border:1.5px solid #ddd; border-radius:10px;
 <a href="admin-verifikasi-pendidikan.html" class="active">🎓 Verifikasi Pendidikan</a>
 <div class="nav-title">Monitoring</div>
 <a href="admin-report.html">🚨 Report User</a>
+<a href="admin-matchmaking.html">💌 Aktivitas Matchmaking</a>
+<div class="nav-title">Keuangan</div>
+<a href="admin-pendapatan.html">💰 Pendapatan</a>
+<a href="admin-subscription.html">📦 Subscription</a>
+<div class="nav-title">Sistem</div>
+<a href="admin-pengaturan.html">⚙ Pengaturan</a>
+<a href="#" id="logoutBtn">🚪 Logout</a>
 </div>
 </aside>
 
 <div class="main">
 
 <header class="topbar">
+<div class="topbar-left-wrap">
+<button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
 <div>
 <h2>Verifikasi Pendidikan</h2>
 <p style="font-size:13px;color:#777;">Verifikasi data pendidikan PDDIKTI pengguna</p>
+</div>
 </div>
 </header>
 
@@ -181,6 +227,39 @@ Memuat screenshot...
 const API_BASE = '/api/admin';
 const adminData = JSON.parse(localStorage.getItem('matchu_user') || '{}');
 let currentList = [];
+
+// ───────────────────────────────────────────────────────
+// SIDEBAR TOGGLE (sama seperti admin-dashboard.html)
+// ───────────────────────────────────────────────────────
+const sidebarEl = document.getElementById('sidebar');
+const sidebarOverlayEl = document.getElementById('sidebarOverlay');
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+
+function openSidebar(){
+  sidebarEl.classList.remove('collapsed');
+  sidebarOverlayEl.classList.add('active');
+}
+function closeSidebar(){
+  sidebarEl.classList.add('collapsed');
+  sidebarOverlayEl.classList.remove('active');
+}
+hamburgerBtn.addEventListener('click', () => {
+  if (sidebarEl.classList.contains('collapsed')) openSidebar();
+  else closeSidebar();
+});
+document.getElementById('sidebarCloseBtn').addEventListener('click', closeSidebar);
+sidebarOverlayEl.addEventListener('click', closeSidebar);
+
+document.getElementById('logoutBtn').addEventListener('click', function(e){
+  e.preventDefault();
+  if (confirm('Yakin ingin logout?')) {
+    localStorage.removeItem('matchu_user_id');
+    localStorage.removeItem('matchu_token');
+    localStorage.removeItem('matchu_refresh');
+    localStorage.removeItem('matchu_user');
+    window.location.href = 'login.html';
+  }
+});
 
 function escapeHtml(str){
   if(!str) return '';
