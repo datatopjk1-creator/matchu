@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Semua User | Matchu Admin</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*,
+*::before,
+*::after{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+:root{
+
+--brand:#B71C1C;
+--brand-dark:#7F0000;
+--brand-light:#FFE7E7;
+
+--sidebar:#2B0A0A;
+
+--bg:#F7F4F4;
+--white:#FFFFFF;
+
+--text:#222;
+--text2:#777;
+
+--border:#E8E8E8;
+
+--radius:18px;
+
+--sidebar-width:280px;
+--topbar-height:75px;
+
+}
+
+body{
+font-family:'Inter',sans-serif;
+background:var(--bg);
+color:var(--text);
+min-height:100vh;
+}
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:280px;
+height:100vh;
+background:var(--sidebar);
+overflow-y:auto;
+z-index:999;
+}
+
+.logo{
+padding:28px;
+border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.logo h1{
+font-family:'Playfair Display',serif;
+font-size:28px;
+color:white;
+letter-spacing:2px;
+}
+
+.logo span{
+display:block;
+margin-top:5px;
+font-size:11px;
+letter-spacing:2px;
+color:#ccc;
+}
+
+.nav{
+padding:20px 0;
+}
+
+.nav-title{
+padding:18px 28px 8px;
+font-size:11px;
+color:#999;
+letter-spacing:2px;
+text-transform:uppercase;
+}
+
+.nav a{
+display:flex;
+align-items:center;
+gap:12px;
+padding:14px 28px;
+color:#eee;
+text-decoration:none;
+font-size:14px;
+}
+
+.nav a:hover{
+background:rgba(255,255,255,.05);
+}
+
+.nav a.active{
+background:rgba(183,28,28,.25);
+border-left:4px solid #ff6b6b;
+}
+
+.main{
+margin-left:280px;
+min-height:100vh;
+}
+
+.topbar{
+height:75px;
+background:white;
+border-bottom:1px solid var(--border);
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 28px;
+}
+
+.topbar-left h2{
+font-size:24px;
+font-weight:700;
+}
+
+.topbar-left p{
+font-size:13px;
+color:#777;
+margin-top:3px;
+}
+
+.admin-user{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.avatar{
+width:42px;
+height:42px;
+border-radius:50%;
+background:var(--brand);
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:700;
+color:white;
+}
+
+.content{
+padding:28px;
+}
+
+.section-card{
+background:white;
+border-radius:22px;
+padding:24px;
+border:1px solid var(--border);
+margin-bottom:24px;
+}
+
+.section-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:24px;
+}
+
+.section-title{
+font-size:24px;
+font-weight:700;
+}
+
+.search-area{
+display:flex;
+gap:10px;
+}
+
+.search-area input{
+width:300px;
+padding:12px 15px;
+border:1px solid var(--border);
+border-radius:12px;
+}
+
+.search-area select{
+padding:12px 15px;
+border:1px solid var(--border);
+border-radius:12px;
+}
+
+.stats-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:18px;
+margin-bottom:24px;
+}
+
+.stat-card{
+background:white;
+padding:22px;
+border-radius:20px;
+border:1px solid var(--border);
+}
+
+.stat-number{
+font-size:34px;
+font-weight:700;
+color:var(--brand);
+margin-top:10px;
+}
+
+.stat-label{
+font-size:13px;
+color:#777;
+}
+
+.admin-table{
+width:100%;
+border-collapse:collapse;
+}
+
+.admin-table th{
+background:#fafafa;
+padding:14px;
+text-align:left;
+font-size:13px;
+border-bottom:1px solid #eee;
+}
+
+.admin-table td{
+padding:16px 14px;
+border-bottom:1px solid #eee;
+}
+
+.user-box{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.user-avatar{
+width:44px;
+height:44px;
+border-radius:50%;
+background:#ddd;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:700;
+}
+
+.badge{
+padding:5px 10px;
+border-radius:20px;
+font-size:12px;
+font-weight:600;
+}
+
+.badge-premium{
+background:#FFF4D8;
+color:#A56900;
+}
+
+.badge-free{
+background:#EFEFEF;
+color:#666;
+}
+
+.btn{
+border:none;
+padding:8px 14px;
+border-radius:10px;
+cursor:pointer;
+font-size:12px;
+font-weight:600;
+}
+
+.btn-view{
+background:#F2F2F2;
+}
+
+.btn-suspend{
+background:#FFE4E4;
+color:#B71C1C;
+}
+
+.btn-active{
+background:#DFF8E7;
+color:#0A8A40;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+<div class="logo">
+<h1>MATCHU</h1>
+<span>ADMIN PANEL</span>
+</div>
+
+<div class="nav">
+
+<div class="nav-title">Dashboard</div>
+
+<a href="admin-dashboard.html">
+📊 Dashboard
+</a>
+
+<div class="nav-title">User</div>
+
+<a href="admin-users.html" class="active">
+👥 Semua User
+</a>
+
+<a href="admin-premium.html">
+⭐ User Premium
+</a>
+
+<a href="admin-suspended.html">
+🚫 User Ditangguhkan
+</a>
+
+<div class="nav-title">Verifikasi</div>
+
+<a href="admin-verifikasi-pendidikan.html">
+🎓 Verifikasi Pendidikan
+</a>
+
+<a href="admin-verifikasi-identitas.html">
+🪪 Verifikasi Identitas
+</a>
+
+<div class="nav-title">Monitoring</div>
+
+<a href="admin-report.html">
+🚨 Report User
+</a>
+
+<a href="#">
+💌 Aktivitas Matchmaking
+</a>
+
+<div class="nav-title">Keuangan</div>
+
+<a href="#">
+💰 Pendapatan
+</a>
+
+<a href="#">
+📦 Subscription
+</a>
+
+</div>
+
+</aside>
+
+<div class="main">
+
+<header class="topbar">
+
+<div class="topbar-left">
+
+<h2>Semua User</h2>
+
+<p>
+Kelola seluruh pengguna Matchu
+</p>
+
+</div>
+
+<div class="admin-user">
+
+<div class="avatar">
+A
+</div>
+
+<div>
+<div style="font-weight:700;">
+Admin
+</div>
+<div style="font-size:12px;color:#888;">
+Super Admin
+</div>
+</div>
+
+</div>
+
+</header>
+
+<div class="content">
+
+<div class="stats-grid">
+
+<div class="stat-card">
+<div class="stat-label">Total User</div>
+<div class="stat-number">12.483</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-label">Premium</div>
+<div class="stat-number">1.822</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-label">Terverifikasi</div>
+<div class="stat-number">8.429</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-label">Ditangguhkan</div>
+<div class="stat-number">14</div>
+</div>
+
+</div>
+<div class="section-card">
+
+<div class="section-header">
+
+<div>
+
+<div class="section-title">
+Daftar User
+</div>
+
+<div
+style="
+font-size:13px;
+color:#777;
+margin-top:4px;
+">
+12.483 pengguna terdaftar
+</div>
+
+</div>
+
+<div class="search-area">
+
+<input
+type="text"
+id="searchUser"
+placeholder="Cari nama atau email..."
+
+>
+
+<select id="filterStatus">
+
+<option value="all">
+Semua User
+</option>
+
+<option value="premium">
+Premium
+</option>
+
+<option value="free">
+Free
+</option>
+
+<option value="verified">
+Terverifikasi
+</option>
+
+<option value="suspended">
+Ditangguhkan
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+<table class="admin-table">
+
+<thead>
+
+<tr>
+
+<th>User</th>
+
+<th>Email</th>
+
+<th>Premium</th>
+
+<th>Trust Score</th>
+
+<th>Pendidikan</th>
+
+<th>Identitas</th>
+
+<th>Status</th>
+
+<th>Aksi</th>
+
+</tr>
+
+</thead>
+
+<tbody id="userTable">
+
+<tr>
+
+<td>
+
+<div class="user-box">
+
+<div class="user-avatar">
+A
+</div>
+
+<div>
+
+<div style="font-weight:700;">
+Aulia Putri
+</div>
+
+<div
+style="
+font-size:12px;
+color:#888;
+">
+USR001
+</div>
+
+</div>
+
+</div>
+
+</td>
+
+<td>
+aulia@gmail.com
+</td>
+
+<td>
+<span class="badge badge-premium">
+Premium
+</span>
+</td>
+
+<td>
+95
+</td>
+
+<td>
+✅
+</td>
+
+<td>
+✅
+</td>
+
+<td>
+Aktif
+</td>
+
+<td>
+
+<button
+class="btn btn-view"
+onclick="openUserModal()">
+Detail </button>
+
+<button
+class="btn btn-suspend">
+Suspend </button>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+<div class="user-box">
+
+<div class="user-avatar">
+N
+</div>
+
+<div>
+
+<div style="font-weight:700;">
+Nisa Rahma
+</div>
+
+<div
+style="
+font-size:12px;
+color:#888;
+">
+USR002
+</div>
+
+</div>
+
+</div>
+
+</td>
+
+<td>
+nisa@gmail.com
+</td>
+
+<td>
+<span class="badge badge-free">
+Free
+</span>
+</td>
+
+<td>
+76
+</td>
+
+<td>
+✅
+</td>
+
+<td>
+❌
+</td>
+
+<td>
+Aktif
+</td>
+
+<td>
+
+<button
+class="btn btn-view"
+onclick="openUserModal()">
+Detail </button>
+
+<button
+class="btn btn-suspend">
+Suspend </button>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+<div class="user-box">
+
+<div class="user-avatar">
+R
+</div>
+
+<div>
+
+<div style="font-weight:700;">
+Rara Amelia
+</div>
+
+<div
+style="
+font-size:12px;
+color:#888;
+">
+USR003
+</div>
+
+</div>
+
+</div>
+
+</td>
+
+<td>
+rara@gmail.com
+</td>
+
+<td>
+<span class="badge badge-premium">
+Premium
+</span>
+</td>
+
+<td>
+89
+</td>
+
+<td>
+✅
+</td>
+
+<td>
+✅
+</td>
+
+<td>
+Aktif
+</td>
+
+<td>
+
+<button
+class="btn btn-view"
+onclick="openUserModal()">
+Detail </button>
+
+<button
+class="btn btn-suspend">
+Suspend </button>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+<div class="user-box">
+
+<div class="user-avatar">
+B
+</div>
+
+<div>
+
+<div style="font-weight:700;">
+Budi Santoso
+</div>
+
+<div
+style="
+font-size:12px;
+color:#888;
+">
+USR004
+</div>
+
+</div>
+
+</div>
+
+</td>
+
+<td>
+budi@gmail.com
+</td>
+
+<td>
+<span class="badge badge-free">
+Free
+</span>
+</td>
+
+<td>
+61
+</td>
+
+<td>
+❌
+</td>
+
+<td>
+❌
+</td>
+
+<td>
+
+<span
+style="
+color:#B71C1C;
+font-weight:600;
+">
+Ditangguhkan </span>
+
+</td>
+
+<td>
+
+<button
+class="btn btn-view"
+onclick="openUserModal()">
+Detail </button>
+
+<button
+class="btn btn-active">
+Aktifkan </button>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<div
+style="
+display:flex;
+justify-content:center;
+gap:8px;
+margin-top:24px;
+">
+
+<button class="btn btn-view">
+1
+</button>
+
+<button class="btn btn-view">
+2
+</button>
+
+<button class="btn btn-view">
+3
+</button>
+
+<button class="btn btn-view">
+4
+</button>
+
+<button class="btn btn-view">
+5
+</button>
+
+</div>
+
+</div>
+
+<div
+id="userModal"
+
+style="
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.65);
+z-index:9999;
+justify-content:center;
+align-items:center;
+">
+
+<div
+
+style="
+width:950px;
+max-width:95%;
+background:white;
+border-radius:24px;
+padding:30px;
+">
+
+<div
+
+style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+">
+
+<h2>
+Detail User
+</h2>
+
+<button
+onclick="closeUserModal()"
+class="btn btn-suspend">
+Tutup </button>
+
+</div>
+
+<div
+
+style="
+display:grid;
+grid-template-columns:250px 1fr;
+gap:30px;
+">
+
+<div>
+
+<div
+
+style="
+width:220px;
+height:220px;
+background:#ddd;
+border-radius:20px;
+margin:auto;
+">
+
+</div>
+
+</div>
+
+<div>
+
+<table
+style="
+width:100%;
+">
+
+<tr>
+<td><b>Nama</b></td>
+<td>Aulia Putri</td>
+</tr>
+
+<tr>
+<td><b>Email</b></td>
+<td>aulia@gmail.com</td>
+</tr>
+
+<tr>
+<td><b>Kampus</b></td>
+<td>Universitas Indonesia</td>
+</tr>
+
+<tr>
+<td><b>Jurusan</b></td>
+<td>Hukum</td>
+</tr>
+
+<tr>
+<td><b>Trust Score</b></td>
+<td>95</td>
+</tr>
+
+<tr>
+<td><b>Premium</b></td>
+<td>Aktif</td>
+</tr>
+
+<tr>
+<td><b>Pendidikan</b></td>
+<td>✅ Terverifikasi</td>
+</tr>
+
+<tr>
+<td><b>Identitas</b></td>
+<td>✅ Terverifikasi</td>
+</tr>
+
+<tr>
+<td><b>Status</b></td>
+<td>Aktif</td>
+</tr>
+
+</table>
+
+<div
+
+style="
+margin-top:30px;
+display:flex;
+gap:10px;
+">
+
+<button
+class="btn btn-active">
+Aktifkan User </button>
+
+<button
+class="btn btn-suspend">
+Suspend User </button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="section-card">
+
+<div class="section-header">
+
+<div>
+
+<div class="section-title">
+Daftar User
+</div>
+
+<div
+style="
+font-size:13px;
+color:#777;
+margin-top:4px;
+">
+12.483 pengguna terdaftar
+</div>
+
+</div>
+
+<div class="search-area">
+
+<input
+type="text"
+id="searchUser"
+placeholder="Cari nama atau email..."
+
+>
+
+<select id="filterStatus">
+
+<option value="all">
+Semua User
+</option>
+
+<option value="premium">
+Premium
+</option>
+
+<option value="free">
+Free
+</option>
+
+<option value="verified">
+Terverifikasi
+</option>
+
+<option value="suspended">
+Ditangguhkan
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+<table class="admin-table">
+
+<thead>
+
+<tr>
+
+<th>User</th>
+
+<th>Email</th>
+
+<th>Premium</th>
+
+<th>Trust Score</th>
+
+<th>Pendidikan</th>
+
+<th>Identitas</th>
+
+<th>Status</th>
+
+<th>Aksi</th>
+
+</tr>
+
+</thead>
+
+<tbody id="userTable">
+
+<tr>
+
+<td>
+
+<div class="user-box">
+
+<div class="user-avatar">
+A
+</div>
+
+<div>
+
+<div style="font-weight:700;">
+Aulia Putri
+</div>
+
+<div
+style="
+font-size:12px;
+color:#888;
+">
+USR001
+</div>
+
+</div>
+
+</div>
+
+</td>
+
+<td>
+aulia@gmail.com
+</td>
+
+<td>
+<span class="badge badge-premium">
+Premium
+</span>
+</td>
+
+<td>
+95
+</td>
+
+<td>
+✅
+</td>
+
+<td>
+✅
+</td>
+
+<td>
+Aktif
+</td>
+
+<td>
+
+<button
+class="btn btn-view"
+onclick="openUserModal()">
+Detail </button>
+
+<button
+class="btn btn-suspend">
+Suspend </button>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+<div class="user-box">
+
+<div class="user-avatar">
+N
+</div>
+
+<div>
+
+<div style="font-weight:700;">
+Nisa Rahma
+</div>
+
+<div
+style="
+font-size:12px;
+color:#888;
+">
+USR002
+</div>
+
+</div>
+
+</div>
+
+</td>
+
+<td>
+nisa@gmail.com
+</td>
+
+<td>
+<span class="badge badge-free">
+Free
+</span>
+</td>
+
+<td>
+76
+</td>
+
+<td>
+✅
+</td>
+
+<td>
+❌
+</td>
+
+<td>
+Aktif
+</td>
+
+<td>
+
+<button
+class="btn btn-view"
+onclick="openUserModal()">
+Detail </button>
+
+<button
+class="btn btn-suspend">
+Suspend </button>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+<div class="user-box">
+
+<div class="user-avatar">
+R
+</div>
+
+<div>
+
+<div style="font-weight:700;">
+Rara Amelia
+</div>
+
+<div
+style="
+font-size:12px;
+color:#888;
+">
+USR003
+</div>
+
+</div>
+
+</div>
+
+</td>
+
+<td>
+rara@gmail.com
+</td>
+
+<td>
+<span class="badge badge-premium">
+Premium
+</span>
+</td>
+
+<td>
+89
+</td>
+
+<td>
+✅
+</td>
+
+<td>
+✅
+</td>
+
+<td>
+Aktif
+</td>
+
+<td>
+
+<button
+class="btn btn-view"
+onclick="openUserModal()">
+Detail </button>
+
+<button
+class="btn btn-suspend">
+Suspend </button>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+<div class="user-box">
+
+<div class="user-avatar">
+B
+</div>
+
+<div>
+
+<div style="font-weight:700;">
+Budi Santoso
+</div>
+
+<div
+style="
+font-size:12px;
+color:#888;
+">
+USR004
+</div>
+
+</div>
+
+</div>
+
+</td>
+
+<td>
+budi@gmail.com
+</td>
+
+<td>
+<span class="badge badge-free">
+Free
+</span>
+</td>
+
+<td>
+61
+</td>
+
+<td>
+❌
+</td>
+
+<td>
+❌
+</td>
+
+<td>
+
+<span
+style="
+color:#B71C1C;
+font-weight:600;
+">
+Ditangguhkan </span>
+
+</td>
+
+<td>
+
+<button
+class="btn btn-view"
+onclick="openUserModal()">
+Detail </button>
+
+<button
+class="btn btn-active">
+Aktifkan </button>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<div
+style="
+display:flex;
+justify-content:center;
+gap:8px;
+margin-top:24px;
+">
+
+<button class="btn btn-view">
+1
+</button>
+
+<button class="btn btn-view">
+2
+</button>
+
+<button class="btn btn-view">
+3
+</button>
+
+<button class="btn btn-view">
+4
+</button>
+
+<button class="btn btn-view">
+5
+</button>
+
+</div>
+
+</div>
+
+<div
+id="userModal"
+
+style="
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.65);
+z-index:9999;
+justify-content:center;
+align-items:center;
+">
+
+<div
+
+style="
+width:950px;
+max-width:95%;
+background:white;
+border-radius:24px;
+padding:30px;
+">
+
+<div
+
+style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+">
+
+<h2>
+Detail User
+</h2>
+
+<button
+onclick="closeUserModal()"
+class="btn btn-suspend">
+Tutup </button>
+
+</div>
+
+<div
+
+style="
+display:grid;
+grid-template-columns:250px 1fr;
+gap:30px;
+">
+
+<div>
+
+<div
+
+style="
+width:220px;
+height:220px;
+background:#ddd;
+border-radius:20px;
+margin:auto;
+">
+
+</div>
+
+</div>
+
+<div>
+
+<table
+style="
+width:100%;
+">
+
+<tr>
+<td><b>Nama</b></td>
+<td>Aulia Putri</td>
+</tr>
+
+<tr>
+<td><b>Email</b></td>
+<td>aulia@gmail.com</td>
+</tr>
+
+<tr>
+<td><b>Kampus</b></td>
+<td>Universitas Indonesia</td>
+</tr>
+
+<tr>
+<td><b>Jurusan</b></td>
+<td>Hukum</td>
+</tr>
+
+<tr>
+<td><b>Trust Score</b></td>
+<td>95</td>
+</tr>
+
+<tr>
+<td><b>Premium</b></td>
+<td>Aktif</td>
+</tr>
+
+<tr>
+<td><b>Pendidikan</b></td>
+<td>✅ Terverifikasi</td>
+</tr>
+
+<tr>
+<td><b>Identitas</b></td>
+<td>✅ Terverifikasi</td>
+</tr>
+
+<tr>
+<td><b>Status</b></td>
+<td>Aktif</td>
+</tr>
+
+</table>
+
+<div
+
+style="
+margin-top:30px;
+display:flex;
+gap:10px;
+">
+
+<button
+class="btn btn-active">
+Aktifkan User </button>
+
+<button
+class="btn btn-suspend">
+Suspend User </button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="section-card">
+
+<div class="section-header">
+
+<div class="section-title">
+⭐ Riwayat Premium User
+</div>
+
+</div>
+
+<table class="admin-table">
+
+<thead>
+
+<tr>
+<th>User</th>
+<th>Paket</th>
+<th>Mulai</th>
+<th>Berakhir</th>
+<th>Status</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>
+Aulia Putri
+</td>
+
+<td>
+Premium 1 Bulan
+</td>
+
+<td>
+01 Juni 2026
+</td>
+
+<td>
+01 Juli 2026
+</td>
+
+<td>
+
+<span class="badge badge-premium">
+Aktif
+</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+Rara Amelia
+</td>
+
+<td>
+Premium 3 Bulan
+</td>
+
+<td>
+15 Mei 2026
+</td>
+
+<td>
+15 Agustus 2026
+</td>
+
+<td>
+
+<span class="badge badge-premium">
+Aktif
+</span>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="section-card">
+
+<div class="section-header">
+
+<div class="section-title">
+🚨 Riwayat Report User
+</div>
+
+</div>
+
+<table class="admin-table">
+
+<thead>
+
+<tr>
+<th>Pelapor</th>
+<th>Dilaporkan</th>
+<th>Alasan</th>
+<th>Status</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>
+Nisa Rahma
+</td>
+
+<td>
+Budi Santoso
+</td>
+
+<td>
+Fake Account
+</td>
+
+<td>
+Menunggu Review
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+Aulia Putri
+</td>
+
+<td>
+Andi Saputra
+</td>
+
+<td>
+Spam
+</td>
+
+<td>
+Diproses
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="section-card">
+
+<div class="section-header">
+
+<div class="section-title">
+📋 Aktivitas User
+</div>
+
+</div>
+
+<table class="admin-table">
+
+<thead>
+
+<tr>
+<th>User</th>
+<th>Aktivitas</th>
+<th>Waktu</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>
+Aulia Putri
+</td>
+
+<td>
+Mengirim surat perkenalan
+</td>
+
+<td>
+2 jam lalu
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+Nisa Rahma
+</td>
+
+<td>
+Melengkapi profil
+</td>
+
+<td>
+5 jam lalu
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+Rara Amelia
+</td>
+
+<td>
+Upgrade Premium
+</td>
+
+<td>
+1 hari lalu
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<script>
+
+function openUserModal(){
+
+document.getElementById(
+'userModal'
+).style.display='flex';
+
+}
+
+function closeUserModal(){
+
+document.getElementById(
+'userModal'
+).style.display='none';
+
+}
+
+
+
+document
+.getElementById('searchUser')
+.addEventListener(
+'keyup',
+function(){
+
+let value=
+this.value.toLowerCase();
+
+let rows=
+document.querySelectorAll(
+'#userTable tr'
+);
+
+rows.forEach(row=>{
+
+row.style.display=
+row.innerText
+.toLowerCase()
+.includes(value)
+?
+''
+:
+'none';
+
+});
+
+}
+);
+
+
+
+document
+.querySelectorAll('.btn-suspend')
+.forEach(btn=>{
+
+btn.addEventListener(
+'click',
+function(){
+
+if(
+confirm(
+'Suspend user ini ?'
+)
+){
+
+alert(
+'User berhasil disuspend'
+);
+
+}
+
+});
+
+});
+
+
+
+document
+.querySelectorAll('.btn-active')
+.forEach(btn=>{
+
+btn.addEventListener(
+'click',
+function(){
+
+if(
+confirm(
+'Aktifkan kembali user ini ?'
+)
+){
+
+alert(
+'User berhasil diaktifkan'
+);
+
+}
+
+});
+
+});
+
+
+
+window.onclick=
+function(e){
+
+const modal=
+document.getElementById(
+'userModal'
+);
+
+if(e.target===modal){
+
+modal.style.display='none';
+
+}
+
+}
+
+</script>
+
+</div>
+
+</div>
+
+</body>
+</html>
