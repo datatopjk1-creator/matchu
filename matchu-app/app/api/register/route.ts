@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     const { nama, nama_panggilan, email, tanggal_lahir, jenis_kelamin } = await req.json();
 
     if (!email) {
-      return NextResponse.json({ success: false, error: 'Data tidak lengkap.' }, { status: 400 });
+      return NextResponse.json({ success: false, error: 'Email tidak ditemukan.' }, { status: 400 });
     }
 
     // Cek apakah email sudah terdaftar
@@ -22,11 +22,16 @@ export async function POST(req: Request) {
       .maybeSingle();
 
     if (existing) {
-      await supabase.from('users').update({ email_verified: true }).eq('email', email);
+      // Email sudah ada — update email_verified dan return userId
+      // Ini terjadi kalau user daftar ulang atau OTP dikirim ulang
+      await supabase
+        .from('users')
+        .update({ email_verified: true })
+        .eq('email', email);
       return NextResponse.json({ success: true, userId: existing.id });
     }
 
-    // Insert user baru — pakai nama_lengkap sesuai skema tabel
+    // Insert user baru
     const { data, error } = await supabase
       .from('users')
       .insert({
