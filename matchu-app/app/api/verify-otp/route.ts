@@ -13,6 +13,21 @@ persistSession: false,
 }
 );
 
+console.log(
+  'SUPABASE_URL:',
+  process.env.NEXT_PUBLIC_SUPABASE_URL
+);
+
+console.log(
+  'SERVICE_ROLE_EXISTS:',
+  !!process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
+console.log(
+  'SERVICE_ROLE_PREFIX:',
+  process.env.SUPABASE_SERVICE_ROLE_KEY?.substring(0, 20)
+);
+
 export async function POST(req: Request) {
 try {
 const { email, otp } = await req.json();
@@ -172,6 +187,26 @@ if (authError || !authData.user) {
 
 const userId = authData.user.id;
 
+console.log('USER ID:', userId);
+
+console.log(
+  'USER DATA:',
+  JSON.stringify(
+    {
+      id: userId,
+      email: ud.email,
+      nama_lengkap: ud.nama,
+      nama_panggilan: ud.nama_panggilan,
+      tanggal_lahir: ud.tanggal_lahir,
+      jenis_kelamin: ud.jenis_kelamin,
+      trust_score: 20,
+      status: 'aktif',
+    },
+    null,
+    2
+  )
+);
+
 // Simpan profil
 const { error: profileError } = await supabase
   .from('users')
@@ -215,13 +250,10 @@ if (profileError) {
     JSON.stringify(profileError, null, 2)
   );
 
-  await supabase.auth.admin.deleteUser(userId);
-
   return NextResponse.json(
     {
       success: false,
-      message: profileError.message,
-      details: profileError,
+      error: profileError,
     },
     { status: 500 }
   );
