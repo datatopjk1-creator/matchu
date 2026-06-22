@@ -1,1172 +1,398 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Premium | Matchu</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-
+<!-- Midtrans Snap.js SANDBOX -->
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="Mid-client-2rlINXGG39aG5lDA"></script>
 <style>
-
-/* ===== RESET ===== */
-
-*,
-*::before,
-*::after{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-/* ===== ROOT ===== */
-
-:root{
-
-  --brand:#7A2236;
-  --brand-dark:#5E1A2A;
-  --brand-light:#f9f0f3;
-  --brand-mid:#c4677e;
-
-  --bg:#F5F2EF;
-  --white:#ffffff;
-
-  --text:#1C1C1E;
-  --text-2:#6B7280;
-
-  --border:#E8E3DF;
-
-  --sidebar-w:260px;
-  --topbar-h:68px;
-
-  --radius:16px;
-
-  --shadow:
-  0 2px 16px rgba(0,0,0,.06);
-
-}
-
-body{
-
-  font-family:'Inter',sans-serif;
-
-  background:var(--bg);
-
-  color:var(--text);
-
-  min-height:100vh;
-
-}
-
-/* =====================
-OVERLAY
-===================== */
-
-.overlay{
-
-  display:none;
-
-  position:fixed;
-
-  inset:0;
-
-  background:rgba(0,0,0,.35);
-
-  z-index:100;
-
-}
-
-.overlay.active{
-  display:block;
-}
-
-/* =====================
-SIDEBAR
-===================== */
-
-.sidebar{
-
-  position:fixed;
-
-  top:0;
-  left:0;
-
-  width:var(--sidebar-w);
-
-  height:100vh;
-
-  background:white;
-
-  border-right:1px solid var(--border);
-
-  display:flex;
-  flex-direction:column;
-
-  z-index:200;
-
-  transition:.3s;
-
-}
-
-.sidebar.hidden{
-  transform:translateX(-100%);
-}
-
-.sidebar-logo{
-
-  height:var(--topbar-h);
-
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-
-  padding:0 24px;
-
-  border-bottom:1px solid var(--border);
-
-}
-
-.logo-text{
-
-  font-family:'Playfair Display',serif;
-
-  font-size:26px;
-
-  font-weight:700;
-
-  color:var(--brand);
-
-  letter-spacing:2px;
-
-}
-
-.sidebar-close{
-
-  width:34px;
-  height:34px;
-
-  border:none;
-
-  background:none;
-
-  cursor:pointer;
-
-  font-size:20px;
-
-}
-
-.sidebar-nav{
-
-  flex:1;
-
-  overflow-y:auto;
-
-  padding:16px 0;
-
-}
-
-.nav-label{
-
-  font-size:10px;
-
-  font-weight:700;
-
-  text-transform:uppercase;
-
-  letter-spacing:1.5px;
-
-  color:var(--text-2);
-
-  padding:14px 24px 6px;
-
-}
-
-.nav-item{
-
-  display:flex;
-
-  align-items:center;
-
-  height:48px;
-
-  text-decoration:none;
-
-  color:#444;
-
-  font-size:14px;
-
-  font-weight:500;
-
-  padding:0 20px;
-
-  margin:2px 10px;
-
-  border-radius:12px;
-
-}
-
-.nav-item:hover{
-
-  background:var(--brand-light);
-
-  color:var(--brand);
-
-}
-
-.nav-item.active{
-
-  background:var(--brand-light);
-
-  color:var(--brand);
-
-  font-weight:600;
-
-}
-
-.sidebar-footer{
-
-  padding:16px;
-
-  border-top:1px solid var(--border);
-
-}
-
-.sidebar-user{
-
-  display:flex;
-
-  gap:10px;
-
-  align-items:center;
-
-  padding:10px;
-
-  border-radius:12px;
-
-  background:var(--bg);
-
-}
-
-.s-avatar{
-
-  width:36px;
-  height:36px;
-
-  border-radius:50%;
-
-  background:var(--brand);
-
-  color:white;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-
-  font-weight:700;
-
-}
-
-.s-name{
-
-  font-size:13px;
-
-  font-weight:600;
-
-}
-
-.s-role{
-
-  font-size:11px;
-
-  color:var(--text-2);
-
-}
-
-/* =====================
-MAIN
-===================== */
-
-.main{
-  min-height:100vh;
-}
-
-/* =====================
-TOPBAR
-===================== */
-
-.topbar{
-
-  position:sticky;
-
-  top:0;
-
-  z-index:50;
-
-  height:var(--topbar-h);
-
-  background:white;
-
-  border-bottom:1px solid var(--border);
-
-  display:flex;
-
-  align-items:center;
-
-  gap:12px;
-
-  padding:0 24px;
-
-}
-
-.hamburger{
-
-  width:40px;
-  height:40px;
-
-  border:1px solid var(--border);
-
-  border-radius:10px;
-
-  background:none;
-
-  cursor:pointer;
-
-  display:flex;
-
-  flex-direction:column;
-
-  align-items:center;
-
-  justify-content:center;
-
-  gap:4px;
-
-}
-
-.hamburger span{
-
-  width:18px;
-  height:2px;
-
-  background:var(--text);
-
-  display:block;
-
-}
-
-.topbar-brand{
-
-  font-family:'Playfair Display',serif;
-
-  font-size:20px;
-
-  color:var(--brand);
-
-  font-weight:700;
-
-}
-
-.topbar-spacer{
-  flex:1;
-}
-
-.topbar-right{
-
-  display:flex;
-
-  align-items:center;
-
-  gap:10px;
-
-}
-
-.notif-btn{
-
-  width:40px;
-  height:40px;
-
-  border:1px solid var(--border);
-
-  border-radius:10px;
-
-  background:white;
-
-  cursor:pointer;
-
-  position:relative;
-
-}
-
-.notif-dot{
-
-  position:absolute;
-
-  top:8px;
-  right:8px;
-
-  width:8px;
-  height:8px;
-
-  border-radius:50%;
-
-  background:var(--brand);
-
-}
-
-.user-pill{
-
-  display:flex;
-
-  align-items:center;
-
-  gap:8px;
-
-  padding:5px 12px 5px 6px;
-
-  border:1px solid var(--border);
-
-  border-radius:50px;
-
-  background:white;
-
-}
-
-.t-avatar{
-
-  width:32px;
-  height:32px;
-
-  border-radius:50%;
-
-  background:var(--brand);
-
-  color:white;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-
-  font-weight:700;
-
-}
-
-.t-name{
-
-  font-size:13px;
-
-  font-weight:600;
-
-}
-
-/* =====================
-CONTENT
-===================== */
-
-.content{
-
-  padding:28px;
-
-  max-width:1100px;
-
-}
-
-/* =====================
-PREMIUM HERO
-===================== */
-
-.premium-hero{
-
-  background:
-  linear-gradient(
-    135deg,
-    #7A2236,
-    #A13250,
-    #C4677E
-  );
-
-  border-radius:24px;
-
-  padding:40px;
-
-  color:white;
-
-  margin-bottom:24px;
-
-}
-
-.status-badge{
-
-  display:inline-block;
-
-  padding:8px 14px;
-
-  border-radius:999px;
-
-  background:rgba(255,255,255,.15);
-
-  font-size:12px;
-
-  font-weight:700;
-
-  margin-bottom:16px;
-
-}
-
-.premium-hero h1{
-
-  font-family:'Playfair Display',serif;
-
-  font-size:42px;
-
-  margin-bottom:12px;
-
-}
-
-.premium-hero p{
-
-  max-width:650px;
-
-  line-height:1.8;
-
-}
-
-.upgrade-btn{
-
-  margin-top:20px;
-
-  padding:14px 24px;
-
-  border:none;
-
-  border-radius:999px;
-
-  background:white;
-
-  color:var(--brand);
-
-  font-weight:700;
-
-  cursor:pointer;
-
-}
-
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{--brand:#7A2236;--brand-dark:#5E1A2A;--brand-light:#f9f0f3;--brand-mid:#c4677e;--bg:#F5F2EF;--white:#fff;--text:#1C1C1E;--text-2:#6B7280;--border:#E8E3DF;--topbar-h:68px;--radius:16px;--shadow:0 2px 16px rgba(0,0,0,0.06);--gold:#f59e0b;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:100;}
+.overlay.active{display:block;}
+.sidebar{position:fixed;top:0;left:0;width:260px;height:100vh;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:200;transition:transform .28s ease;}
+.sidebar.hidden{transform:translateX(-100%);}
+.sidebar-logo{height:var(--topbar-h);display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid var(--border);}
+.logo-text{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--brand);letter-spacing:2px;}
+.sidebar-close{width:34px;height:34px;border:none;background:none;cursor:pointer;font-size:20px;color:var(--text-2);border-radius:8px;}
+.sidebar-nav{padding:16px 0;flex:1;overflow-y:auto;}
+.nav-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-2);padding:14px 24px 6px;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:0 20px;height:48px;text-decoration:none;color:#444;font-size:14.5px;font-weight:500;border-radius:12px;margin:2px 10px;transition:.15s;}
+.nav-item:hover,.nav-item.active{background:var(--brand-light);color:var(--brand);font-weight:600;}
+.nav-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nav-badge{margin-left:auto;background:var(--brand);color:white;font-size:10px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.sidebar-footer{padding:16px;border-top:1px solid var(--border);}
+.sidebar-user{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:var(--bg);}
+.s-avatar{width:36px;height:36px;border-radius:50%;background:var(--brand);color:white;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.s-avatar img{width:100%;height:100%;object-fit:cover;}
+.topbar{position:sticky;top:0;z-index:50;height:var(--topbar-h);background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;}
+.hamburger{width:40px;height:40px;border:1px solid var(--border);border-radius:10px;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+.hamburger span{display:block;width:18px;height:2px;background:var(--text);border-radius:2px;}
+.topbar-brand{font-family:'Playfair Display',serif;font-size:20px;color:var(--brand);font-weight:700;letter-spacing:1px;}
+.topbar-spacer{flex:1;}
+.notif-btn{position:relative;width:40px;height:40px;border:1px solid var(--border);border-radius:10px;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.notif-btn svg{width:18px;height:18px;stroke:var(--text);}
+.notif-dot{position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--brand);border:2px solid white;}
+.user-pill{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 6px;border:1px solid var(--border);border-radius:50px;background:none;cursor:pointer;}
+.t-avatar{width:32px;height:32px;border-radius:50%;background:var(--brand);color:white;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.t-avatar img{width:100%;height:100%;object-fit:cover;}
+.t-name{font-size:13px;font-weight:600;}
+
+/* CONTENT */
+.content{padding:28px 28px 60px;max-width:1000px;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#1a1a2e 0%,#2d2d44 50%,#1a1a3e 100%);border-radius:24px;padding:40px;color:white;margin-bottom:28px;position:relative;overflow:hidden;}
+.hero::before{content:'⭐';position:absolute;right:-20px;top:-20px;font-size:200px;opacity:.04;}
+.hero-status{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:50px;font-size:12px;font-weight:700;margin-bottom:16px;}
+.hero-status.reguler{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);}
+.hero-status.premium{background:rgba(245,158,11,0.2);color:#fcd34d;border:1px solid rgba(245,158,11,0.3);}
+.hero h1{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;margin-bottom:12px;line-height:1.2;}
+.hero p{font-size:15px;opacity:.8;max-width:560px;line-height:1.8;margin-bottom:24px;}
+.hero-btn{display:inline-block;padding:14px 28px;background:linear-gradient(135deg,var(--gold),#d97706);color:white;border:none;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.hero-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,158,11,0.4);}
+.hero-active-info{display:inline-flex;align-items:center;gap:10px;padding:12px 20px;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);border-radius:14px;font-size:14px;color:#fcd34d;}
+
+/* CURRENT PLAN */
+.current-plan{background:var(--white);border-radius:20px;padding:24px;border:2px solid var(--gold);box-shadow:0 4px 20px rgba(245,158,11,0.15);margin-bottom:28px;display:none;}
+.current-plan.show{display:block;}
+.current-plan-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.plan-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--gold),#d97706);color:white;padding:6px 14px;border-radius:50px;font-size:12px;font-weight:700;}
+.plan-expires{font-size:13px;color:var(--text-2);}
+.plan-bar{height:8px;background:#f0e8ea;border-radius:20px;overflow:hidden;margin-bottom:8px;}
+.plan-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),#d97706);border-radius:20px;transition:width .8s ease;}
+.plan-days{font-size:12px;color:var(--text-2);}
+
+/* COMPARISON TABLE */
+.compare-card{background:var(--white);border-radius:20px;padding:28px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:28px;}
+.compare-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:20px;}
+.compare-table{width:100%;border-collapse:collapse;}
+.compare-table th{padding:12px 16px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-2);}
+.compare-table th:first-child{text-align:left;}
+.compare-table th:nth-child(2){background:var(--bg);border-radius:10px 10px 0 0;}
+.compare-table th:nth-child(3){background:linear-gradient(135deg,#1a1a2e,#2d2d44);color:var(--gold);border-radius:10px 10px 0 0;}
+.compare-table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:14px;text-align:center;}
+.compare-table td:first-child{text-align:left;font-weight:500;}
+.compare-table td:nth-child(2){background:rgba(245,242,239,0.5);}
+.compare-table td:nth-child(3){background:rgba(26,26,46,0.04);}
+.compare-table tr:last-child td{border-bottom:none;}
+.check-yes{color:#2e7d32;font-weight:700;}
+.check-no{color:#ccc;}
+
+/* PACKAGES */
+.packages-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:6px;}
+.packages-sub{font-size:14px;color:var(--text-2);margin-bottom:20px;}
+.packages-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+.pkg-card{background:var(--white);border-radius:20px;padding:24px;border:2px solid var(--border);box-shadow:var(--shadow);text-align:center;transition:all .2s;cursor:pointer;position:relative;}
+.pkg-card:hover{border-color:var(--brand-mid);transform:translateY(-4px);}
+.pkg-card.popular{border-color:var(--gold);background:linear-gradient(135deg,#fffbeb,#fef3c7);}
+.pkg-popular-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--gold),#d97706);color:white;font-size:10px;font-weight:700;padding:4px 14px;border-radius:20px;white-space:nowrap;}
+.pkg-days{font-size:13px;font-weight:600;color:var(--text-2);margin-bottom:8px;}
+.pkg-price{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--brand);line-height:1;margin-bottom:4px;}
+.pkg-price-sub{font-size:12px;color:var(--text-2);margin-bottom:16px;}
+.pkg-perday{font-size:11px;color:var(--text-2);margin-bottom:16px;background:var(--bg);padding:4px 10px;border-radius:20px;display:inline-block;}
+.pkg-btn{width:100%;padding:12px 0;border:none;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;transition:.15s;}
+.pkg-card:not(.popular) .pkg-btn{background:var(--brand);color:white;}
+.pkg-card.popular .pkg-btn{background:linear-gradient(135deg,var(--gold),#d97706);color:white;}
+.pkg-btn:hover{opacity:.9;}
+.pkg-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* BENEFITS */
+.benefits-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:28px;}
+.benefit-card{background:var(--white);border-radius:16px;padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.benefit-icon{font-size:28px;margin-bottom:10px;}
+.benefit-title{font-size:15px;font-weight:700;margin-bottom:6px;}
+.benefit-desc{font-size:13px;color:var(--text-2);line-height:1.6;}
+
+/* LOADING */
+.btn-loading{display:inline-flex;align-items:center;gap:8px;}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin .6s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--brand);color:white;padding:13px 28px;border-radius:50px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.2);opacity:0;transition:opacity .3s;pointer-events:none;}
+.toast.show{opacity:1;}
+
+@media(max-width:900px){.packages-grid{grid-template-columns:repeat(2,1fr);}.benefits-grid{grid-template-columns:1fr;}.content{padding:16px 16px 60px;}}
+@media(max-width:560px){.packages-grid{grid-template-columns:1fr;}.t-name{display:none;}}
 </style>
-
 </head>
 <body>
-
-<!-- OVERLAY -->
 
 <div class="overlay" id="overlay"></div>
 
 <!-- SIDEBAR -->
-
 <aside class="sidebar hidden" id="sidebar">
-
   <div class="sidebar-logo">
-
-    <span class="logo-text">
-      MATCHU
-    </span>
-
-    <button
-      class="sidebar-close"
-      id="sidebarClose">
-
-      ✕
-
-    </button>
-
+    <span class="logo-text">MATCHU</span>
+    <button class="sidebar-close" id="sidebarClose">✕</button>
   </div>
-
   <nav class="sidebar-nav">
-
-    <div class="nav-label">
-      Menu Utama
-    </div>
-
-    <a href="dashboard.html" class="nav-item">
-      Dashboard
-    </a>
-
-    <a href="profil.html" class="nav-item">
-      Profil Saya
-    </a>
-
-    <a href="kandidat.html" class="nav-item">
-      Kandidat
-    </a>
-
-    <a href="permintaan-perkenalan.html" class="nav-item">
-      Permintaan Perkenalan
-    </a>
-
-    <a href="chat.html" class="nav-item">
-      Chat
-    </a>
-
-    <a href="notifikasi.html" class="nav-item">
-      Notifikasi
-    </a>
-
-    <div class="nav-label">
-      Akun
-    </div>
-
-    <a href="premium.html"
-       class="nav-item active">
-
-      Premium
-
-    </a>
-
-    <a href="pengaturan.html"
-       class="nav-item">
-
-      Pengaturan
-
-    </a>
-
-    <a href="logout.html"
-       class="nav-item"
-       style="color:#c0392b;">
-
-      Keluar
-
-    </a>
-
+    <div class="nav-label">Menu Utama</div>
+    <a href="dashboard.html" class="nav-item"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><rect x="3" y="3" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/></svg></span>Dashboard</a>
+    <a href="profil.html" class="nav-item"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>Profil Saya</a>
+    <a href="kandidat.html" class="nav-item"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M2 20c0-3.3 3.1-6 7-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="15" r="4" stroke="currentColor" stroke-width="1.8"/></svg></span>Kandidat</a>
+    <a href="permintaan-perkenalan.html" class="nav-item"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg></span>Permintaan Perkenalan</a>
+    <a href="chat.html" class="nav-item"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>Chat</a>
+    <div class="nav-label" style="margin-top:8px">Akun</div>
+    <a href="premium.html" class="nav-item active"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>Premium</a>
+    <a href="pengaturan.html" class="nav-item"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" stroke-width="1.8"/></svg></span>Pengaturan</a>
+    <a href="#" class="nav-item" style="color:#c0392b;" id="logoutBtn"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round"/><polyline points="16,17 21,12 16,7" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="21" y1="12" x2="9" y2="12" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round"/></svg></span>Keluar</a>
   </nav>
-
   <div class="sidebar-footer">
-
     <div class="sidebar-user">
-
-      <div class="s-avatar">
-        A
-      </div>
-
-      <div>
-
-        <div class="s-name">
-          Alif Ramadhan
-        </div>
-
-        <div class="s-role">
-          Member Reguler
-        </div>
-
-      </div>
-
+      <div class="s-avatar" id="sidebarAvatar">?</div>
+      <div><div style="font-size:13px;font-weight:600;" id="sidebarName">Memuat...</div><div style="font-size:11px;color:var(--text-2);" id="sidebarRole">Member</div></div>
     </div>
-
   </div>
-
 </aside>
 
-<!-- MAIN -->
-
-<div class="main">
-
 <!-- TOPBAR -->
-
 <header class="topbar">
-
-  <button
-    class="hamburger"
-    id="hamburger">
-
-    <span></span>
-    <span></span>
-    <span></span>
-
-  </button>
-
-  <span class="topbar-brand">
-    MATCHU
-  </span>
-
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  <span class="topbar-brand">MATCHU</span>
   <div class="topbar-spacer"></div>
-
-  <div class="topbar-right">
-
-    <button
-      class="notif-btn">
-
-      🔔
-
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button class="notif-btn" id="notifBtn">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke-linecap="round"/></svg>
       <span class="notif-dot"></span>
-
     </button>
-
-    <div class="user-pill">
-
-      <div class="t-avatar">
-        A
-      </div>
-
-      <span class="t-name">
-        Alif
-      </span>
-
-    </div>
-
+    <button class="user-pill" onclick="window.location='profil.html'">
+      <div class="t-avatar" id="topbarAvatar">?</div>
+      <span class="t-name" id="topbarName">...</span>
+    </button>
   </div>
-
 </header>
-
-<!-- CONTENT -->
 
 <div class="content">
 
-<!-- PREMIUM HERO -->
-
-<section class="premium-hero">
-
-  <span class="status-badge">
-    AKUN REGULER
-  </span>
-
-  <h1>
-    Upgrade ke Premium Matchu
-  </h1>
-
-  <p>
-    Temukan pasangan yang lebih sesuai dengan akses
-    kandidat lebih banyak, filter pencarian lengkap,
-    dan masa komunikasi yang lebih panjang.
-  </p>
-
-  <button class="upgrade-btn">
-    Upgrade Sekarang
-  </button>
-
-</section>
-
-<!-- COMPARISON -->
-
-<div class="comparison-card">
-
-  <h2>
-    Perbandingan Fitur
-  </h2>
-
-  <table>
-
-    <tr>
-      <th>Fitur</th>
-      <th>Reguler</th>
-      <th>Premium</th>
-    </tr>
-
-    <tr>
-      <td>Kandidat Mingguan</td>
-      <td>3 Kandidat</td>
-      <td>5 Kandidat</td>
-    </tr>
-
-    <tr>
-      <td>Cari Kandidat</td>
-      <td>✕</td>
-      <td>✓</td>
-    </tr>
-
-    <tr>
-      <td>Filter Universitas</td>
-      <td>✕</td>
-      <td>✓</td>
-    </tr>
-
-    <tr>
-      <td>Filter Profesi</td>
-      <td>✕</td>
-      <td>✓</td>
-    </tr>
-
-    <tr>
-      <td>Filter Domisili</td>
-      <td>✕</td>
-      <td>✓</td>
-    </tr>
-
-    <tr>
-      <td>Filter Target Menikah</td>
-      <td>✕</td>
-      <td>✓</td>
-    </tr>
-
-    <tr>
-      <td>Masa Chat</td>
-      <td>2 Hari</td>
-      <td>7 Hari</td>
-    </tr>
-
-  </table>
-
-</div>
-
-<!-- BENEFIT -->
-
-<div class="benefit-grid">
-
-  <div class="benefit-card">
-
-    <h3>
-      🎯 5 Kandidat Per Minggu
-    </h3>
-
-    <p>
-      Mendapatkan lebih banyak rekomendasi kandidat
-      setiap minggu.
-    </p>
-
-  </div>
-
-  <div class="benefit-card">
-
-    <h3>
-      🔍 Cari Kandidat Sendiri
-    </h3>
-
-    <p>
-      Cari kandidat sesuai preferensi
-      tanpa menunggu rekomendasi.
-    </p>
-
-  </div>
-
-  <div class="benefit-card">
-
-    <h3>
-      ⚙️ Filter Lengkap
-    </h3>
-
-    <p>
-      Filter berdasarkan universitas,
-      profesi, usia, dan domisili.
-    </p>
-
-  </div>
-
-  <div class="benefit-card">
-
-    <h3>
-      💬 Chat Lebih Lama
-    </h3>
-
-    <p>
-      Masa komunikasi hingga 7 hari
-      setelah perkenalan diterima.
-    </p>
-
-  </div>
-
-</div>
-
-<!-- PACKAGE -->
-
-<section class="package-section">
-
-<h2 class="package-title">
-Pilih Paket Premium
-</h2>
-
-<div class="package-grid">
-<!-- PAKET 7 HARI -->
-
-<div class="package-card">
-
-  <h3>7 Hari</h3>
-
-  <div class="price">
-    40K
-  </div>
-
-  <div class="price-desc">
-    Rp 40.000
-  </div>
-
-  <button class="package-btn">
-    Pilih Paket
-  </button>
-
-</div>
-
-<!-- PAKET 14 HARI -->
-
-<div class="package-card">
-
-  <h3>14 Hari</h3>
-
-  <div class="price">
-    50K
-  </div>
-
-  <div class="price-desc">
-    Rp 50.000
-  </div>
-
-  <button class="package-btn">
-    Pilih Paket
-  </button>
-
-</div>
-
-<!-- PAKET POPULER -->
-
-<div class="package-card popular">
-
-  <div class="popular-label">
-    PALING POPULER
-  </div>
-
-  <h3>21 Hari</h3>
-
-  <div class="price">
-    60K
-  </div>
-
-  <div class="price-desc">
-    Rp 60.000
-  </div>
-
-  <button class="package-btn">
-    Pilih Paket
-  </button>
-
-</div>
-
-<!-- PAKET 30 HARI -->
-
-<div class="package-card">
-
-  <h3>30 Hari</h3>
-
-  <div class="price">
-    80K
-  </div>
-
-  <div class="price-desc">
-    Rp 80.000
-  </div>
-
-  <button class="package-btn">
-    Pilih Paket
-  </button>
-
-</div>
-
-</div>
-
-</section>
-
-</div>
-
-</div>
-
-<!-- ===================================
-MODAL PEMBAYARAN
-=================================== -->
-
-<div class="modal" id="paymentModal">
-
-  <div class="modal-content">
-
-    <h2>
-      Pembayaran Premium
-    </h2>
-
-    <p>
-      Silakan lakukan pembayaran melalui QRIS.
-    </p>
-
-    <div class="payment-detail">
-
-      <div>
-        <b>Paket:</b>
-        <span id="selectedPackage">
-          21 Hari
-        </span>
-      </div>
-
-      <div>
-        <b>Harga:</b>
-        <span id="selectedPrice">
-          Rp 60.000
-        </span>
-      </div>
-
-      <div>
-        <b>Metode:</b>
-        QRIS
-      </div>
-
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-status reguler" id="heroStatus">✦ AKUN REGULER</div>
+    <h1>Upgrade ke<br>Premium Matchu ⭐</h1>
+    <p>Temukan pasangan yang lebih sesuai dengan akses kandidat lebih banyak, filter pencarian lengkap, dan masa komunikasi yang lebih panjang.</p>
+    <div id="heroBtnWrap">
+      <button class="hero-btn" onclick="scrollToPackages()">Lihat Paket Premium →</button>
     </div>
+  </div>
 
-    <div class="qris-box">
-
-      QRIS DISINI
-
-      <!-- nanti ganti dengan:
-      <img src="images/qris.png"
-           style="width:100%;height:100%;object-fit:contain;">
-      -->
-
+  <!-- CURRENT PLAN (hanya tampil jika premium aktif) -->
+  <div class="current-plan" id="currentPlan">
+    <div class="current-plan-head">
+      <div class="plan-badge">⭐ Premium Aktif</div>
+      <div class="plan-expires" id="planExpires">—</div>
     </div>
+    <div class="plan-bar"><div class="plan-bar-fill" id="planBarFill" style="width:100%"></div></div>
+    <div class="plan-days" id="planDays">—</div>
+  </div>
 
-    <p>
-      Setelah pembayaran berhasil,
-      akun premium akan aktif otomatis.
-    </p>
+  <!-- COMPARISON -->
+  <div class="compare-card">
+    <div class="compare-title">Perbandingan Fitur</div>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Fitur</th>
+          <th>Reguler</th>
+          <th>⭐ Premium</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Kandidat per Periode</td><td>3 per 5 hari</td><td>10 per 5 hari</td></tr>
+        <tr><td>Cari Kandidat Manual</td><td><span class="check-no">✕</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Filter Universitas</td><td><span class="check-no">✕</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Filter Profesi</td><td><span class="check-no">✕</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Filter Domisili</td><td><span class="check-no">✕</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Filter Usia & Agama</td><td><span class="check-no">✕</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Masa Chat</td><td>2 Hari</td><td>7 Hari</td></tr>
+        <tr><td>Badge Premium di Profil</td><td><span class="check-no">✕</span></td><td><span class="check-yes">✓</span></td></tr>
+      </tbody>
+    </table>
+  </div>
 
-    <button
-      class="close-btn"
-      id="closeModal">
+  <!-- PACKAGES -->
+  <div id="packagesSection">
+    <div class="packages-title">Pilih Paket Premium</div>
+    <div class="packages-sub">Semua paket membuka akses penuh fitur Premium. Pembayaran via QRIS (Midtrans).</div>
+    <div class="packages-grid">
+      <div class="pkg-card" data-pkg="7hari" data-price="40000" data-label="Premium 7 Hari">
+        <div class="pkg-days">7 Hari</div>
+        <div class="pkg-price">40K</div>
+        <div class="pkg-price-sub">Rp 40.000</div>
+        <div class="pkg-perday">≈ Rp 5.700/hari</div>
+        <button class="pkg-btn" onclick="buyPackage('7hari',40000,'Premium 7 Hari',this)">Beli Sekarang</button>
+      </div>
+      <div class="pkg-card" data-pkg="14hari" data-price="50000" data-label="Premium 14 Hari">
+        <div class="pkg-days">14 Hari</div>
+        <div class="pkg-price">50K</div>
+        <div class="pkg-price-sub">Rp 50.000</div>
+        <div class="pkg-perday">≈ Rp 3.600/hari</div>
+        <button class="pkg-btn" onclick="buyPackage('14hari',50000,'Premium 14 Hari',this)">Beli Sekarang</button>
+      </div>
+      <div class="pkg-card popular" data-pkg="21hari" data-price="60000" data-label="Premium 21 Hari">
+        <div class="pkg-popular-badge">PALING POPULER</div>
+        <div class="pkg-days">21 Hari</div>
+        <div class="pkg-price">60K</div>
+        <div class="pkg-price-sub">Rp 60.000</div>
+        <div class="pkg-perday">≈ Rp 2.900/hari</div>
+        <button class="pkg-btn" onclick="buyPackage('21hari',60000,'Premium 21 Hari',this)">Beli Sekarang</button>
+      </div>
+      <div class="pkg-card" data-pkg="30hari" data-price="80000" data-label="Premium 30 Hari">
+        <div class="pkg-days">30 Hari</div>
+        <div class="pkg-price">80K</div>
+        <div class="pkg-price-sub">Rp 80.000</div>
+        <div class="pkg-perday">≈ Rp 2.700/hari</div>
+        <button class="pkg-btn" onclick="buyPackage('30hari',80000,'Premium 30 Hari',this)">Beli Sekarang</button>
+      </div>
+    </div>
+  </div>
 
-      Tutup
+  <!-- BENEFITS -->
+  <div class="benefits-grid">
+    <div class="benefit-card"><div class="benefit-icon">🎯</div><div class="benefit-title">10 Kandidat Per Periode</div><div class="benefit-desc">Dapatkan lebih banyak rekomendasi kandidat setiap 5 hari dari berbagai kota dan latar belakang.</div></div>
+    <div class="benefit-card"><div class="benefit-icon">🔍</div><div class="benefit-title">Cari Kandidat Sendiri</div><div class="benefit-desc">Cari kandidat sesuai preferensi spesifik tanpa menunggu rekomendasi otomatis.</div></div>
+    <div class="benefit-card"><div class="benefit-icon">⚙️</div><div class="benefit-title">Filter Lengkap</div><div class="benefit-desc">Filter berdasarkan universitas, profesi, usia, domisili, dan agama untuk menemukan yang paling cocok.</div></div>
+    <div class="benefit-card"><div class="benefit-icon">💬</div><div class="benefit-title">Chat Lebih Lama</div><div class="benefit-desc">Masa komunikasi hingga 7 hari setelah perkenalan diterima, cukup waktu untuk saling mengenal.</div></div>
+  </div>
 
-    </button>
-
+  <div style="text-align:center;font-size:13px;color:var(--text-2);padding:20px;">
+    🔒 Pembayaran aman via Midtrans · QRIS · Bank Transfer · GoPay · OVO<br>
+    <span style="font-size:12px;margin-top:6px;display:block;">Akses premium aktif otomatis setelah pembayaran berhasil.</span>
   </div>
 
 </div>
+
+<div class="toast" id="toast"></div>
+
 <script>
+const userId = localStorage.getItem('matchu_user_id');
+if (!userId) { window.location.href = 'login.html'; }
 
-/* =========================
-SIDEBAR
-========================= */
+// ── LOAD STATUS PREMIUM ───────────────────────────────────
+async function loadPremiumStatus() {
+  try {
+    const res = await fetch(`/api/check-premium?userId=${userId}`);
+    const data = await res.json();
 
-const sidebar =
-document.getElementById("sidebar");
+    if (data.is_premium) {
+      // Update hero
+      document.getElementById('heroStatus').className = 'hero-status premium';
+      document.getElementById('heroStatus').textContent = '⭐ PREMIUM AKTIF';
+      document.getElementById('heroBtnWrap').innerHTML = '<div class="hero-active-info">✓ Kamu sudah menikmati akses Premium penuh</div>';
 
-const overlay =
-document.getElementById("overlay");
+      // Show current plan
+      const plan = document.getElementById('currentPlan');
+      plan.classList.add('show');
 
-const hamburger =
-document.getElementById("hamburger");
+      const exp = new Date(data.expires_at);
+      const now = new Date();
+      const daysLeft = Math.ceil((exp - now) / (1000 * 60 * 60 * 24));
+      const totalDays = { '7hari': 7, '14hari': 14, '21hari': 21, '30hari': 30 }[data.package] || 30;
+      const pct = Math.max(0, Math.min(100, (daysLeft / totalDays) * 100));
 
-const sidebarClose =
-document.getElementById("sidebarClose");
+      document.getElementById('planExpires').textContent = `Berlaku hingga ${exp.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+      document.getElementById('planBarFill').style.width = pct + '%';
+      document.getElementById('planDays').textContent = `${daysLeft} hari tersisa`;
+    }
 
-function openSidebar(){
+    // Load user info
+    await loadUserInfo();
 
-  sidebar.classList.remove("hidden");
-
-  overlay.classList.add("active");
-
+  } catch(e) { console.error(e); }
 }
 
-function closeSidebar(){
-
-  sidebar.classList.add("hidden");
-
-  overlay.classList.remove("active");
-
+async function loadUserInfo() {
+  try {
+    const res = await fetch(`/api/get-profile?userId=${userId}`);
+    const data = await res.json();
+    if (!data.success) return;
+    const p = data.profile;
+    const inisial = (p.nama_panggilan || p.nama || '?')[0].toUpperCase();
+    const setA = (id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (p.foto_url_1) el.innerHTML = `<img src="${p.foto_url_1}" alt="">`;
+      else el.textContent = inisial;
+    };
+    setA('topbarAvatar'); setA('sidebarAvatar');
+    document.getElementById('topbarName').textContent = p.nama_panggilan || p.nama || '—';
+    document.getElementById('sidebarName').textContent = p.nama_panggilan || p.nama || '—';
+  } catch(e) {}
 }
 
-hamburger.addEventListener("click",()=>{
+// ── BELI PAKET ────────────────────────────────────────────
+async function buyPackage(pkg, price, label, btn) {
+  btn.disabled = true;
+  btn.innerHTML = '<div class="btn-loading"><div class="spinner"></div>Memproses...</div>';
 
-  if(sidebar.classList.contains("hidden")){
+  try {
+    const res = await fetch('/api/create-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, package: pkg }),
+    });
+    const data = await res.json();
 
-    openSidebar();
+    if (!data.success || !data.snap_token) {
+      showToast('Gagal membuat pembayaran. ' + (data.error || ''));
+      btn.disabled = false; btn.textContent = 'Beli Sekarang';
+      return;
+    }
 
-  }else{
+    // ── Buka Midtrans Snap popup ───────────────────────────
+    window.snap.pay(data.snap_token, {
+      onSuccess: async (result) => {
+        showToast('✓ Pembayaran berhasil! Premium aktif sekarang.');
+        await loadPremiumStatus();
+        btn.disabled = false; btn.textContent = 'Beli Sekarang';
+      },
+      onPending: (result) => {
+        showToast('Pembayaran pending. Premium akan aktif setelah konfirmasi.');
+        btn.disabled = false; btn.textContent = 'Beli Sekarang';
+      },
+      onError: (result) => {
+        showToast('Pembayaran gagal. Silakan coba lagi.');
+        btn.disabled = false; btn.textContent = 'Beli Sekarang';
+      },
+      onClose: () => {
+        btn.disabled = false; btn.textContent = 'Beli Sekarang';
+      },
+    });
 
-    closeSidebar();
-
+  } catch(e) {
+    console.error('buyPackage:', e);
+    showToast('Gagal terhubung ke server.');
+    btn.disabled = false; btn.textContent = 'Beli Sekarang';
   }
+}
 
-});
+function scrollToPackages() { document.getElementById('packagesSection').scrollIntoView({ behavior: 'smooth' }); }
 
-sidebarClose.addEventListener(
-"click",
-closeSidebar
-);
+// ── TOAST ─────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
 
-overlay.addEventListener(
-"click",
-closeSidebar
-);
+// ── SIDEBAR ───────────────────────────────────────────────
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+document.getElementById('hamburger').addEventListener('click', () => { sidebar.classList.toggle('hidden'); overlay.classList.toggle('active'); });
+document.getElementById('sidebarClose').addEventListener('click', () => { sidebar.classList.add('hidden'); overlay.classList.remove('active'); });
+overlay.addEventListener('click', () => { sidebar.classList.add('hidden'); overlay.classList.remove('active'); });
+document.getElementById('logoutBtn').addEventListener('click', e => { e.preventDefault(); if (confirm('Yakin ingin keluar?')) { localStorage.clear(); window.location.href = 'login.html'; } });
 
-/* =========================
-MODAL PREMIUM
-========================= */
+// ── CEK STATUS DARI URL (setelah redirect payment) ────────
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('status') === 'success') {
+  showToast('✓ Pembayaran berhasil! Premium kamu sudah aktif.');
+  history.replaceState({}, '', 'premium.html');
+}
 
-const modal =
-document.getElementById("paymentModal");
-
-const closeModal =
-document.getElementById("closeModal");
-
-const packageButtons =
-document.querySelectorAll(".package-btn");
-
-const selectedPackage =
-document.getElementById("selectedPackage");
-
-const selectedPrice =
-document.getElementById("selectedPrice");
-
-packageButtons.forEach(btn=>{
-
-  btn.addEventListener("click",()=>{
-
-    const card =
-    btn.closest(".package-card");
-
-    selectedPackage.innerText =
-    card.querySelector("h3").innerText;
-
-    selectedPrice.innerText =
-    card.querySelector(".price-desc").innerText;
-
-    modal.classList.add("show");
-
-  });
-
-});
-
-closeModal.addEventListener("click",()=>{
-
-  modal.classList.remove("show");
-
-});
-
-window.addEventListener("click",(e)=>{
-
-  if(e.target === modal){
-
-    modal.classList.remove("show");
-
-  }
-
-});
-
-/* =========================
-SCROLL TO PACKAGE
-========================= */
-
-document
-.querySelector(".upgrade-btn")
-.addEventListener("click",()=>{
-
-  document
-  .querySelector(".package-section")
-  .scrollIntoView({
-
-    behavior:"smooth"
-
-  });
-
-});
-
+loadPremiumStatus();
 </script>
-
 </body>
 </html>
