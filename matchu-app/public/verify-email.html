@@ -73,7 +73,7 @@ body{ font-family:'Inter',sans-serif; background:var(--bg); min-height:100vh; di
 </div>
 
 <script>
-// ── Ambil data sesi ───────────────────────────────────────────
+// Ambil data sesi dari localStorage
 const userData = JSON.parse(localStorage.getItem('matchu_user') || '{}');
 const email = userData.email || '';
 
@@ -84,11 +84,10 @@ if (!email) {
 
 document.getElementById('email-display').textContent = email;
 
-// ── Input OTP ─────────────────────────────────────────────────
+// OTP Input
 const inputs = document.querySelectorAll('.otp');
-
 inputs.forEach((input, idx) => {
-  input.addEventListener('input', function () {
+  input.addEventListener('input', function() {
     this.value = this.value.replace(/[^0-9]/g, '');
     if (this.value) {
       this.classList.add('filled');
@@ -98,29 +97,24 @@ inputs.forEach((input, idx) => {
     }
     document.getElementById('otp-err').textContent = '';
   });
-
-  input.addEventListener('keydown', function (e) {
+  input.addEventListener('keydown', function(e) {
     if (e.key === 'Backspace' && !this.value && idx > 0) {
       inputs[idx - 1].focus();
       inputs[idx - 1].value = '';
       inputs[idx - 1].classList.remove('filled');
     }
   });
-
-  input.addEventListener('paste', function (e) {
+  input.addEventListener('paste', function(e) {
     e.preventDefault();
-    const p = (e.clipboardData || window.clipboardData)
-      .getData('text').replace(/[^0-9]/g, '');
+    const p = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
     [...p].slice(0, 6).forEach((ch, i) => {
       if (inputs[i]) { inputs[i].value = ch; inputs[i].classList.add('filled'); }
     });
     inputs[Math.min(p.length, 5)].focus();
   });
 });
-
 inputs[0].focus();
 
-// ── Verifikasi OTP ────────────────────────────────────────────
 async function verifyOTP() {
   const otp = [...inputs].map(i => i.value).join('');
   if (otp.length < 6) {
@@ -133,16 +127,16 @@ async function verifyOTP() {
   btn.textContent = 'Memverifikasi...';
 
   try {
-    const res = await fetch('/api/verify-otp', {
+    // STEP 1: Verifikasi OTP
+    const res1 = await fetch('/api/verify-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, otp }),
     });
+    const d1 = await res1.json();
 
-    const data = await res.json();
-
-    if (!data.success) {
-      document.getElementById('otp-err').textContent = data.message || 'OTP tidak valid.';
+    if (!d1.success) {
+      document.getElementById('otp-err').textContent = d1.message || 'OTP tidak valid.';
       inputs.forEach(i => { i.value = ''; i.classList.remove('filled'); });
       inputs[0].focus();
       btn.disabled = false;
@@ -150,25 +144,52 @@ async function verifyOTP() {
       return;
     }
 
-      const existing = JSON.parse(localStorage.getItem('matchu_user') || '{}');
+    // STEP 2: OTP valid → simpan user ke Supabase via /api/register
+    btn.textContent = 'Menyimpan data...';
+    const res2 = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nama: userData.nama || userData.nama_lengkap || '',
+        nama_panggilan: userData.nama_panggilan || '',
+        email: userData.email,
+        tanggal_lahir: userData.tanggal_lahir || null,
+        jenis_kelamin: userData.jenis_kelamin || null,
+      }),
+    });
+    const d2 = await res2.json();
+
+    if (!d2.success) {
+      // Kalau email sudah terdaftar, ambil userId yang ada
+      if (d2.error && d2.error.includes('sudah terdaftar') && d2.userId) {
+        localStorage.setItem('matchu_user', JSON.stringify({ ...userData, userId: d2.userId }));
+        window.location.href = 'register-step2.html';
+        return;
+      }
+      document.getElementById('otp-err').textContent = d2.error || 'Gagal menyimpan data.';
+      btn.disabled = false;
+      btn.textContent = 'Verifikasi Email';
+      return;
+    }
+
+    // STEP 3: Simpan userId ke localStorage, jaga data lain tetap ada
     localStorage.setItem('matchu_user', JSON.stringify({
-      ...existing,
-      userId: data.userId
+      ...userData,
+      userId: d2.userId,
     }));
 
-    // Lanjut ke step 2
+    // Lanjut ke step 2 (verifikasi pendidikan)
     window.location.href = 'register-step2.html';
 
-  } catch {
+  } catch (err) {
     document.getElementById('otp-err').textContent = 'Gagal terhubung ke server. Coba lagi.';
     btn.disabled = false;
     btn.textContent = 'Verifikasi Email';
   }
 }
 
-// ── Countdown & kirim ulang ───────────────────────────────────
+// Countdown
 let cdInterval;
-
 function startCountdown() {
   let s = 60;
   document.getElementById('timer-wrap').style.display = 'inline';
@@ -185,7 +206,6 @@ function startCountdown() {
     }
   }, 1000);
 }
-
 startCountdown();
 
 async function resendOTP() {
@@ -194,15 +214,7 @@ async function resendOTP() {
     const res = await fetch('/api/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      // Kirim ulang semua data dari localStorage
-      body: JSON.stringify({
-        nama:           userData.nama,
-        nama_panggilan: userData.nama_panggilan,
-        email:          userData.email,
-        password:       userData.password,
-        tanggal_lahir:  userData.tanggal_lahir,
-        jenis_kelamin:  userData.jenis_kelamin,
-      }),
+      body: JSON.stringify({ email }),
     });
     const data = await res.json();
     if (data.success) {
