@@ -7,190 +7,438 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{ --primary:#7A2236; --bg:#F8F5F2; --text:#222; --muted:#6b7280; --border:#ddd; }
+:root{ --primary:#7A2236; --bg:#F8F5F2; --text:#222; --muted:#6b7280; --border:#ddd; --green:#1ea672; }
 *{ margin:0; padding:0; box-sizing:border-box; }
 body{ background:var(--bg); font-family:'Inter',sans-serif; color:var(--text); }
-.container{ max-width:600px; margin:0 auto; padding:40px 20px 80px; }
-.card{ background:white; padding:48px; border-radius:28px; box-shadow:0 20px 40px rgba(0,0,0,.05); }
+.container{ max-width:620px; margin:0 auto; padding:36px 20px 80px; }
+.card{ background:white; padding:44px; border-radius:28px; box-shadow:0 20px 40px rgba(0,0,0,.05); }
+
+/* Header */
 .logo{ text-align:center; font-family:'Playfair Display',serif; font-size:50px; color:var(--primary); margin-bottom:6px; }
-.tagline{ text-align:center; color:var(--primary); font-style:italic; font-size:13px; margin-bottom:28px; }
-.title{ font-family:'Playfair Display',serif; font-size:26px; margin-bottom:8px; }
-.desc{ color:var(--muted); font-size:14px; line-height:1.7; margin-bottom:24px; }
+.tagline{ text-align:center; color:var(--primary); font-style:italic; font-size:13px; margin-bottom:24px; }
+.step-label{ text-align:center; color:var(--primary); font-weight:600; font-size:12px; margin-bottom:8px; }
+.progress-bar{ width:100%; height:6px; background:#eee; border-radius:20px; margin-bottom:32px; overflow:hidden; }
+.progress-fill{ width:50%; height:100%; background:var(--primary); border-radius:20px; }
 
-.badge-preview{ display:flex; align-items:center; gap:12px; background:#f0faf5; border:1.5px solid #1ea672; border-radius:14px; padding:16px 18px; margin-bottom:24px; }
-.badge-icon{ font-size:32px; }
-.badge-text .title2{ font-weight:700; color:#1ea672; font-size:15px; }
-.badge-text .sub{ font-size:13px; color:#555; margin-top:2px; }
+/* Trust score banner */
+.trust-banner{
+  background:linear-gradient(135deg,#7A2236 0%,#a83254 100%);
+  border-radius:16px; padding:20px 22px; margin-bottom:24px; color:white;
+}
+.trust-banner-title{ font-size:13px; font-weight:600; opacity:.85; margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em; }
+.trust-items{ display:flex; gap:8px; flex-wrap:wrap; }
+.trust-item{
+  background:rgba(255,255,255,.15); border-radius:8px;
+  padding:7px 12px; font-size:12px; font-weight:600;
+  display:flex; align-items:center; gap:5px;
+}
+.trust-item.done{ background:rgba(30,166,114,.35); }
+.trust-item.active{ background:rgba(255,255,255,.3); border:1.5px solid white; }
 
-.steps-box{ background:#f9f4f5; border-radius:14px; padding:18px 20px; margin-bottom:24px; }
-.steps-title{ font-weight:700; color:var(--primary); font-size:14px; margin-bottom:12px; }
-.step-item{ display:flex; gap:10px; align-items:flex-start; margin-bottom:12px; font-size:13px; color:#444; line-height:1.6; }
+/* Badge box */
+.badge-box{
+  display:flex; align-items:center; gap:14px;
+  background:#f0faf5; border:2px solid var(--green);
+  border-radius:16px; padding:18px 20px; margin-bottom:20px;
+}
+.badge-icon{ font-size:36px; flex-shrink:0; }
+.badge-title{ font-weight:700; color:var(--green); font-size:15px; margin-bottom:4px; }
+.badge-pts{ display:inline-block; background:var(--green); color:white; border-radius:20px; padding:2px 10px; font-size:11px; font-weight:700; margin-left:6px; }
+.badge-sub{ font-size:13px; color:#555; line-height:1.5; }
+
+/* Steps */
+.steps-box{ background:#f9f4f5; border-radius:14px; padding:16px 18px; margin-bottom:20px; }
+.steps-title{ font-weight:700; color:var(--primary); font-size:13px; margin-bottom:12px; }
+.step-item{ display:flex; gap:10px; align-items:flex-start; margin-bottom:10px; font-size:13px; color:#444; line-height:1.6; }
 .step-item:last-child{ margin-bottom:0; }
-.step-num{ background:var(--primary); color:white; border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; margin-top:1px; }
-.step-item a{ color:var(--primary); font-weight:600; }
+.step-num{ background:var(--primary); color:white; border-radius:50%; width:22px; height:22px; min-width:22px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; margin-top:1px; }
+.step-item a{ color:var(--primary); font-weight:600; text-decoration:none; }
+.step-item a:hover{ text-decoration:underline; }
 
-.form-group{ margin-bottom:16px; }
-label{ display:block; margin-bottom:6px; font-weight:600; font-size:14px; }
-input, select{ width:100%; padding:11px 13px; border:1.5px solid var(--border); border-radius:10px; font-size:14px; font-family:'Inter',sans-serif; transition:.2s; }
+.note-box{ background:#fff8e1; border-left:3px solid #f59e0b; border-radius:8px; padding:12px 14px; font-size:13px; color:#555; line-height:1.6; margin-bottom:24px; }
+
+/* Section */
+.section-label{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--primary); margin:22px 0 12px; padding-bottom:6px; border-bottom:1px solid #f0e8ea; }
+
+/* Form */
+.form-group{ margin-bottom:14px; }
+label{ display:block; margin-bottom:5px; font-weight:600; font-size:13px; }
+.req{ color:#e53e3e; margin-left:2px; }
+input, select{ width:100%; padding:11px 13px; border:1.5px solid var(--border); border-radius:10px; font-size:14px; font-family:'Inter',sans-serif; color:var(--text); transition:.2s; background:white; }
 input:focus, select:focus{ outline:none; border-color:var(--primary); }
-.hint{ font-size:12px; color:var(--muted); margin-top:4px; }
+.hint{ font-size:12px; color:var(--muted); margin-top:4px; line-height:1.5; }
+.err{ color:#e53e3e; font-size:12px; margin-top:4px; display:none; }
+.row-2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 
-.upload-area{ border:2px dashed var(--border); border-radius:14px; padding:32px 20px; text-align:center; cursor:pointer; transition:.2s; background:#fafafa; }
+/* Autocomplete */
+.ac-wrap{ position:relative; }
+.ac-dd{ position:absolute; top:100%; left:0; right:0; z-index:300; background:white; border:1.5px solid var(--primary); border-top:none; border-radius:0 0 10px 10px; max-height:210px; overflow-y:auto; box-shadow:0 8px 24px rgba(0,0,0,.12); display:none; }
+.ac-dd.show{ display:block; }
+.ac-item{ padding:10px 13px; font-size:13px; cursor:pointer; border-bottom:1px solid #f5f5f5; line-height:1.4; }
+.ac-item:last-child{ border-bottom:none; }
+.ac-item:hover{ background:#f9f4f5; color:var(--primary); }
+.ac-item .m{ font-weight:700; color:var(--primary); }
+.ac-msg{ padding:10px 13px; font-size:13px; color:var(--muted); text-align:center; }
+.pill{ display:none; margin-top:6px; padding:6px 12px; background:#f0faf5; border:1px solid var(--green); border-radius:8px; font-size:12px; color:var(--green); font-weight:600; }
+.pill.show{ display:flex; align-items:center; gap:6px; }
+.btn-manual{ display:none; margin-top:5px; background:none; border:1.5px dashed var(--primary); color:var(--primary); padding:6px 12px; border-radius:7px; font-size:12px; cursor:pointer; font-family:'Inter',sans-serif; width:100%; text-align:left; }
+.btn-manual.show{ display:block; }
+
+/* Upload area */
+.upload-area{
+  border:2px dashed var(--border); border-radius:14px;
+  padding:28px 20px; text-align:center; cursor:pointer;
+  transition:.2s; background:#fafafa; position:relative;
+}
 .upload-area:hover{ border-color:var(--primary); background:#f9f4f5; }
-.upload-area.has-file{ border-color:var(--primary); border-style:solid; background:#f9f4f5; }
-.upload-icon{ font-size:36px; margin-bottom:8px; }
+.upload-area.has-file{ border-style:solid; border-color:var(--green); background:#f0faf5; }
+.upload-icon{ font-size:32px; margin-bottom:8px; }
 .upload-text{ font-size:14px; font-weight:600; color:var(--text); }
 .upload-sub{ font-size:12px; color:var(--muted); margin-top:4px; }
-.upload-preview{ max-width:100%; border-radius:10px; margin-top:12px; max-height:300px; object-fit:contain; display:none; }
+.preview-img{ max-width:100%; border-radius:10px; margin-top:14px; max-height:280px; object-fit:contain; display:none; border:1px solid #eee; }
+.upload-success{ display:none; align-items:center; gap:8px; background:#f0faf5; border-radius:8px; padding:8px 12px; margin-top:10px; font-size:13px; color:var(--green); font-weight:600; }
+.upload-success.show{ display:flex; }
 
-.info-note{ background:#fff8e1; border-left:3px solid #f59e0b; border-radius:8px; padding:12px 14px; font-size:13px; color:#555; line-height:1.6; margin-bottom:20px; }
-
-.btn{ width:100%; background:var(--primary); color:white; border:none; padding:14px; border-radius:12px; cursor:pointer; font-size:15px; font-weight:600; font-family:'Inter',sans-serif; transition:.2s; margin-top:8px; }
+/* Buttons */
+.btn{ width:100%; margin-top:20px; background:var(--primary); color:white; border:none; padding:15px; border-radius:13px; cursor:pointer; font-size:15px; font-weight:600; font-family:'Inter',sans-serif; transition:.2s; }
 .btn:hover{ opacity:.9; }
 .btn:disabled{ opacity:.6; cursor:not-allowed; }
-.btn-secondary{ background:white; color:var(--primary); border:2px solid var(--primary); margin-top:10px; }
-.err{ color:#e53e3e; font-size:12px; margin-top:4px; display:none; }
+.back-link{ text-align:center; margin-top:12px; font-size:13px; color:var(--muted); }
+.back-link a{ color:var(--primary); text-decoration:none; font-weight:600; }
 
-@media(max-width:480px){
+@media(max-width:560px){
   .container{ padding:16px 14px 60px; }
-  .card{ padding:24px 16px; border-radius:18px; }
+  .card{ padding:24px 16px; border-radius:20px; }
+  .logo{ font-size:38px; }
+  .row-2{ grid-template-columns:1fr; gap:0; }
+  .trust-items{ gap:6px; }
+  .trust-item{ font-size:11px; padding:5px 10px; }
 }
 </style>
 </head>
 <body>
 <div class="container">
 <div class="card">
+
   <div class="logo">MATCHU</div>
   <div class="tagline">Beyond Matching. Toward Marriage.</div>
+  <div class="step-label">LANGKAH 2 DARI 4 — Verifikasi Pendidikan</div>
+  <div class="progress-bar"><div class="progress-fill"></div></div>
 
-  <div class="title">Verifikasi Pendidikan</div>
-  <div class="desc">Dapatkan badge <strong>Alumni Terverifikasi</strong> dan tambahan Trust Score +30 dengan memverifikasi data pendidikanmu melalui PDDikti.</div>
-
-  <div class="badge-preview">
-    <div class="badge-icon">🎓</div>
-    <div class="badge-text">
-      <div class="title2">Alumni Terverifikasi</div>
-      <div class="sub">Badge ini ditampilkan di profilmu dan meningkatkan kepercayaan kandidat</div>
+  <!-- Trust Score Banner -->
+  <div class="trust-banner">
+    <div class="trust-banner-title">Cara Mendapatkan Trust Score 100/100</div>
+    <div class="trust-items">
+      <div class="trust-item done">✓ Email OTP +20</div>
+      <div class="trust-item active">🎓 Pendidikan +30</div>
+      <div class="trust-item">Profil Lengkap +30</div>
+      <div class="trust-item">Instagram +10</div>
+      <div class="trust-item">2 Foto +10</div>
     </div>
   </div>
 
+  <!-- Badge Preview -->
+  <div class="badge-box">
+    <div class="badge-icon">🎓</div>
+    <div>
+      <div class="badge-title">Badge Alumni Terverifikasi <span class="badge-pts">+30 poin</span></div>
+      <div class="badge-sub">Ditampilkan di profilmu dan meningkatkan kepercayaan kandidat. Lengkapi sekarang untuk mendapatkan keunggulan lebih!</div>
+    </div>
+  </div>
+
+  <!-- Steps -->
   <div class="steps-box">
-    <div class="steps-title">Cara Verifikasi (Hanya 3 Langkah)</div>
+    <div class="steps-title">Cara Verifikasi — 3 Langkah Mudah</div>
     <div class="step-item">
       <div class="step-num">1</div>
-      <div>Buka <a href="https://pddikti.kemdiktisaintek.go.id" target="_blank">pddikti.kemdiktisaintek.go.id</a> di browser kamu</div>
+      <div>Buka <a href="https://pddikti.kemdiktisaintek.go.id" target="_blank">pddikti.kemdiktisaintek.go.id</a> → cari namamu</div>
     </div>
     <div class="step-item">
       <div class="step-num">2</div>
-      <div>Cari namamu → pastikan nama, kampus, dan jurusan sesuai → ambil screenshot halaman tersebut</div>
+      <div>Pastikan nama, kampus, dan jurusan sesuai → screenshot halaman tersebut</div>
     </div>
     <div class="step-item">
       <div class="step-num">3</div>
-      <div>Upload screenshot di bawah ini. Tim kami akan memverifikasi dalam 1x24 jam</div>
+      <div>Isi form di bawah dan upload screenshot — tim kami verifikasi dalam 1×24 jam</div>
     </div>
   </div>
 
-  <div class="info-note">
-    Matchu hanya meminta screenshot PDDikti — bukan KTP, ijazah, atau dokumen pribadi lainnya. Data kamu aman.
-  </div>
+  <div class="note-box">Matchu hanya meminta screenshot PDDikti — bukan KTP, ijazah, atau dokumen pribadi lainnya. Data kamu aman dan tidak dibagikan ke pihak manapun.</div>
+
+  <!-- Data Pendidikan -->
+  <div class="section-label">Data Pendidikan</div>
 
   <div class="form-group">
-    <label>Nama Kampus yang Diklaim</label>
-    <input type="text" id="kampus-klaim" placeholder="Sesuai yang tertera di PDDikti" required>
-  </div>
-
-  <div class="form-group">
-    <label>Jurusan yang Diklaim</label>
-    <input type="text" id="jurusan-klaim" placeholder="Sesuai yang tertera di PDDikti" required>
-  </div>
-
-  <div class="form-group">
-    <label>Screenshot PDDikti</label>
-    <div class="upload-area" id="upload-area" onclick="document.getElementById('screenshot-input').click()">
-      <input type="file" id="screenshot-input" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="previewScreenshot(this)">
-      <div class="upload-icon" id="upload-icon">📸</div>
-      <div class="upload-text" id="upload-text">Klik untuk upload screenshot</div>
-      <div class="upload-sub" id="upload-sub">JPG / PNG / WebP, maks. 5MB</div>
-      <img id="screenshot-preview" class="upload-preview">
+    <label>Kampus / Universitas <span class="req">*</span></label>
+    <div class="ac-wrap">
+      <input type="text" id="kampus-input" placeholder="Ketik nama kampus..." autocomplete="off"
+        oninput="searchKampus(this.value)" onfocus="if(this.value.length>=2)searchKampus(this.value)">
+      <div class="ac-dd" id="kampus-dd"></div>
     </div>
-    <div class="err" id="screenshot-err">Upload screenshot PDDikti terlebih dahulu.</div>
+    <div class="pill" id="kampus-pill">✓ <span id="kampus-pill-text"></span></div>
+    <button type="button" class="btn-manual" id="kampus-manual-btn" onclick="manualKampus()">+ Tidak ada di daftar? Tambah manual</button>
+    <div class="err" id="kampus-err">Masukkan nama kampus.</div>
+    <div class="hint">Ketik minimal 2 huruf untuk mencari dari database PDDikti</div>
   </div>
 
-  <button class="btn" id="btn-submit" onclick="submitVerification()">Kirim untuk Diverifikasi</button>
-  <button class="btn btn-secondary" onclick="window.location.href='register-step2.html'">Kembali</button>
+  <div class="row-2">
+    <div class="form-group">
+      <label>Jurusan / Prodi <span class="req">*</span></label>
+      <div class="ac-wrap">
+        <input type="text" id="jurusan-input" placeholder="Ketik jurusan..." autocomplete="off"
+          oninput="searchJurusan(this.value)" onfocus="if(this.value.length>=2)searchJurusan(this.value)">
+        <div class="ac-dd" id="jurusan-dd"></div>
+      </div>
+      <div class="pill" id="jurusan-pill">✓ <span id="jurusan-pill-text"></span></div>
+      <button type="button" class="btn-manual" id="jurusan-manual-btn" onclick="manualJurusan()">+ Tambah manual</button>
+      <div class="err" id="jurusan-err">Masukkan jurusan.</div>
+    </div>
+    <div class="form-group">
+      <label>Jenjang <span class="req">*</span></label>
+      <select id="jenjang">
+        <option value="">Pilih jenjang</option>
+        <option>D3</option><option>D4</option><option>S1</option>
+        <option>S2</option><option>S3</option><option>Diploma Kedinasan</option>
+      </select>
+      <div class="err" id="jenjang-err">Pilih jenjang.</div>
+    </div>
+  </div>
+
+  <!-- Upload Screenshot -->
+  <div class="section-label">Screenshot PDDikti <span class="req">*</span></div>
+
+  <div class="upload-area" id="upload-area" onclick="document.getElementById('ss-input').click()">
+    <input type="file" id="ss-input" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleUpload(this)">
+    <div class="upload-icon" id="upload-icon">📸</div>
+    <div class="upload-text" id="upload-text">Klik untuk upload screenshot PDDikti</div>
+    <div class="upload-sub" id="upload-sub">JPG / PNG / WebP — Maks. 5MB</div>
+    <img id="ss-preview" class="preview-img">
+  </div>
+  <div class="upload-success" id="upload-success">✓ Screenshot berhasil diupload</div>
+  <div class="err" id="ss-err">Upload screenshot PDDikti terlebih dahulu.</div>
+
+  <button class="btn" id="btn-next" onclick="submitStep()">Lanjutkan ke Profil</button>
+  <div class="back-link"><a href="verify-email.html">Kembali</a></div>
+
 </div>
 </div>
 
 <script>
-const id = localStorage.getItem('matchu_user_id');
-if (!id) {
-  alert('Sesi tidak ditemukan. Silakan daftar ulang.');
-  window.location.href = 'register.html';
+// Cek sesi
+const userData = JSON.parse(localStorage.getItem('matchu_user') || '{}');
+if (!userData.email) { alert('Sesi tidak ditemukan.'); window.location.href = 'register.html'; }
+
+const PDDIKTI = 'https://pddikti.kemdiktisaintek.go.id/api';
+let kampusTimeout, jurusanTimeout;
+let ssBase64 = null;
+
+// ── KAMPUS ──
+async function searchKampus(q) {
+  const dd = document.getElementById('kampus-dd');
+  if (q.length < 2) { dd.className = 'ac-dd'; return; }
+  dd.className = 'ac-dd show';
+  dd.innerHTML = '<div class="ac-msg">Mencari di PDDikti...</div>';
+  clearTimeout(kampusTimeout);
+  kampusTimeout = setTimeout(async () => {
+    try {
+      const r = await fetch(`${PDDIKTI}/pt/search/${encodeURIComponent(q)}`, { signal: AbortSignal.timeout(4000) });
+      const j = await r.json();
+      const raw = j.data || j.pt || [];
+      if (raw.length > 0) {
+        renderAc('kampus-dd', raw.slice(0,12).map(i => ({ label: i.nama||i.nama_pt||String(i), val: i.id||'' })), q, pilihKampus);
+        return;
+      }
+    } catch {}
+    kampusFallback(q);
+  }, 350);
 }
 
-let screenshotBase64 = null;
+function kampusFallback(q) {
+  const list = [
+    'Institut Pertanian Bogor (IPB University)','Universitas Indonesia','Universitas Gadjah Mada',
+    'Institut Teknologi Bandung','Institut Teknologi Sepuluh Nopember','Universitas Airlangga',
+    'Universitas Diponegoro','Universitas Brawijaya','Universitas Padjadjaran',
+    'Universitas Hasanuddin','Universitas Sumatera Utara','Universitas Sebelas Maret',
+    'Universitas Pendidikan Indonesia','Universitas Andalas','Universitas Sriwijaya',
+    'Universitas Udayana','Universitas Riau','Universitas Syiah Kuala',
+    'Universitas Negeri Yogyakarta','Universitas Negeri Malang','Universitas Negeri Jakarta',
+    'Universitas Negeri Semarang','Universitas Negeri Surabaya','Universitas Negeri Makassar',
+    'BINUS University','Universitas Pelita Harapan','Universitas Trisakti',
+    'Universitas Tarumanagara','Universitas Gunadarma','Universitas Telkom',
+    'Universitas Mercu Buana','President University','Universitas Islam Indonesia',
+    'Universitas Muhammadiyah Yogyakarta','Universitas Muhammadiyah Malang',
+    'Universitas Ahmad Dahlan','Universitas Kristen Satya Wacana','Universitas Sanata Dharma',
+    'Universitas Islam Negeri Syarif Hidayatullah Jakarta',
+    'Universitas Islam Negeri Sunan Kalijaga Yogyakarta',
+    'Universitas Islam Negeri Maulana Malik Ibrahim Malang',
+    'Politeknik Negeri Jakarta','Politeknik Negeri Bandung',
+    'Politeknik Keuangan Negara STAN (PKN STAN)',
+    'Institut Pemerintahan Dalam Negeri (IPDN)',
+    'Sekolah Tinggi Meteorologi Klimatologi dan Geofisika (STMKG)',
+    'Sekolah Tinggi Ilmu Statistik (STIS)',
+    'Akademi Kepolisian (Akpol)','Akademi Militer (Akmil)',
+    'Akademi Angkatan Laut (AAL)','Akademi Angkatan Udara (AAU)','Universitas Terbuka'
+  ];
+  const f = list.filter(u => u.toLowerCase().includes(q.toLowerCase())).slice(0,12).map(u => ({ label: u, val: u }));
+  document.getElementById('kampus-manual-btn').className = 'btn-manual show';
+  if (f.length === 0) {
+    document.getElementById('kampus-dd').innerHTML = '<div class="ac-msg">Tidak ditemukan. Gunakan tombol tambah manual.</div>';
+    document.getElementById('kampus-dd').className = 'ac-dd show';
+    return;
+  }
+  renderAc('kampus-dd', f, q, pilihKampus);
+}
 
-function previewScreenshot(input) {
+function pilihKampus(val, label) {
+  document.getElementById('kampus-input').value = label;
+  document.getElementById('kampus-dd').className = 'ac-dd';
+  document.getElementById('kampus-pill-text').textContent = label;
+  document.getElementById('kampus-pill').className = 'pill show';
+  document.getElementById('kampus-err').style.display = 'none';
+  document.getElementById('kampus-manual-btn').className = 'btn-manual';
+}
+function manualKampus() {
+  const v = document.getElementById('kampus-input').value.trim();
+  if (!v) { alert('Ketik nama kampus terlebih dahulu.'); return; }
+  pilihKampus(v, v);
+}
+
+document.getElementById('kampus-input').addEventListener('blur', function() {
+  setTimeout(() => {
+    if (this.value.length >= 2 && !document.getElementById('kampus-pill').classList.contains('show')) {
+      document.getElementById('kampus-manual-btn').className = 'btn-manual show';
+    }
+  }, 200);
+});
+
+// ── JURUSAN ──
+async function searchJurusan(q) {
+  const dd = document.getElementById('jurusan-dd');
+  if (q.length < 2) { dd.className = 'ac-dd'; return; }
+  dd.className = 'ac-dd show';
+  dd.innerHTML = '<div class="ac-msg">Mencari di PDDikti...</div>';
+  clearTimeout(jurusanTimeout);
+  jurusanTimeout = setTimeout(async () => {
+    try {
+      const r = await fetch(`${PDDIKTI}/prodi/search/${encodeURIComponent(q)}`, { signal: AbortSignal.timeout(4000) });
+      const j = await r.json();
+      const raw = j.data || j.prodi || [];
+      if (raw.length > 0) {
+        const seen = new Set();
+        const list = raw.filter(i => { const n=i.nama||i.nama_prodi||String(i); if(seen.has(n))return false; seen.add(n); return true; })
+          .slice(0,12).map(i => ({ label: i.nama||i.nama_prodi||String(i), val: i.id||'' }));
+        renderAc('jurusan-dd', list, q, pilihJurusan); return;
+      }
+    } catch {}
+    jurusanFallback(q);
+  }, 350);
+}
+
+function jurusanFallback(q) {
+  const list = ['Akuntansi','Administrasi Bisnis','Agribisnis','Arsitektur','Biologi','Bisnis Digital',
+    'Desain Komunikasi Visual','Ekonomi Pembangunan','Farmasi','Fisika','Gizi',
+    'Hubungan Internasional','Hukum','Ilmu Komunikasi','Ilmu Komputer','Jurnalistik',
+    'Kebidanan','Kedokteran','Kedokteran Gigi','Keperawatan','Kesehatan Masyarakat',
+    'Kimia','Manajemen','Matematika','Pendidikan Guru Sekolah Dasar',
+    'Pendidikan Bahasa Inggris','Pendidikan Bahasa Indonesia','Pendidikan Matematika',
+    'Perikanan','Psikologi','Sastra Indonesia','Sastra Inggris','Sistem Informasi',
+    'Sosiologi','Statistika','Teknik Elektro','Teknik Informatika','Teknik Industri',
+    'Teknik Kimia','Teknik Mesin','Teknik Sipil','Teknologi Informasi','Teknologi Pangan'];
+  const f = list.filter(p => p.toLowerCase().includes(q.toLowerCase())).slice(0,12).map(p => ({ label: p, val: p }));
+  document.getElementById('jurusan-manual-btn').className = 'btn-manual show';
+  renderAc('jurusan-dd', f, q, pilihJurusan);
+}
+
+function pilihJurusan(val, label) {
+  document.getElementById('jurusan-input').value = label;
+  document.getElementById('jurusan-dd').className = 'ac-dd';
+  document.getElementById('jurusan-pill-text').textContent = label;
+  document.getElementById('jurusan-pill').className = 'pill show';
+  document.getElementById('jurusan-err').style.display = 'none';
+  document.getElementById('jurusan-manual-btn').className = 'btn-manual';
+}
+function manualJurusan() {
+  const v = document.getElementById('jurusan-input').value.trim();
+  if (!v) { alert('Ketik nama jurusan terlebih dahulu.'); return; }
+  pilihJurusan(v, v);
+}
+
+document.getElementById('jurusan-input').addEventListener('blur', function() {
+  setTimeout(() => {
+    if (this.value.length >= 2 && !document.getElementById('jurusan-pill').classList.contains('show')) {
+      document.getElementById('jurusan-manual-btn').className = 'btn-manual show';
+    }
+  }, 200);
+});
+
+// ── RENDER AUTOCOMPLETE ──
+function renderAc(ddId, items, q, onSelect) {
+  const dd = document.getElementById(ddId);
+  if (!items || items.length === 0) {
+    dd.innerHTML = '<div class="ac-msg">Tidak ditemukan.</div>';
+    dd.className = 'ac-dd show'; return;
+  }
+  dd.innerHTML = items.map(item => {
+    const hl = q ? item.label.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<span class="m">$1</span>') : item.label;
+    return `<div class="ac-item" onclick="(${onSelect.toString()})('${String(item.val).replace(/'/g,"\\'")}','${item.label.replace(/'/g,"\\'")}');document.getElementById('${ddId}').className='ac-dd'">${hl}</div>`;
+  }).join('');
+  dd.className = 'ac-dd show';
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.ac-wrap')) document.querySelectorAll('.ac-dd').forEach(d => d.className = 'ac-dd');
+});
+
+// ── UPLOAD SCREENSHOT ──
+function handleUpload(input) {
   const file = input.files[0];
   if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { alert('Ukuran maksimal 5MB.'); input.value = ''; return; }
+  if (file.size > 5 * 1024 * 1024) { alert('Ukuran file maksimal 5MB.'); input.value = ''; return; }
   const reader = new FileReader();
   reader.onload = e => {
-    screenshotBase64 = e.target.result;
-    const preview = document.getElementById('screenshot-preview');
-    preview.src = e.target.result;
-    preview.style.display = 'block';
+    ssBase64 = e.target.result;
+    const prev = document.getElementById('ss-preview');
+    prev.src = e.target.result;
+    prev.style.display = 'block';
     document.getElementById('upload-area').classList.add('has-file');
     document.getElementById('upload-icon').textContent = '✓';
     document.getElementById('upload-text').textContent = file.name;
-    document.getElementById('upload-sub').textContent = 'Klik untuk ganti';
-    document.getElementById('screenshot-err').style.display = 'none';
+    document.getElementById('upload-sub').textContent = 'Klik untuk ganti foto';
+    document.getElementById('upload-success').className = 'upload-success show';
+    document.getElementById('ss-err').style.display = 'none';
   };
   reader.readAsDataURL(file);
 }
 
-async function submitVerification() {
-  if (!screenshotBase64) {
-    document.getElementById('screenshot-err').style.display = 'block';
-    return;
-  }
-  const kampus = document.getElementById('kampus-klaim').value.trim();
-  const jurusan = document.getElementById('jurusan-klaim').value.trim();
-  if (!kampus || !jurusan) {
-    alert('Isi nama kampus dan jurusan terlebih dahulu.');
+// ── SUBMIT ──
+function submitStep() {
+  let valid = true;
+  const show = id => { document.getElementById(id).style.display = 'block'; valid = false; };
+
+  const kampus = document.getElementById('kampus-input').value.trim();
+  const jurusan = document.getElementById('jurusan-input').value.trim();
+  const jenjang = document.getElementById('jenjang').value;
+
+  if (!kampus) show('kampus-err');
+  if (!jurusan) show('jurusan-err');
+  if (!jenjang) show('jenjang-err');
+  if (!ssBase64) show('ss-err');
+
+  if (!valid) {
+    document.querySelector('.err[style*="block"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
 
-  const btn = document.getElementById('btn-submit');
-  btn.disabled = true;
-  btn.textContent = 'Mengirim...';
+  // Simpan ke localStorage — semua dikirim sekaligus di step upload-photo
+  localStorage.setItem('matchu_user', JSON.stringify({
+    ...userData,
+    kampus,
+    jurusan,
+    jenjang,
+    education_screenshot: ssBase64,
+  }));
 
-  try {
-    const res = await fetch('/api/verify-education', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: id,
-        screenshot_url: screenshotBase64,
-        kampus_klaim: kampus,
-        jurusan_klaim: jurusan,
-      }),
-    });
-    const data = await res.json();
-    if (data.success) {
-      alert('Berhasil! Pengajuan verifikasi sedang diproses. Kami akan memberi tahu kamu dalam 1x24 jam.');
-      // ✅ FIXED: lanjut ke step 4 (upload foto), bukan redirect ke diri sendiri (register-step3.html)
-      window.location.href = 'register-step4.html';
-    } else {
-      alert(data.error || 'Gagal mengirim. Coba lagi.');
-      btn.disabled = false;
-      btn.textContent = 'Kirim untuk Diverifikasi';
-    }
-  } catch {
-    alert('Gagal terhubung ke server.');
-    btn.disabled = false;
-    btn.textContent = 'Kirim untuk Diverifikasi';
-  }
+  window.location.href = 'complete-profile.html';
 }
 </script>
 </body>
