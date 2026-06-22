@@ -1,9 +1,16 @@
 // app/api/get-candidates/route.ts
-// Ambil kandidat mingguan untuk user
-// Jika belum ada atau expired, generate baru
+// Algoritma matching v2:
+// 1. Lawan jenis otomatis
+// 2. Prioritas: kampus > profesi > kota > lainnya
+// 3. Rotasi setiap 3 hari
+// 4. Exclude yang pernah chat
 
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+
+const RESET_DAYS = 3; // rotasi setiap 3 hari
+const MAX_FREE    = 3;
+const MAX_PREMIUM = 10;
 
 export async function GET(req: NextRequest) {
   try {
@@ -11,7 +18,7 @@ export async function GET(req: NextRequest) {
     const userId = searchParams.get('userId');
     if (!userId) return NextResponse.json({ success: false, error: 'userId wajib.' }, { status: 400 });
 
-    // ── Cek status premium ────────────────────────────────
+    // ── Cek premium ──────────────────────────────────────
     const { data: premData } = await supabase
       .from('premium_subscriptions')
       .select('status, expires_at, package')
@@ -20,131 +27,215 @@ export async function GET(req: NextRequest) {
 
     const now = new Date();
     const premRow = premData?.[0];
-    const isPremium = premRow?.status === 'active' && premRow?.expires_at && new Date(premRow.expires_at) > now;
+    const isPremium = premRow?.status === 'active'
+      && premRow?.expires_at
+      && new Date(premRow.expires_at) > now;
 
     // ── Ambil profil user ─────────────────────────────────
-    const { data: userRows } = await supabase
+    const { data: meRows } = await supabase
       .from('profiles')
-      .select('jenis_kelamin, kota_domisili, universitas, profesi, status_kerja')
+      .select('jenis_kelamin, kota_domisili, universitas, profesi, program_studi, agama, target_menikah, mbti, kepribadian')
       .eq('id', userId)
       .limit(1);
 
-    const me = userRows?.[0];
+    const me = meRows?.[0];
     if (!me) return NextResponse.json({ success: false, error: 'Profil tidak ditemukan.' }, { status: 404 });
 
-    // ── Cek weekly_candidates masih valid ─────────────────
+    // ── Tentukan lawan jenis ──────────────────────────────
+    const lawanJenis = me.jenis_kelamin === 'Pria' ? 'Wanita'
+                     : me.jenis_kelamin === 'Wanita' ? 'Pria'
+                     : 'Pria'; // default jika belum diisi
+
+    // ── Cek cache weekly_candidates masih valid ───────────
     const { data: existing } = await supabase
       .from('weekly_candidates')
-      .select('*, profiles!weekly_candidates_candidate_id_fkey(*)')
+      .select(`
+        candidate_id, match_type, match_score, expires_at,
+        profiles!weekly_candidates_candidate_id_fkey(
+          id, nama_panggilan, jenis_kelamin, kota_domisili, kota_asal,
+          universitas, program_studi, profesi, jenjang, agama,
+          target_menikah, mbti, kepribadian, tanggal_lahir,
+          foto_url_1, foto_url_2, trust_score, education_score_given,
+          hobi, bahasa, bio, tinggi_badan, berat_badan
+        )
+      `)
       .eq('user_id', userId)
       .gt('expires_at', now.toISOString())
       .order('match_score', { ascending: false });
 
     if (existing && existing.length > 0) {
       return NextResponse.json({
-        success: true,
-        candidates: existing,
-        is_premium: isPremium,
+        success:      true,
+        candidates:   existing,
+        is_premium:   isPremium,
         premium_info: isPremium ? premRow : null,
-        source: 'cached',
+        reset_at:     existing[0].expires_at,
+        source:       'cached',
+        gender_info:  { my_gender: me.jenis_kelamin, showing: lawanJenis },
       });
     }
 
-    // ── Generate kandidat baru ────────────────────────────
-    // Ambil lawan jenis yang aktif, punya foto, bukan user sendiri
-    const lawanJenis = me.jenis_kelamin === 'Pria' ? 'Wanita' : 'Pria';
+    // ── Ambil daftar yang pernah chat (exclude) ───────────
+    const { data: chatted } = await supabase
+      .from('chat_history')
+      .select('partner_id')
+      .eq('user_id', userId);
 
+    const excludeIds = new Set<string>([
+      userId, // exclude diri sendiri
+      ...(chatted || []).map(c => c.partner_id),
+    ]);
+
+    // ── Ambil pool kandidat ───────────────────────────────
     const { data: pool } = await supabase
       .from('profiles')
-      .select('id, nama_panggilan, nama, jenis_kelamin, kota_domisili, universitas, profesi, status_kerja, foto_url_1, education_score_given, trust_score, mbti, agama, target_menikah, hobi, jenjang, program_studi, tanggal_lahir')
+      .select(`
+        id, nama_panggilan, jenis_kelamin, kota_domisili, kota_asal,
+        universitas, program_studi, profesi, jenjang, agama,
+        target_menikah, mbti, kepribadian, tanggal_lahir,
+        foto_url_1, foto_url_2, trust_score, education_score_given,
+        hobi, bahasa, bio, tinggi_badan, berat_badan
+      `)
       .eq('jenis_kelamin', lawanJenis)
       .eq('status', 'aktif')
-      .neq('id', userId)
       .not('foto_url_1', 'is', null)
-      .gte('trust_score', 40); // minimal trust score 40
+      .gte('trust_score', 30); // minimal trust score 30
 
     if (!pool || pool.length === 0) {
-      return NextResponse.json({ success: true, candidates: [], is_premium: isPremium, source: 'empty' });
+      return NextResponse.json({
+        success:     true,
+        candidates:  [],
+        is_premium:  isPremium,
+        source:      'empty',
+        gender_info: { my_gender: me.jenis_kelamin, showing: lawanJenis },
+      });
     }
 
     // ── Hitung skor kecocokan ─────────────────────────────
-    const scored = pool.map(c => {
-      let score = 0;
-      let matchType = 'general';
+    // Prioritas: kampus (50) > profesi (35) > kota (40) > agama (20)
+    // > target menikah (15) > kepribadian (10) > mbti (10) > trust bonus (max 10)
+    const scored = pool
+      .filter(c => !excludeIds.has(c.id))
+      .map(c => {
+        let score = 0;
+        let primaryMatch = 'general'; // untuk label badge
 
-      // Lokasi sama +40
-      if (me.kota_domisili && c.kota_domisili &&
-          me.kota_domisili.toLowerCase().includes(c.kota_domisili.toLowerCase().split(' ')[0])) {
-        score += 40; matchType = 'lokasi';
-      }
-      // Universitas sama +30
-      if (me.universitas && c.universitas &&
-          me.universitas.toLowerCase().includes(c.universitas.toLowerCase().split(' ')[0])) {
-        score += 30; if (matchType === 'general') matchType = 'kampus';
-      }
-      // Profesi / bidang sama +30
-      if (me.profesi && c.profesi &&
-          me.profesi.toLowerCase().split(' ')[0] === c.profesi.toLowerCase().split(' ')[0]) {
-        score += 30; if (matchType === 'general') matchType = 'profesi';
-      }
-      // Trust score bonus
-      score += Math.floor((c.trust_score || 0) / 10);
-      // Education verified bonus
-      if (c.education_score_given) score += 10;
+        // 1. KAMPUS — prioritas tertinggi
+        const sameKampus = me.universitas && c.universitas &&
+          me.universitas.toLowerCase().trim() === c.universitas.toLowerCase().trim();
+        if (sameKampus) { score += 50; primaryMatch = 'kampus'; }
 
-      return { ...c, match_score: score, match_type: matchType };
-    });
+        // 2. PROFESI / BIDANG KERJA
+        const sameProfesi = me.profesi && c.profesi &&
+          me.profesi.toLowerCase().split(' ')[0] === c.profesi.toLowerCase().split(' ')[0];
+        if (sameProfesi) {
+          score += 35;
+          if (primaryMatch === 'general') primaryMatch = 'profesi';
+        }
 
-    // ── Pilih kandidat untuk user gratis (3) atau premium (10) ──
+        // 3. KOTA DOMISILI
+        const kota1 = (me.kota_domisili || '').toLowerCase().trim();
+        const kota2 = (c.kota_domisili || '').toLowerCase().trim();
+        const sameKota = kota1 && kota2 && (
+          kota1 === kota2 ||
+          kota1.includes(kota2.split(' ')[0]) ||
+          kota2.includes(kota1.split(' ')[0])
+        );
+        if (sameKota) {
+          score += 40;
+          if (primaryMatch === 'general') primaryMatch = 'lokasi';
+        }
+
+        // 4. AGAMA
+        if (me.agama && c.agama && me.agama === c.agama) score += 20;
+
+        // 5. TARGET MENIKAH
+        if (me.target_menikah && c.target_menikah && me.target_menikah === c.target_menikah) score += 15;
+
+        // 6. KEPRIBADIAN (introvert/ekstrovert — sering saling melengkapi)
+        if (me.kepribadian && c.kepribadian) {
+          if (me.kepribadian === c.kepribadian) score += 8; // sama
+          else score += 10; // berbeda bisa saling melengkapi (ambivert bonus)
+        }
+
+        // 7. MBTI COMPATIBILITY
+        if (me.mbti && c.mbti) {
+          const compatible = getMBTICompat(me.mbti, c.mbti);
+          score += compatible * 10;
+        }
+
+        // 8. TRUST SCORE BONUS (max +10)
+        score += Math.min(10, Math.floor((c.trust_score || 0) / 10));
+
+        // 9. EDUCATION VERIFIED BONUS
+        if (c.education_score_given) score += 8;
+
+        // 10. FOTO LENGKAP BONUS
+        if (c.foto_url_2) score += 3;
+
+        // Normalisasi persentase (max teoritis ~161)
+        const pct = Math.min(99, Math.max(50, Math.round((score / 161) * 100)));
+
+        return { ...c, match_score: pct, match_type: primaryMatch, raw_score: score };
+      });
+
+    // Sort by score descending
+    scored.sort((a, b) => b.raw_score - a.raw_score);
+
+    // ── Pilih kandidat ────────────────────────────────────
     let selected: typeof scored = [];
 
     if (isPremium) {
-      // Premium: top 10 by score
-      selected = scored.sort((a, b) => b.match_score - a.match_score).slice(0, 10);
-      selected.forEach(c => { c.match_type = c.match_type || 'general'; });
+      // Premium: top 10
+      selected = scored.slice(0, MAX_PREMIUM);
     } else {
-      // Gratis: 1 lokasi, 1 kampus, 1 profesi (atau top 3 jika tidak ada match spesifik)
-      const byLokasi = scored.filter(c => c.match_type === 'lokasi').sort((a,b) => b.match_score - a.match_score);
-      const byKampus = scored.filter(c => c.match_type === 'kampus').sort((a,b) => b.match_score - a.match_score);
-      const byProfesi = scored.filter(c => c.match_type === 'profesi').sort((a,b) => b.match_score - a.match_score);
-      const byGeneral = scored.sort((a,b) => b.match_score - a.match_score);
-
+      // Gratis: ambil yang paling cocok dari tiap kategori utama
+      // lalu top 3 overall (tidak boleh duplikat)
       const pickedIds = new Set<string>();
-      const pick = (arr: typeof scored) => {
-        const found = arr.find(c => !pickedIds.has(c.id));
+
+      const pickBest = (type: string) => {
+        const found = scored.find(c => c.match_type === type && !pickedIds.has(c.id));
         if (found) { pickedIds.add(found.id); selected.push(found); }
       };
 
-      pick(byLokasi); pick(byKampus); pick(byProfesi);
-      // Jika kurang dari 3, isi dari general
-      if (selected.length < 3) {
-        byGeneral.forEach(c => { if (selected.length >= 3) return; if (!pickedIds.has(c.id)) { pickedIds.add(c.id); selected.push(c); } });
-      }
-    }
+      // Prioritas: kampus, lokasi, profesi
+      pickBest('kampus');
+      pickBest('lokasi');
+      pickBest('profesi');
 
-    // ── Hapus weekly_candidates lama ──────────────────────
-    await supabase.from('weekly_candidates').delete().eq('user_id', userId);
+      // Jika belum 3, isi dari top overall
+      scored.forEach(c => {
+        if (selected.length >= MAX_FREE) return;
+        if (!pickedIds.has(c.id)) { pickedIds.add(c.id); selected.push(c); }
+      });
+
+      // Sort ulang by score
+      selected.sort((a, b) => b.raw_score - a.raw_score);
+    }
 
     // ── Simpan ke weekly_candidates ───────────────────────
-    const expiresAt = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString();
-    const inserts = selected.map(c => ({
-      user_id:      userId,
-      candidate_id: c.id,
-      match_type:   c.match_type,
-      match_score:  c.match_score,
-      expires_at:   expiresAt,
-    }));
+    await supabase.from('weekly_candidates').delete().eq('user_id', userId);
 
-    if (inserts.length > 0) {
-      await supabase.from('weekly_candidates').insert(inserts);
+    const resetAt = new Date(Date.now() + RESET_DAYS * 24 * 60 * 60 * 1000).toISOString();
+
+    if (selected.length > 0) {
+      await supabase.from('weekly_candidates').insert(
+        selected.map(c => ({
+          user_id:      userId,
+          candidate_id: c.id,
+          match_type:   c.match_type,
+          match_score:  c.match_score,
+          expires_at:   resetAt,
+        }))
+      );
     }
 
-    // ── Return dengan data profil kandidat ───────────────
+    // ── Format response ───────────────────────────────────
     const result = selected.map(c => ({
       candidate_id: c.id,
       match_type:   c.match_type,
       match_score:  c.match_score,
-      expires_at:   expiresAt,
+      expires_at:   resetAt,
       profiles:     c,
     }));
 
@@ -153,12 +244,38 @@ export async function GET(req: NextRequest) {
       candidates:   result,
       is_premium:   isPremium,
       premium_info: isPremium ? premRow : null,
+      reset_at:     resetAt,
       source:       'generated',
-      reset_at:     expiresAt,
+      gender_info:  { my_gender: me.jenis_kelamin, showing: lawanJenis },
     });
 
-  } catch (err) {
+  } catch(err) {
     console.error('get-candidates error:', err);
     return NextResponse.json({ success: false, error: 'Server error.' }, { status: 500 });
   }
+}
+
+// ── MBTI COMPATIBILITY ────────────────────────────────────
+// Pasangan MBTI yang dikenal kompatibel
+function getMBTICompat(a: string, b: string): number {
+  const pairs: Record<string, string[]> = {
+    'INTJ': ['ENFP','ENTP','INFP','ENTJ'],
+    'INTP': ['ENTJ','ESTJ','ENFJ','ENFP'],
+    'ENTJ': ['INFP','INTP','ENFP','ENTP'],
+    'ENTP': ['INFJ','INTJ','ENFJ','ENTJ'],
+    'INFJ': ['ENFP','ENTP','INTJ','INFP'],
+    'INFP': ['ENFJ','ENTJ','INFJ','INTJ'],
+    'ENFJ': ['INFP','ISFP','INTJ','INTP'],
+    'ENFP': ['INFJ','INTJ','ENTJ','ENFJ'],
+    'ISTJ': ['ESFP','ESTP','ISFJ','ESTJ'],
+    'ISFJ': ['ESFP','ESTP','ISTJ','ESTJ'],
+    'ESTJ': ['ISFP','ISTP','ISTJ','ISFJ'],
+    'ESFJ': ['ISFP','ISTP','ESFP','ESTP'],
+    'ISTP': ['ESFJ','ESTJ','ISFP','ESTP'],
+    'ISFP': ['ESFJ','ESTJ','ISFJ','ENFJ'],
+    'ESTP': ['ISFJ','ISTJ','ESFP','ESTP'],
+    'ESFP': ['ISFJ','ISTJ','ESFJ','ESTJ'],
+  };
+  if (a === b) return 0.5; // sama tipe — netral
+  return (pairs[a] || []).includes(b) ? 1 : 0.3;
 }
