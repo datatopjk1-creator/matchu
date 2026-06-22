@@ -17,42 +17,33 @@ body{ background:var(--bg); font-family:'Inter',sans-serif; color:var(--text); }
 .step-label{ text-align:center; color:var(--primary); font-weight:600; font-size:12px; margin-bottom:8px; }
 .progress-bar{ width:100%; height:6px; background:#eee; border-radius:20px; margin-bottom:32px; overflow:hidden; }
 .progress-fill{ width:50%; height:100%; background:var(--primary); border-radius:20px; }
-
-/* Trust banner — merah brand color (sama dengan step3) */
 .trust-banner{ background:linear-gradient(135deg,#7A2236 0%,#a83254 100%); border-radius:16px; padding:20px 22px; margin-bottom:24px; color:white; }
 .trust-banner-title{ font-size:13px; font-weight:600; opacity:.85; margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em; }
 .trust-items{ display:flex; gap:8px; flex-wrap:wrap; }
 .trust-item{ background:rgba(255,255,255,.15); border-radius:8px; padding:7px 12px; font-size:12px; font-weight:600; display:flex; align-items:center; gap:5px; }
 .trust-item.done{ background:rgba(30,166,114,.35); }
 .trust-item.active{ background:rgba(255,255,255,.3); border:1.5px solid white; }
-
-/* Badge box — merah brand color (konsisten dengan step3) */
 .badge-box{ display:flex; align-items:center; gap:14px; background:#f9f4f5; border:2px solid var(--primary); border-radius:16px; padding:18px 20px; margin-bottom:24px; }
 .badge-icon{ font-size:36px; flex-shrink:0; }
 .badge-title{ font-weight:700; color:var(--primary); font-size:15px; margin-bottom:4px; }
 .badge-pts{ display:inline-block; background:var(--primary); color:white; border-radius:20px; padding:2px 10px; font-size:11px; font-weight:700; margin-left:6px; }
 .badge-sub{ font-size:13px; color:#555; line-height:1.5; }
-
-/* Cara verifikasi */
 .steps-box{ background:#f9f4f5; border-radius:14px; padding:16px 18px; margin-bottom:20px; }
 .steps-title{ font-weight:700; color:var(--primary); font-size:13px; margin-bottom:12px; }
 .step-item{ display:flex; gap:10px; align-items:flex-start; margin-bottom:10px; font-size:13px; color:#444; line-height:1.6; }
 .step-item:last-child{ margin-bottom:0; }
 .step-num{ background:var(--primary); color:white; border-radius:50%; width:22px; height:22px; min-width:22px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; margin-top:1px; }
 .step-item a{ color:var(--primary); font-weight:600; text-decoration:none; }
-
 .note-box{ background:#f9f4f5; border-left:3px solid var(--primary); border-radius:8px; padding:12px 14px; font-size:13px; color:#555; line-height:1.6; margin-bottom:24px; }
-
 .section-label{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--primary); margin:22px 0 12px; padding-bottom:6px; border-bottom:1px solid #f0e8ea; }
 .form-group{ margin-bottom:14px; }
 label{ display:block; margin-bottom:5px; font-weight:600; font-size:13px; }
 .req{ color:#e53e3e; margin-left:2px; }
-input, select{ width:100%; padding:11px 13px; border:1.5px solid var(--border); border-radius:10px; font-size:14px; font-family:'Inter',sans-serif; color:var(--text); transition:.2s; background:white; }
-input:focus, select:focus{ outline:none; border-color:var(--primary); }
+input,select{ width:100%; padding:11px 13px; border:1.5px solid var(--border); border-radius:10px; font-size:14px; font-family:'Inter',sans-serif; color:var(--text); transition:.2s; background:white; }
+input:focus,select:focus{ outline:none; border-color:var(--primary); }
 .hint{ font-size:12px; color:var(--muted); margin-top:4px; line-height:1.5; }
 .err{ color:#e53e3e; font-size:12px; margin-top:4px; display:none; }
 .row-2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-
 /* Autocomplete */
 .ac-wrap{ position:relative; }
 .ac-dd{ position:absolute; top:100%; left:0; right:0; z-index:300; background:white; border:1.5px solid var(--primary); border-top:none; border-radius:0 0 10px 10px; max-height:210px; overflow-y:auto; box-shadow:0 8px 24px rgba(0,0,0,.12); display:none; }
@@ -62,31 +53,26 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
 .ac-item:hover{ background:#f9f4f5; color:var(--primary); }
 .ac-item .m{ font-weight:700; color:var(--primary); }
 .ac-msg{ padding:10px 13px; font-size:13px; color:var(--muted); text-align:center; }
-
-/* Pill & manual button */
 .pill{ display:none; margin-top:6px; padding:6px 12px; background:#f9f4f5; border:1px solid var(--primary); border-radius:8px; font-size:12px; color:var(--primary); font-weight:600; }
 .pill.show{ display:flex; align-items:center; gap:6px; }
-.btn-manual{ display:none; margin-top:5px; background:none; border:1.5px dashed var(--primary); color:var(--primary); padding:6px 12px; border-radius:7px; font-size:12px; cursor:pointer; font-family:'Inter',sans-serif; width:100%; text-align:left; transition:.2s; }
+.btn-manual{ display:none; margin-top:5px; background:none; border:1.5px dashed var(--primary); color:var(--primary); padding:6px 12px; border-radius:7px; font-size:12px; cursor:pointer; font-family:'Inter',sans-serif; width:100%; text-align:left; }
 .btn-manual:hover{ background:#f9f4f5; }
 .btn-manual.show{ display:block; }
-
-/* Upload area */
-.upload-area{ border:2px dashed var(--border); border-radius:14px; padding:28px 20px; text-align:center; cursor:pointer; transition:.2s; background:#fafafa; position:relative; }
+/* Upload */
+.upload-area{ border:2px dashed var(--border); border-radius:14px; padding:28px 20px; text-align:center; cursor:pointer; transition:.2s; background:#fafafa; }
 .upload-area:hover{ border-color:var(--primary); background:#f9f4f5; }
 .upload-area.has-file{ border-style:solid; border-color:var(--primary); background:#f9f4f5; }
 .upload-icon{ font-size:32px; margin-bottom:8px; }
-.upload-text{ font-size:14px; font-weight:600; color:var(--text); }
+.upload-text{ font-size:14px; font-weight:600; }
 .upload-sub{ font-size:12px; color:var(--muted); margin-top:4px; }
 .preview-img{ max-width:100%; border-radius:10px; margin-top:14px; max-height:280px; object-fit:contain; display:none; border:1px solid #eee; }
 .upload-success{ display:none; align-items:center; gap:8px; background:#f9f4f5; border-radius:8px; padding:8px 12px; margin-top:10px; font-size:13px; color:var(--primary); font-weight:600; }
 .upload-success.show{ display:flex; }
-
 .btn{ width:100%; margin-top:20px; background:var(--primary); color:white; border:none; padding:15px; border-radius:13px; cursor:pointer; font-size:15px; font-weight:600; font-family:'Inter',sans-serif; transition:.2s; }
 .btn:hover{ opacity:.9; }
 .btn:disabled{ opacity:.6; cursor:not-allowed; }
 .back-link{ text-align:center; margin-top:12px; font-size:13px; color:var(--muted); }
 .back-link a{ color:var(--primary); text-decoration:none; font-weight:600; }
-
 @media(max-width:560px){
   .container{ padding:16px 14px 60px; }
   .card{ padding:24px 16px; border-radius:20px; }
@@ -98,15 +84,13 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
 </style>
 </head>
 <body>
-<div class="container">
-<div class="card">
+<div class="container"><div class="card">
 
   <div class="logo">MATCHU</div>
   <div class="tagline">Beyond Matching. Toward Marriage.</div>
   <div class="step-label">LANGKAH 2 DARI 4 — Verifikasi Pendidikan</div>
   <div class="progress-bar"><div class="progress-fill"></div></div>
 
-  <!-- Trust Banner — merah brand -->
   <div class="trust-banner">
     <div class="trust-banner-title">Cara Mendapatkan Trust Score 100/100</div>
     <div class="trust-items">
@@ -118,7 +102,6 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
     </div>
   </div>
 
-  <!-- Badge Box — merah brand -->
   <div class="badge-box">
     <div class="badge-icon">🎓</div>
     <div>
@@ -127,29 +110,18 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
     </div>
   </div>
 
-  <!-- Cara verifikasi -->
   <div class="steps-box">
     <div class="steps-title">Cara Verifikasi — 3 Langkah Mudah</div>
-    <div class="step-item">
-      <div class="step-num">1</div>
-      <div>Buka <a href="https://pddikti.kemdiktisaintek.go.id" target="_blank">pddikti.kemdiktisaintek.go.id</a> → cari namamu</div>
-    </div>
-    <div class="step-item">
-      <div class="step-num">2</div>
-      <div>Pastikan nama, kampus, dan jurusan sesuai → screenshot halaman tersebut</div>
-    </div>
-    <div class="step-item">
-      <div class="step-num">3</div>
-      <div>Isi form di bawah dan upload screenshot — tim kami verifikasi dalam 1×24 jam</div>
-    </div>
+    <div class="step-item"><div class="step-num">1</div><div>Buka <a href="https://pddikti.kemdiktisaintek.go.id" target="_blank" rel="noopener">pddikti.kemdiktisaintek.go.id</a> → cari namamu</div></div>
+    <div class="step-item"><div class="step-num">2</div><div>Pastikan nama, kampus, dan jurusan sesuai → screenshot halaman tersebut</div></div>
+    <div class="step-item"><div class="step-num">3</div><div>Isi form di bawah dan upload screenshot — tim kami verifikasi dalam 1×24 jam</div></div>
   </div>
 
   <div class="note-box">Matchu hanya meminta screenshot PDDikti — bukan KTP, ijazah, atau dokumen pribadi lainnya. Data kamu aman dan tidak dibagikan ke pihak manapun.</div>
 
-  <!-- DATA PENDIDIKAN -->
   <div class="section-label">Data Pendidikan</div>
 
-  <!-- Universitas -->
+  <!-- Kampus -->
   <div class="form-group">
     <label>Kampus / Universitas <span class="req">*</span></label>
     <div class="ac-wrap">
@@ -160,7 +132,7 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
     <div class="pill" id="kampus-pill">✓ <span id="kampus-pill-text"></span></div>
     <button type="button" class="btn-manual" id="kampus-manual-btn" onclick="manualKampus()">+ Tidak ada di daftar? Tambah manual</button>
     <div class="err" id="kampus-err">Masukkan nama kampus.</div>
-    <div class="hint">Ketik minimal 2 huruf — mencari dari PDDikti, Kedinasan & Politeknik</div>
+    <div class="hint">Ketik minimal 2 huruf — mencari dari database PDDikti, Kedinasan & Politeknik</div>
   </div>
 
   <!-- Jurusan & Jenjang -->
@@ -213,7 +185,6 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
     </div>
   </div>
 
-  <!-- Upload Screenshot PDDikti -->
   <div class="section-label">Screenshot PDDikti <span class="req">*</span></div>
   <div class="upload-area" id="upload-area" onclick="document.getElementById('ss-input').click()">
     <input type="file" id="ss-input" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleUpload(this)">
@@ -228,30 +199,30 @@ input:focus, select:focus{ outline:none; border-color:var(--primary); }
   <button class="btn" id="btn-next" onclick="submitStep()">Lanjutkan ke Profil</button>
   <div class="back-link"><a href="verify-email.html">Kembali</a></div>
 
-</div>
-</div>
+</div></div>
 
 <script>
-// ── CEK SESI ──────────────────────────────────────────────
+// ── SESI ─────────────────────────────────────────────────
 const userData = JSON.parse(localStorage.getItem('matchu_user') || '{}');
 if (!userData.email) { alert('Sesi tidak ditemukan.'); window.location.href = 'register.html'; }
 
-// ── ISI DROPDOWN TAHUN MASUK ──────────────────────────────
-const tahunSekarang = new Date().getFullYear();
+// ── ISI DROPDOWN TAHUN MASUK (diurutkan terbaru ke terlama) ──
+const tahunSkrg = new Date().getFullYear();
 const selTahun = document.getElementById('tahun-masuk');
-for (let t = tahunSekarang; t >= 1990; t--) {
+for (let t = tahunSkrg; t >= 1990; t--) {
   const opt = document.createElement('option');
-  opt.value = t; opt.textContent = t + ' — Angkatan ' + t;
+  opt.value = t;
+  opt.textContent = t + ' — Angkatan ' + t;
   selTahun.appendChild(opt);
 }
 
 const PDDIKTI = 'https://pddikti.kemdiktisaintek.go.id/api';
-let kampusTimeout, jurusanTimeout;
+let kampusTimer = null;
+let jurusanTimer = null;
 let ssBase64 = null;
 
-// ── DATA LENGKAP KAMPUS (fallback) ────────────────────────
+// ── FALLBACK DATA KAMPUS (150+ institusi) ─────────────────
 const KAMPUS_LIST = [
-  // PTN Umum
   'Universitas Indonesia','Universitas Gadjah Mada','Institut Teknologi Bandung',
   'Institut Pertanian Bogor (IPB University)','Institut Teknologi Sepuluh Nopember',
   'Universitas Airlangga','Universitas Diponegoro','Universitas Brawijaya',
@@ -266,9 +237,7 @@ const KAMPUS_LIST = [
   'Universitas Cenderawasih','Universitas Khairun','Universitas Papua',
   'Universitas Nusa Cendana','Universitas Mataram','Universitas Tadulako',
   'Universitas Bengkulu','Universitas Bangka Belitung','Universitas Terbuka',
-  // PTN Teknik & Sains
   'Institut Teknologi Kalimantan','Institut Teknologi Sumatera',
-  // PTS Terkenal
   'BINUS University','Universitas Pelita Harapan','Universitas Trisakti',
   'Universitas Tarumanagara','Universitas Gunadarma','Universitas Telkom',
   'Universitas Mercu Buana','President University','Universitas Islam Indonesia',
@@ -280,7 +249,6 @@ const KAMPUS_LIST = [
   'Universitas Kristen Duta Wacana','Universitas Atmajaya Yogyakarta',
   'Universitas Katolik Indonesia Atma Jaya','Universitas Pancasila',
   'Universitas Esa Unggul','Universitas Nasional','Universitas Yarsi',
-  // UIN / IAIN
   'Universitas Islam Negeri Syarif Hidayatullah Jakarta',
   'Universitas Islam Negeri Sunan Kalijaga Yogyakarta',
   'Universitas Islam Negeri Maulana Malik Ibrahim Malang',
@@ -292,106 +260,67 @@ const KAMPUS_LIST = [
   'Universitas Islam Negeri Imam Bonjol Padang',
   'Universitas Islam Negeri Ar-Raniry Banda Aceh',
   'UIN Sultan Syarif Kasim Riau','UIN Mataram','UIN Antasari Banjarmasin',
-  // Politeknik
   'Politeknik Negeri Jakarta','Politeknik Negeri Bandung','Politeknik Negeri Semarang',
   'Politeknik Negeri Surabaya','Politeknik Negeri Malang','Politeknik Negeri Medan',
-  'Politeknik Negeri Makassar','Politeknik Negeri Padang','Politeknik Negeri Ujung Pandang',
-  'Politeknik Negeri Manado','Politeknik Negeri Bali','Politeknik Negeri Banjarmasin',
-  'Politeknik Negeri Kupang','Politeknik Negeri Ambon','Politeknik Negeri Fakfak',
+  'Politeknik Negeri Makassar','Politeknik Negeri Padang','Politeknik Negeri Bali',
+  'Politeknik Negeri Banjarmasin','Politeknik Negeri Kupang','Politeknik Negeri Ambon',
   'Politeknik Perkapalan Negeri Surabaya','Politeknik Elektronika Negeri Surabaya',
   'Politeknik Manufaktur Negeri Bandung','Politeknik Negeri Batam',
-  'Politeknik Pertanian Negeri Pangkep','Politeknik Pertanian Negeri Kupang',
   'Politeknik Kesehatan Kemenkes Jakarta','Politeknik Kesehatan Kemenkes Bandung',
   'Politeknik Kesehatan Kemenkes Surabaya','Politeknik Kesehatan Kemenkes Yogyakarta',
   'Politeknik Kesehatan Kemenkes Semarang','Politeknik Kesehatan Kemenkes Malang',
-  'Politeknik Kesehatan Kemenkes Medan','Politeknik Kesehatan Kemenkes Makassar',
-  // Kedinasan
   'Politeknik Keuangan Negara STAN (PKN STAN)',
   'Sekolah Tinggi Ilmu Statistik (STIS)',
   'Institut Pemerintahan Dalam Negeri (IPDN)',
   'Sekolah Tinggi Meteorologi Klimatologi dan Geofisika (STMKG)',
   'Sekolah Tinggi Intelijen Negara (STIN)',
-  'Politeknik Imigrasi (Poltekim)',
-  'Politeknik Ilmu Pemasyarakatan (Poltekip)',
+  'Politeknik Imigrasi (Poltekim)','Politeknik Ilmu Pemasyarakatan (Poltekip)',
   'Sekolah Tinggi Pertanahan Nasional (STPN)',
   'Sekolah Tinggi Transportasi Darat (STTD)',
   'Politeknik Penerbangan Indonesia Curug',
   'Politeknik Penerbangan Makassar','Politeknik Penerbangan Surabaya',
-  'Politeknik Penerbangan Jayapura','Politeknik Penerbangan Medan',
-  'Politeknik Penerbangan Palembang',
-  'Sekolah Tinggi Perikanan (STP Jakarta)',
-  'Politeknik Kelautan dan Perikanan Sidoarjo',
-  'Politeknik Kelautan dan Perikanan Bitung',
-  'Sekolah Tinggi Pariwisata Bandung (NHI Bandung)',
-  'Sekolah Tinggi Pariwisata Bali',
-  'Sekolah Tinggi Pariwisata Ambarrukmo Yogyakarta',
-  'Sekolah Tinggi Penyuluhan Pertanian (STPP)',
-  'Politeknik Pembangunan Pertanian',
+  'Sekolah Tinggi Pariwisata Bandung (NHI Bandung)','Sekolah Tinggi Pariwisata Bali',
   'Sekolah Tinggi Sandi Negara (STSN)',
   'Sekolah Tinggi Ilmu Pelayaran (STIP Jakarta)',
-  'Politeknik Pelayaran Surabaya','Politeknik Pelayaran Makassar',
-  'Politeknik Pelayaran Semarang','Politeknik Pelayaran Barombong',
-  // Militer / Kepolisian
+  'Politeknik Pelayaran Surabaya','Politeknik Pelayaran Makassar','Politeknik Pelayaran Semarang',
   'Akademi Kepolisian (Akpol)','Akademi Militer (Akmil)',
   'Akademi Angkatan Laut (AAL)','Akademi Angkatan Udara (AAU)',
   'Sekolah Tinggi Ilmu Kepolisian (STIK-PTIK)',
   'Universitas Pertahanan Indonesia (UNHAN)',
 ];
 
-// ── DATA LENGKAP JURUSAN (fallback) ──────────────────────
+// ── FALLBACK DATA JURUSAN (80+ program studi) ─────────────
 const JURUSAN_LIST = [
-  // Sains & Teknologi
   'Teknik Informatika','Ilmu Komputer','Sistem Informasi','Teknik Elektro',
   'Teknik Sipil','Teknik Mesin','Teknik Industri','Teknik Kimia','Teknik Lingkungan',
   'Teknik Arsitektur','Teknik Perkapalan','Teknik Penerbangan','Teknik Biomedis',
-  'Matematika','Statistika','Fisika','Kimia','Biologi','Biokimia',
-  'Ilmu Aktuaria','Teknologi Informasi','Teknologi Pangan','Teknologi Pertanian',
-  'Agroteknologi','Agribisnis','Peternakan','Perikanan','Kehutanan','Geografi',
-  'Geologi','Geodesi','Astronomi','Meteorologi','Oceanografi',
-  // Kesehatan
+  'Matematika','Statistika','Fisika','Kimia','Biologi','Biokimia','Ilmu Aktuaria',
+  'Teknologi Informasi','Teknologi Pangan','Agroteknologi','Agribisnis',
+  'Peternakan','Perikanan','Kehutanan','Geografi','Geologi','Geodesi','Astronomi',
+  'Meteorologi','Oceanografi',
   'Kedokteran','Kedokteran Gigi','Keperawatan','Kebidanan','Farmasi',
   'Kesehatan Masyarakat','Gizi','Fisioterapi','Radiologi','Analis Kesehatan',
-  'Rekam Medis','Teknik Gigi','Ortotik Prostetik','Kesehatan Lingkungan',
-  'Administrasi Rumah Sakit','Kedokteran Hewan',
-  // Ekonomi & Bisnis
+  'Rekam Medis','Kesehatan Lingkungan','Kedokteran Hewan',
   'Manajemen','Akuntansi','Ekonomi Pembangunan','Bisnis Digital',
-  'Administrasi Bisnis','Manajemen Keuangan','Manajemen Pemasaran',
-  'Manajemen Sumber Daya Manusia','Ekonomi Syariah','Perbankan Syariah',
+  'Administrasi Bisnis','Ekonomi Syariah','Perbankan Syariah',
   'Keuangan dan Perbankan','Perpajakan','Manajemen Logistik',
-  // Sosial & Humaniora
   'Ilmu Komunikasi','Hubungan Internasional','Ilmu Politik','Sosiologi',
-  'Antropologi','Psikologi','Hukum','Ilmu Administrasi Negara',
-  'Ilmu Administrasi Bisnis','Kriminologi','Hubungan Masyarakat',
-  'Jurnalistik','Penyiaran','Ilmu Perpustakaan',
-  // Pendidikan
+  'Antropologi','Psikologi','Hukum','Ilmu Administrasi Negara','Kriminologi',
+  'Hubungan Masyarakat','Jurnalistik','Penyiaran','Ilmu Perpustakaan',
   'Pendidikan Guru Sekolah Dasar (PGSD)','Pendidikan Anak Usia Dini (PAUD)',
   'Pendidikan Bahasa Inggris','Pendidikan Bahasa Indonesia',
-  'Pendidikan Matematika','Pendidikan Fisika','Pendidikan Kimia',
-  'Pendidikan Biologi','Pendidikan Sejarah','Pendidikan Geografi',
-  'Pendidikan Ekonomi','Pendidikan Teknik Informatika',
-  'Bimbingan dan Konseling','Teknologi Pendidikan','Administrasi Pendidikan',
-  // Seni & Desain
+  'Pendidikan Matematika','Pendidikan Fisika','Pendidikan Kimia','Pendidikan Biologi',
+  'Bimbingan dan Konseling','Teknologi Pendidikan',
   'Desain Komunikasi Visual','Desain Produk','Desain Interior',
-  'Seni Rupa','Seni Murni','Kriya','Fotografi','Film dan Televisi',
-  'Animasi','Game Technology','Seni Musik','Seni Tari','Seni Teater',
-  // Bahasa & Sastra
+  'Seni Rupa','Fotografi','Film dan Televisi','Animasi','Game Technology',
   'Sastra Indonesia','Sastra Inggris','Sastra Jepang','Sastra Mandarin',
-  'Sastra Arab','Sastra Jerman','Sastra Prancis','Sastra Korea',
-  'Linguistik','Penerjemahan',
-  // Pariwisata & Perhotelan
-  'Pariwisata','Manajemen Perhotelan','Manajemen Destinasi Wisata',
-  'Kuliner','Seni Kuliner','Tata Boga','Tata Rias',
-  // Kedinasan & Militer
+  'Sastra Arab','Linguistik','Penerjemahan',
+  'Pariwisata','Manajemen Perhotelan','Tata Boga','Tata Rias',
   'Akuntansi Pemerintahan','Administrasi Pajak','Kepabeanan dan Cukai',
-  'Administrasi Keuangan Negara','Ilmu Pemerintahan','Ilmu Administrasi Negara',
-  'Manajemen Sumber Daya Manusia Aparatur','Statistika Pemerintahan',
-  'Komputasi Statistik','Meteorologi','Klimatologi','Geofisika',
-  'Teknik Navigasi Udara','Teknik Listrik Bandara','Teknik Mekanikal Bandara',
-  'Manajemen Transportasi Udara','Manajemen Transportasi Laut',
-  'Nautika','Teknika Kapal','Ketatalaksanaan Angkutan Laut',
+  'Ilmu Pemerintahan','Statistika Pemerintahan','Komputasi Statistik',
+  'Teknik Navigasi Udara','Teknik Listrik Bandara','Manajemen Transportasi Udara',
+  'Manajemen Transportasi Laut','Nautika','Teknika','Ketatalaksanaan Pelayaran Niaga',
   'Imigrasi','Pemasyarakatan','Pertanahan',
-  // Pelayaran & Maritim
-  'Nautika','Teknika','Ketatalaksanaan Pelayaran Niaga',
 ];
 
 // ── SEARCH KAMPUS ─────────────────────────────────────────
@@ -399,25 +328,36 @@ async function searchKampus(q) {
   const dd = document.getElementById('kampus-dd');
   if (q.length < 2) { dd.className = 'ac-dd'; return; }
   dd.className = 'ac-dd show';
-  dd.innerHTML = '<div class="ac-msg">Mencari di PDDikti...</div>';
-  clearTimeout(kampusTimeout);
-  kampusTimeout = setTimeout(async () => {
+  dd.innerHTML = '<div class="ac-msg">🔍 Mencari di PDDikti...</div>';
+  clearTimeout(kampusTimer);
+  kampusTimer = setTimeout(async () => {
     try {
-      const r = await fetch(`${PDDIKTI}/pt/search/${encodeURIComponent(q)}`, { signal: AbortSignal.timeout(4000) });
+      const r = await fetch(`${PDDIKTI}/pt/search/${encodeURIComponent(q)}`, {
+        signal: AbortSignal.timeout(5000),
+      });
       const j = await r.json();
-      const raw = j.data || j.pt || [];
+      const raw = j.data || j.pt || (Array.isArray(j) ? j : []);
       if (raw.length > 0) {
-        renderAc('kampus-dd', raw.slice(0,12).map(i => ({ label: i.nama||i.nama_pt||String(i), val: i.id||'' })), q, pilihKampus);
+        const items = raw.slice(0, 12).map(i => ({
+          label: i.nama || i.nama_pt || String(i),
+          val: i.id || '',
+        }));
+        renderAc('kampus-dd', items, q, pilihKampus);
         document.getElementById('kampus-manual-btn').className = 'btn-manual show';
         return;
       }
-    } catch {}
+    } catch(e) {
+      console.log('PDDikti timeout, using fallback');
+    }
     kampusFallback(q);
   }, 350);
 }
 
 function kampusFallback(q) {
-  const f = KAMPUS_LIST.filter(u => u.toLowerCase().includes(q.toLowerCase())).slice(0,15).map(u => ({ label: u, val: u }));
+  const f = KAMPUS_LIST
+    .filter(u => u.toLowerCase().includes(q.toLowerCase()))
+    .slice(0, 12)
+    .map(u => ({ label: u, val: u }));
   document.getElementById('kampus-manual-btn').className = 'btn-manual show';
   if (f.length === 0) {
     document.getElementById('kampus-dd').innerHTML = '<div class="ac-msg">Tidak ditemukan. Gunakan tombol tambah manual di bawah.</div>';
@@ -444,7 +384,7 @@ document.getElementById('kampus-input').addEventListener('blur', function() {
   setTimeout(() => {
     if (this.value.length >= 2 && !document.getElementById('kampus-pill').classList.contains('show'))
       document.getElementById('kampus-manual-btn').className = 'btn-manual show';
-  }, 200);
+  }, 300);
 });
 
 // ── SEARCH JURUSAN ────────────────────────────────────────
@@ -452,30 +392,41 @@ async function searchJurusan(q) {
   const dd = document.getElementById('jurusan-dd');
   if (q.length < 2) { dd.className = 'ac-dd'; return; }
   dd.className = 'ac-dd show';
-  dd.innerHTML = '<div class="ac-msg">Mencari program studi...</div>';
-  clearTimeout(jurusanTimeout);
-  jurusanTimeout = setTimeout(async () => {
+  dd.innerHTML = '<div class="ac-msg">🔍 Mencari program studi...</div>';
+  clearTimeout(jurusanTimer);
+  jurusanTimer = setTimeout(async () => {
     try {
-      const r = await fetch(`${PDDIKTI}/prodi/search/${encodeURIComponent(q)}`, { signal: AbortSignal.timeout(4000) });
+      const r = await fetch(`${PDDIKTI}/prodi/search/${encodeURIComponent(q)}`, {
+        signal: AbortSignal.timeout(5000),
+      });
       const j = await r.json();
-      const raw = j.data || j.prodi || [];
+      const raw = j.data || j.prodi || (Array.isArray(j) ? j : []);
       if (raw.length > 0) {
         const seen = new Set();
-        const list = raw.filter(i => {
-          const n = i.nama||i.nama_prodi||String(i);
-          if (seen.has(n)) return false; seen.add(n); return true;
-        }).slice(0,12).map(i => ({ label: i.nama||i.nama_prodi||String(i), val: i.id||'' }));
-        renderAc('jurusan-dd', list, q, pilihJurusan);
+        const items = raw
+          .filter(i => {
+            const n = i.nama || i.nama_prodi || String(i);
+            if (seen.has(n)) return false;
+            seen.add(n); return true;
+          })
+          .slice(0, 12)
+          .map(i => ({ label: i.nama || i.nama_prodi || String(i), val: i.id || '' }));
+        renderAc('jurusan-dd', items, q, pilihJurusan);
         document.getElementById('jurusan-manual-btn').className = 'btn-manual show';
         return;
       }
-    } catch {}
+    } catch(e) {
+      console.log('PDDikti prodi timeout, using fallback');
+    }
     jurusanFallback(q);
   }, 350);
 }
 
 function jurusanFallback(q) {
-  const f = JURUSAN_LIST.filter(p => p.toLowerCase().includes(q.toLowerCase())).slice(0,15).map(p => ({ label: p, val: p }));
+  const f = JURUSAN_LIST
+    .filter(p => p.toLowerCase().includes(q.toLowerCase()))
+    .slice(0, 12)
+    .map(p => ({ label: p, val: p }));
   document.getElementById('jurusan-manual-btn').className = 'btn-manual show';
   if (f.length === 0) {
     document.getElementById('jurusan-dd').innerHTML = '<div class="ac-msg">Tidak ditemukan. Gunakan tombol tambah manual.</div>';
@@ -502,7 +453,7 @@ document.getElementById('jurusan-input').addEventListener('blur', function() {
   setTimeout(() => {
     if (this.value.length >= 2 && !document.getElementById('jurusan-pill').classList.contains('show'))
       document.getElementById('jurusan-manual-btn').className = 'btn-manual show';
-  }, 200);
+  }, 300);
 });
 
 // ── RENDER AUTOCOMPLETE ───────────────────────────────────
@@ -513,16 +464,29 @@ function renderAc(ddId, items, q, onSelect) {
     dd.className = 'ac-dd show'; return;
   }
   dd.innerHTML = items.map(item => {
-    const hl = q ? item.label.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<span class="m">$1</span>') : item.label;
-    return `<div class="ac-item" onclick="(${onSelect.toString()})('${String(item.val).replace(/'/g,"\\'")}','${item.label.replace(/'/g,"\\'")}');document.getElementById('${ddId}').className='ac-dd'">${hl}</div>`;
+    const safe = item.label.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    const safeVal = String(item.val).replace(/'/g, "\\'");
+    const hl = q
+      ? item.label.replace(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')','gi'),'<span class="m">$1</span>')
+      : item.label;
+    return `<div class="ac-item" onclick="selectAcItem('${ddId}','${safeVal}','${safe}',${onSelect.name||'null'})">${hl}</div>`;
   }).join('');
   dd.className = 'ac-dd show';
 }
+
+// Wrapper to avoid inline function-in-string issues
+function selectAcItem(ddId, val, label, fnName) {
+  document.getElementById(ddId).className = 'ac-dd';
+  if (ddId === 'kampus-dd') pilihKampus(val, label);
+  else if (ddId === 'jurusan-dd') pilihJurusan(val, label);
+}
+
 document.addEventListener('click', e => {
-  if (!e.target.closest('.ac-wrap')) document.querySelectorAll('.ac-dd').forEach(d => d.className = 'ac-dd');
+  if (!e.target.closest('.ac-wrap'))
+    document.querySelectorAll('.ac-dd').forEach(d => d.className = 'ac-dd');
 });
 
-// ── UPLOAD SCREENSHOT ─────────────────────────────────────
+// ── UPLOAD ────────────────────────────────────────────────
 function handleUpload(input) {
   const file = input.files[0];
   if (!file) return;
@@ -543,17 +507,13 @@ function handleUpload(input) {
 }
 
 // ── SUBMIT ────────────────────────────────────────────────
-// ── GANTI fungsi submitStep() yang lama dengan ini ──────────
-// Perubahan: sekarang BENAR-BENAR mengirim data (termasuk screenshot)
-// ke /api/save-education saat itu juga, bukan cuma simpan ke localStorage.
-
-async function submitStep() {
+function submitStep() {
   let valid = true;
   const show = id => { document.getElementById(id).style.display = 'block'; valid = false; };
 
-  const kampus  = document.getElementById('kampus-input').value.trim();
-  const jurusan = document.getElementById('jurusan-input').value.trim();
-  const jenjang = document.getElementById('jenjang').value;
+  const kampus     = document.getElementById('kampus-input').value.trim();
+  const jurusan    = document.getElementById('jurusan-input').value.trim();
+  const jenjang    = document.getElementById('jenjang').value;
   const tahunMasuk = document.getElementById('tahun-masuk').value;
   const statusPend = document.getElementById('status-pend').value;
 
@@ -571,51 +531,9 @@ async function submitStep() {
 
   const btn = document.getElementById('btn-next');
   btn.disabled = true;
-  btn.textContent = 'Mengirim...';
+  btn.textContent = 'Menyimpan...';
 
-  try {
-    // ✅ INI YANG SEBELUMNYA TIDAK ADA — kirim langsung ke server
-    const res = await fetch('/api/save-education', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userId: userData.userId,
-        kampus, jurusan, jenjang,
-        tahun_masuk: parseInt(tahunMasuk),
-        status_pendidikan: statusPend,
-        education_screenshot: ssBase64,
-      }),
-    });
-    const data = await res.json();
-
-    if (!data.success) {
-      alert(data.error || 'Gagal menyimpan data pendidikan. Coba lagi.');
-      btn.disabled = false;
-      btn.textContent = 'Lanjutkan ke Profil';
-      return;
-    }
-
-    // Simpan juga ke localStorage untuk dipakai step berikutnya (kalau perlu)
-    const updatedUser = {
-      ...userData,
-      kampus, jurusan, jenjang,
-      tahun_masuk: parseInt(tahunMasuk),
-      status_pendidikan: statusPend,
-    };
-    localStorage.setItem('matchu_user', JSON.stringify(updatedUser));
-    localStorage.setItem('matchu_user_id', userData.userId || '');
-
-    window.location.href = 'register-step3.html';
-
-  } catch (err) {
-    console.error('submitStep error:', err);
-    alert('Gagal terhubung ke server. Coba lagi.');
-    btn.disabled = false;
-    btn.textContent = 'Lanjutkan ke Profil';
-  }
-}
-
-  // Simpan ke localStorage
+  // Simpan ke localStorage — dikirim ke server saat complete-registration (step4)
   const updatedUser = {
     ...userData,
     kampus, jurusan, jenjang,
