@@ -155,14 +155,16 @@ const { data: authData, error: authError } =
   });
 
 if (authError || !authData.user) {
-  console.error(authError);
+  console.error(
+    'AUTH CREATE USER ERROR:',
+    JSON.stringify(authError, null, 2)
+  );
 
   return NextResponse.json(
     {
       success: false,
-      message:
-        authError?.message ||
-        'Gagal membuat akun auth.',
+      message: authError?.message,
+      details: authError,
     },
     { status: 500 }
   );
