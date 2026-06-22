@@ -208,18 +208,18 @@ const { error: profileError } = await supabase
   });
 
 if (profileError) {
-  console.error(profileError);
-
-  await supabase.auth.admin.deleteUser(
-    userId
+  console.error(
+    'PROFILE ERROR FULL:',
+    JSON.stringify(profileError, null, 2)
   );
+
+  await supabase.auth.admin.deleteUser(userId);
 
   return NextResponse.json(
     {
       success: false,
-      message:
-        'Gagal menyimpan profil: ' +
-        profileError.message,
+      message: profileError.message,
+      details: profileError,
     },
     { status: 500 }
   );
