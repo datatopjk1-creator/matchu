@@ -1,60 +1,77 @@
-// app/api/letters/route.ts
-// GET  → ambil semua surat (dikirim + diterima) user
-// POST → kirim surat baru
-
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-// ── GET: ambil semua surat user ───────────────────────────
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get('userId');
     if (!userId) return NextResponse.json({ success: false, error: 'userId wajib.' }, { status: 400 });
 
-    // Surat yang DIKIRIM user ini
-    const { data: sent } = await supabase
+    // ── 1. Ambil surat DIKIRIM ────────────────────────────
+    const { data: sentRaw, error: sentErr } = await supabase
       .from('introduction_letters')
-      .select(`
-        id, message, status, reject_reason, chat_room_id, created_at, responded_at,
-        receiver:receiver_id (
-          id, nama_panggilan, nama, universitas, program_studi, jenjang,
-          profesi, kota_domisili, foto_url_1, trust_score, education_score_given,
-          tanggal_lahir, agama, target_menikah
-        )
-      `)
+      .select('id, message, status, reject_reason, chat_room_id, created_at, responded_at, receiver_id')
       .eq('sender_id', userId)
       .order('created_at', { ascending: false });
 
-    // Surat yang DITERIMA user ini
-    const { data: received } = await supabase
+    if (sentErr) {
+      console.error('sentErr:', sentErr);
+      return NextResponse.json({ success: false, error: sentErr.message }, { status: 500 });
+    }
+
+    // ── 2. Ambil surat DITERIMA ───────────────────────────
+    const { data: receivedRaw, error: receivedErr } = await supabase
       .from('introduction_letters')
-      .select(`
-        id, message, status, reject_reason, chat_room_id, created_at, responded_at,
-        sender:sender_id (
-          id, nama_panggilan, nama, universitas, program_studi, jenjang,
-          profesi, kota_domisili, foto_url_1, trust_score, education_score_given,
-          tanggal_lahir, agama, target_menikah
-        )
-      `)
+      .select('id, message, status, reject_reason, chat_room_id, created_at, responded_at, sender_id')
       .eq('receiver_id', userId)
       .order('created_at', { ascending: false });
 
-    // Hitung stats
+    if (receivedErr) {
+      console.error('receivedErr:', receivedErr);
+      return NextResponse.json({ success: false, error: receivedErr.message }, { status: 500 });
+    }
+
+    // ── 3. Ambil semua profile yang dibutuhkan ────────────
+    const receiverIds = (sentRaw || []).map(s => s.receiver_id).filter(Boolean);
+    const senderIds   = (receivedRaw || []).map(r => r.sender_id).filter(Boolean);
+    const allIds      = [...new Set([...receiverIds, ...senderIds])];
+
+    let profilesMap: Record<string, any> = {};
+
+    if (allIds.length > 0) {
+      const { data: profiles, error: profErr } = await supabase
+        .from('profiles')
+        .select('id, nama_panggilan, nama, universitas, program_studi, jenjang, profesi, kota_domisili, foto_url_1, trust_score, education_score_given, tanggal_lahir, agama, target_menikah')
+        .in('id', allIds);
+
+      if (profErr) {
+        console.error('profErr:', profErr);
+      }
+
+      (profiles || []).forEach(p => { profilesMap[p.id] = p; });
+    }
+
+    // ── 4. Gabungkan data ─────────────────────────────────
+    const sent = (sentRaw || []).map(s => ({
+      ...s,
+      receiver: profilesMap[s.receiver_id] || null,
+    }));
+
+    const received = (receivedRaw || []).map(r => ({
+      ...r,
+      sender: profilesMap[r.sender_id] || null,
+    }));
+
+    // ── 5. Stats ──────────────────────────────────────────
     const stats = {
-      total_sent:     sent?.length || 0,
-      pending:        sent?.filter(s => s.status === 'pending').length || 0,
-      accepted:       sent?.filter(s => s.status === 'accepted').length || 0,
-      rejected:       sent?.filter(s => s.status === 'rejected').length || 0,
-      incoming_new:   received?.filter(r => r.status === 'pending').length || 0,
+      total_sent:   sent.length,
+      pending:      sent.filter(s => s.status === 'pending').length,
+      accepted:     sent.filter(s => s.status === 'accepted').length,
+      rejected:     sent.filter(s => s.status === 'rejected').length,
+      incoming_new: received.filter(r => r.status === 'pending').length,
     };
 
-    return NextResponse.json({
-      success:  true,
-      sent:     sent || [],
-      received: received || [],
-      stats,
-    });
+    return NextResponse.json({ success: true, sent, received, stats });
 
   } catch(err) {
     console.error('letters GET error:', err);
