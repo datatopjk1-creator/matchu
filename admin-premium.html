@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Premium | Matchu Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{ margin:0; padding:0; box-sizing:border-box; }
+:root{
+  --brand:#B71C1C; --brand-dark:#7F0000; --brand-light:#FFE7E7;
+  --sidebar:#2B0A0A; --bg:#F7F4F4; --white:#fff; --text:#222; --text2:#777; --border:#E8E8E8;
+}
+body{ font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+.sidebar{
+  position:fixed; left:0; top:0; width:280px; height:100vh;
+  background:var(--sidebar); overflow-y:auto;
+  transition:transform .25s cubic-bezier(.4,0,.2,1); z-index:999;
+}
+.sidebar.collapsed{ transform:translateX(-100%); }
+.sidebar-overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:998; }
+.sidebar-overlay.active{ display:block; }
+
+.logo{ padding:28px; border-bottom:1px solid rgba(255,255,255,.08); display:flex; align-items:flex-start; justify-content:space-between; }
+.logo h1{ font-family:'Playfair Display',serif; color:white; font-size:28px; }
+.logo span{ display:block; margin-top:5px; font-size:11px; letter-spacing:2px; color:#ccc; }
+.sidebar-close-btn{ width:32px; height:32px; border:none; background:rgba(255,255,255,.08); border-radius:8px; color:#ececec; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.sidebar-close-btn:hover{ background:rgba(255,255,255,.18); }
+
+.nav{ padding:20px 0; }
+.nav-title{ padding:18px 28px 8px; font-size:11px; letter-spacing:2px; color:#999; text-transform:uppercase; }
+.nav a{ display:flex; align-items:center; gap:12px; padding:14px 28px; text-decoration:none; color:#eee; font-size:14px; }
+.nav a:hover{ background:rgba(255,255,255,.05); }
+.nav a.active{ background:rgba(183,28,28,.25); border-left:4px solid #ff6b6b; }
+
+.main{ margin-left:0; }
+
+.topbar{ height:75px; background:white; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; padding:0 28px; }
+.topbar-left-wrap{ display:flex; align-items:center; }
+.hamburger-btn{ width:42px; height:42px; border:1px solid var(--border); border-radius:12px; background:#fafafa; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; flex-shrink:0; margin-right:14px; }
+.hamburger-btn span{ display:block; width:18px; height:2px; background:var(--text); border-radius:2px; }
+.hamburger-btn:hover span{ background:var(--brand); }
+.topbar-left h2{ font-size:24px; }
+.topbar-left p{ font-size:13px; color:#777; }
+.avatar{ width:42px; height:42px; border-radius:50%; background:var(--brand); display:flex; align-items:center; justify-content:center; color:white; font-weight:700; }
+
+.content{ padding:28px; }
+
+.stats-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:24px; }
+.stat-card{ background:white; padding:22px; border-radius:20px; border:1px solid var(--border); }
+.stat-label{ font-size:13px; color:#777; }
+.stat-number{ font-size:34px; font-weight:700; color:var(--brand); margin-top:10px; }
+
+.section-card{ background:white; border-radius:22px; padding:24px; border:1px solid var(--border); margin-bottom:24px; }
+.section-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
+.section-title{ font-size:24px; font-weight:700; }
+
+.admin-table{ width:100%; border-collapse:collapse; }
+.admin-table th{ background:#fafafa; padding:14px; text-align:left; border-bottom:1px solid #eee; font-size:13px; }
+.admin-table td{ padding:16px 14px; border-bottom:1px solid #eee; font-size:14px; }
+.badge-premium{ padding:5px 10px; border-radius:20px; background:#FFF4D8; color:#A56900; font-size:12px; font-weight:600; }
+.btn{ border:none; padding:8px 14px; border-radius:10px; cursor:pointer; font-size:12px; font-weight:600; font-family:'Inter',sans-serif; }
+.btn-view{ background:#f1f1f1; }
+.loading-text, .empty-text{ text-align:center; padding:30px; color:#777; }
+.search-area input{ padding:12px 14px; border:1px solid #ddd; border-radius:12px; width:260px; font-family:'Inter',sans-serif; }
+</style>
+</head>
+
+<body>
+
+<script>
+  (function(){
+    const userData = JSON.parse(localStorage.getItem('matchu_user') || 'null');
+    if (!userData || !userData.isAdmin) window.location.href = 'login.html';
+  })();
+</script>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar collapsed" id="sidebar">
+<div class="logo">
+<div><h1>MATCHU</h1><span>ADMIN PANEL</span></div>
+<button class="sidebar-close-btn" id="sidebarCloseBtn">✕</button>
+</div>
+<div class="nav">
+<div class="nav-title">Dashboard</div>
+<a href="admin-dashboard.html">📊 Dashboard</a>
+<div class="nav-title">User</div>
+<a href="admin-users.html">👥 Semua User</a>
+<a href="admin-premium.html" class="active">⭐ User Premium</a>
+<a href="admin-suspended.html">🚫 User Ditangguhkan</a>
+<div class="nav-title">Verifikasi</div>
+<a href="admin-verifikasi-pendidikan.html">🎓 Verifikasi Pendidikan</a>
+<div class="nav-title">Monitoring</div>
+<a href="admin-report.html">🚨 Report User</a>
+<a href="admin-matchmaking.html">💌 Aktivitas Matchmaking</a>
+<div class="nav-title">Keuangan</div>
+<a href="admin-pendapatan.html">💰 Pendapatan</a>
+<a href="admin-subscription.html">📦 Subscription</a>
+<div class="nav-title">Sistem</div>
+<a href="admin-pengaturan.html">⚙ Pengaturan</a>
+<a href="#" id="logoutBtn">🚪 Logout</a>
+</div>
+</aside>
+
+<div class="main">
+
+<header class="topbar">
+<div class="topbar-left-wrap">
+<button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
+<div class="topbar-left">
+<h2>User Premium</h2>
+<p>Kelola seluruh pelanggan premium Matchu</p>
+</div>
+</div>
+<div class="avatar" id="adminAvatar">A</div>
+</header>
+
+<div class="content">
+
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-label">Premium Aktif</div><div class="stat-number" id="statAktif">–</div></div>
+<div class="stat-card"><div class="stat-label">Pendapatan Bulan Ini</div><div class="stat-number" id="statBulanIni" style="font-size:24px;">–</div></div>
+<div class="stat-card"><div class="stat-label">Upgrade Hari Ini</div><div class="stat-number" id="statUpgradeHariIni">–</div></div>
+<div class="stat-card"><div class="stat-label">Lifetime Revenue</div><div class="stat-number" id="statLifetime" style="font-size:24px;">–</div></div>
+</div>
+
+<div class="section-card">
+<div class="section-header">
+<div>
+<div class="section-title">⭐ User Premium Aktif</div>
+<div style="font-size:13px;color:#777;margin-top:4px;" id="activeCountLabel">Memuat...</div>
+</div>
+<div class="search-area">
+<input type="text" id="searchPremium" placeholder="Cari nama, email, atau paket...">
+</div>
+</div>
+<table class="admin-table">
+<thead><tr><th>User</th><th>Email</th><th>Paket</th><th>Mulai</th><th>Berakhir</th><th>Harga</th></tr></thead>
+<tbody id="activeTable"><tr><td colspan="6" class="loading-text">Memuat data...</td></tr></tbody>
+</table>
+</div>
+
+<div class="section-card">
+<div class="section-header"><div class="section-title">⌛ Premium Akan Berakhir (≤14 hari)</div></div>
+<table class="admin-table">
+<thead><tr><th>User</th><th>Paket</th><th>Sisa Hari</th><th>Berakhir</th></tr></thead>
+<tbody id="expiringTable"><tr><td colspan="4" class="loading-text">Memuat data...</td></tr></tbody>
+</table>
+</div>
+
+<div class="section-card">
+<div class="section-header"><div class="section-title">💳 Riwayat Pembayaran Premium</div></div>
+<table class="admin-table">
+<thead><tr><th>User</th><th>Paket</th><th>Nominal</th><th>Tanggal</th><th>Status</th></tr></thead>
+<tbody id="paymentTable"><tr><td colspan="5" class="loading-text">Memuat data...</td></tr></tbody>
+</table>
+</div>
+
+<div class="section-card">
+<div class="section-header"><div class="section-title">📈 Grafik Pendapatan Premium (6 Bulan)</div></div>
+<div id="revenueChart" style="height:280px;display:flex;align-items:flex-end;gap:16px;padding:20px;">
+<div class="loading-text">Memuat grafik...</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<script>
+const API_BASE = '/api/admin';
+let allActive = [];
+
+// ── SIDEBAR TOGGLE ─────────────────────────────────────
+const sidebarEl = document.getElementById('sidebar');
+const sidebarOverlayEl = document.getElementById('sidebarOverlay');
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+function openSidebar(){ sidebarEl.classList.remove('collapsed'); sidebarOverlayEl.classList.add('active'); }
+function closeSidebar(){ sidebarEl.classList.add('collapsed'); sidebarOverlayEl.classList.remove('active'); }
+hamburgerBtn.addEventListener('click', () => sidebarEl.classList.contains('collapsed') ? openSidebar() : closeSidebar());
+document.getElementById('sidebarCloseBtn').addEventListener('click', closeSidebar);
+sidebarOverlayEl.addEventListener('click', closeSidebar);
+
+document.getElementById('logoutBtn').addEventListener('click', function(e){
+  e.preventDefault();
+  if (confirm('Yakin ingin logout?')) {
+    localStorage.removeItem('matchu_user_id');
+    localStorage.removeItem('matchu_token');
+    localStorage.removeItem('matchu_refresh');
+    localStorage.removeItem('matchu_user');
+    window.location.href = 'login.html';
+  }
+});
+
+(function(){
+  const userData = JSON.parse(localStorage.getItem('matchu_user') || 'null');
+  if (userData) document.getElementById('adminAvatar').textContent = (userData.nama || userData.email || 'A').charAt(0).toUpperCase();
+})();
+
+function escapeHtml(str){ if(!str) return ''; return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function formatTanggal(iso){ if(!iso) return '-'; return new Date(iso).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' }); }
+function formatRupiah(n){ return n != null ? 'Rp ' + n.toLocaleString('id-ID') : '-'; }
+
+async function loadPremiumData(){
+  try {
+    const res = await fetch(`${API_BASE}/premium`);
+    const data = await res.json();
+
+    if (!data.success) {
+      document.getElementById('activeTable').innerHTML = `<tr><td colspan="6" class="empty-text">Gagal memuat data: ${escapeHtml(data.error)}</td></tr>`;
+      return;
+    }
+
+    // Stats
+    document.getElementById('statAktif').textContent = data.stats.premiumAktif.toLocaleString('id-ID');
+    document.getElementById('statBulanIni').textContent = formatRupiah(data.stats.pendapatanBulanIni);
+    document.getElementById('statUpgradeHariIni').textContent = data.stats.upgradeHariIni.toLocaleString('id-ID');
+    document.getElementById('statLifetime').textContent = formatRupiah(data.stats.lifetimeRevenue);
+
+    // Active premium
+    allActive = data.activePremium;
+    renderActiveTable(allActive);
+
+    // Expiring soon
+    const expTbody = document.getElementById('expiringTable');
+    if (data.expiringSoon.length === 0) {
+      expTbody.innerHTML = '<tr><td colspan="4" class="empty-text">Tidak ada yang akan berakhir dalam 14 hari.</td></tr>';
+    } else {
+      expTbody.innerHTML = data.expiringSoon.map(p => `
+        <tr>
+          <td>${escapeHtml(p.nama)}</td>
+          <td><span class="badge-premium">${escapeHtml(p.package || '-')}</span></td>
+          <td style="color:#e67e22;font-weight:600;">${p.days_left} Hari</td>
+          <td>${formatTanggal(p.expires_at)}</td>
+        </tr>`).join('');
+    }
+
+    // Payment history
+    const payTbody = document.getElementById('paymentTable');
+    if (data.paymentHistory.length === 0) {
+      payTbody.innerHTML = '<tr><td colspan="5" class="empty-text">Belum ada riwayat pembayaran.</td></tr>';
+    } else {
+      payTbody.innerHTML = data.paymentHistory.map(p => `
+        <tr>
+          <td>${escapeHtml(p.nama)}</td>
+          <td><span class="badge-premium">${escapeHtml(p.package || '-')}</span></td>
+          <td>${formatRupiah(p.amount)}</td>
+          <td>${formatTanggal(p.paid_at)}</td>
+          <td><span style="color:#27ae60;font-weight:600;">Berhasil</span></td>
+        </tr>`).join('');
+    }
+
+    // Revenue chart
+    const maxRevenue = Math.max(...data.monthlyRevenue.map(m => m.total), 1);
+    document.getElementById('revenueChart').innerHTML = data.monthlyRevenue.map(m => {
+      const heightPct = Math.max((m.total / maxRevenue) * 100, 2);
+      return `
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
+          <div style="font-size:11px;color:#777;margin-bottom:4px;">${formatRupiah(m.total)}</div>
+          <div style="width:100%;height:${heightPct}%;background:#B71C1C;border-radius:10px 10px 0 0;min-height:4px;"></div>
+          <div style="text-align:center;margin-top:8px;font-size:13px;">${m.month}</div>
+        </div>`;
+    }).join('');
+
+  } catch(e) {
+    console.error(e);
+    document.getElementById('activeTable').innerHTML = '<tr><td colspan="6" class="empty-text">Gagal terhubung ke server.</td></tr>';
+  }
+}
+
+function renderActiveTable(list){
+  document.getElementById('activeCountLabel').textContent = `${list.length} pelanggan premium aktif`;
+  const tbody = document.getElementById('activeTable');
+  if (list.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-text">Tidak ada premium aktif.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map(p => `
+    <tr>
+      <td>${escapeHtml(p.nama)}</td>
+      <td>${escapeHtml(p.email)}</td>
+      <td><span class="badge-premium">${escapeHtml(p.package || '-')}</span></td>
+      <td>${formatTanggal(p.started_at)}</td>
+      <td>${formatTanggal(p.expires_at)}</td>
+      <td>${formatRupiah(p.amount)}</td>
+    </tr>`).join('');
+}
+
+document.getElementById('searchPremium').addEventListener('input', function(){
+  const q = this.value.toLowerCase();
+  const filtered = allActive.filter(p =>
+    (p.nama || '').toLowerCase().includes(q) ||
+    (p.email || '').toLowerCase().includes(q) ||
+    (p.package || '').toLowerCase().includes(q)
+  );
+  renderActiveTable(filtered);
+});
+
+loadPremiumData();
+</script>
+
+</body>
+</html>

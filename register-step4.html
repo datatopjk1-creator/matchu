@@ -120,14 +120,14 @@ body{ background:var(--bg); font-family:'Inter',sans-serif; color:var(--text); }
   </div>
 
   <button class="btn" id="btn-submit" onclick="submitRegistration()">Selesaikan Pendaftaran</button>
-  <div class="back-link"><a href="complete-profile.html">Kembali</a></div>
+  <div class="back-link"><a href="register-step3.html">Kembali</a></div>
 </div>
 </div>
 
 <script>
-// ── Cek sesi ─────────────────────────────────────────────────────────────
-const userData = JSON.parse(localStorage.getItem('matchu_user') || '{}');
-if (!userData.email || !userData.userId) {
+// ── Cek sesi (FIXED: baca 'matchu_user_id' langsung) ──────────────────────
+const matchuUserId = localStorage.getItem('matchu_user_id');
+if (!matchuUserId) {
   alert('Sesi tidak ditemukan. Silakan mulai dari awal.');
   window.location.href = 'register.html';
 }
@@ -168,9 +168,8 @@ function hapusFoto(e, boxId, inputId, previewId, placeholderId) {
   else foto2Base64 = null;
 }
 
-// ── Submit ────────────────────────────────────────────────────────────────
+// ── Submit (FIXED) ──────────────────────────────────────────────────────────
 async function submitRegistration() {
-  // Validasi
   if (!foto1Base64) {
     document.getElementById('foto-err').style.display = 'block';
     return;
@@ -185,6 +184,14 @@ async function submitRegistration() {
     return;
   }
 
+  // ✅ FIXED: ambil userId langsung, bukan dari objek 'matchu_user' yang sudah dihapus
+  const userId = localStorage.getItem('matchu_user_id');
+  if (!userId) {
+    alert('Sesi tidak ditemukan. Silakan mulai dari awal.');
+    window.location.href = 'register.html';
+    return;
+  }
+
   const btn = document.getElementById('btn-submit');
   btn.disabled = true;
   btn.textContent = 'Mendaftarkan akun...';
@@ -194,7 +201,7 @@ async function submitRegistration() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        ...userData,
+        userId: userId, // ✅ FIXED
         instagram: ig.replace('@', ''),
         foto1: foto1Base64,
         foto2: foto2Base64,
@@ -204,9 +211,7 @@ async function submitRegistration() {
     const data = await res.json();
 
     if (data.success) {
-      // Simpan hanya userId untuk dashboard, hapus semua data registrasi
-      localStorage.setItem('matchu_user_id', data.userId || userData.userId);
-      localStorage.removeItem('matchu_user');
+      localStorage.setItem('matchu_user_id', data.userId || userId); // ✅ FIXED
       window.location.href = 'dashboard.html';
     } else {
       alert('Gagal mendaftar: ' + (data.error || 'Coba lagi.'));
