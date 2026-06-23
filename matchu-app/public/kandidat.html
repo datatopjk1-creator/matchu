@@ -404,10 +404,23 @@ let allCandidates = []; // full list for client-side filter
 let isPremium = false;
 let filterOptions = {};
 let currentModalIdx = null;
+let currentTab = 'rekomendasi';
+let sentLetterIds = new Set(); // track kandidat yang sudah dikirim surat
 
 // ── LOAD ──────────────────────────────────────────────────
 async function loadAll() {
-  await Promise.all([loadKandidats(), loadUserInfo()]);
+  await Promise.all([loadKandidats(), loadUserInfo(), loadSentLetterIds()]);
+}
+
+// Load surat yang sudah dikirim agar kandidat tidak bisa dikirim 2x
+async function loadSentLetterIds() {
+  try {
+    const res = await fetch(`/api/letters?userId=${userId}`);
+    const data = await res.json();
+    if (data.success) {
+      sentLetterIds = new Set((data.sent || []).map(l => l.receiver?.id || l.receiver_id).filter(Boolean));
+    }
+  } catch(e) {}
 }
 
 async function loadKandidats() {
@@ -521,10 +534,10 @@ function renderGrid(list) {
         </div>
         <div class="k-actions">
           <button class="k-btn-sec" onclick="event.stopPropagation();openModal(${idx})">Lihat Profil</button>
-          <button class="k-btn-pri" onclick="event.stopPropagation();openModalSurat(${idx})">
-            <svg fill="none" viewBox="0 0 24 24"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg>
-            Perkenalan
-          </button>
+          ${sentLetterIds.has((p.id||''))
+            ? '<button class="k-btn-pri" style="background:#888;cursor:default;" disabled>✓ Surat Terkirim</button>'
+            : `<button class="k-btn-pri" onclick="event.stopPropagation();openModalSurat(${idx})"><svg fill="none" viewBox="0 0 24 24"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg>Perkenalan</button>`
+          }
         </div>
       </div>
     </div>`;
@@ -543,6 +556,7 @@ function showEmpty(msg) {
 
 // ── TABS ──────────────────────────────────────────────────
 function switchTab(btn, type) {
+  currentTab = type;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   const isCari = type === 'cari';
@@ -721,6 +735,12 @@ function openModal(idx) {
   document.getElementById('modalBox').scrollTop = 0;
 }
 function openModalSurat(idx) {
+  const c = candidates[idx] || allCandidates[idx];
+  const p = c?.profiles || c;
+  if (sentLetterIds.has(p?.id||'')) {
+    showToast('Kamu sudah mengirim surat ke kandidat ini.');
+    return;
+  }
   openModal(idx);
   setTimeout(() => {
     document.getElementById('suratForm').classList.add('open');
@@ -732,9 +752,51 @@ function closeModal() { document.getElementById('profileModal').classList.remove
 document.getElementById('profileModal').addEventListener('click', e => { if (e.target === document.getElementById('profileModal')) closeModal(); });
 document.getElementById('modalSuratBtn').addEventListener('click', () => { if (currentModalIdx !== null) openModalSurat(currentModalIdx); });
 document.getElementById('suratText').addEventListener('input', function() { document.getElementById('suratCounter').textContent = this.value.length; });
-function sendSurat() {
-  if (!document.getElementById('suratText').value.trim()) { showToast('Tulis surat perkenalan terlebih dahulu.'); return; }
-  closeModal(); showToast('✓ Surat terkirim! Menunggu respon kandidat.');
+async function sendSurat() {
+  const msg = document.getElementById('suratText').value.trim();
+  if (!msg || msg.length < 20) { showToast('Tulis surat minimal 20 karakter.'); return; }
+
+  const c = candidates[currentModalIdx] || allCandidates[currentModalIdx];
+  if (!c) return;
+  const receiverId = (c.profiles || c).id;
+  if (!receiverId) { showToast('Kandidat tidak valid.'); return; }
+
+  const sendBtn = document.querySelector('.surat-send');
+  sendBtn.disabled = true;
+  sendBtn.textContent = 'Mengirim...';
+
+  try {
+    const res = await fetch('/api/letters', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ senderId: userId, receiverId, message: msg }),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      // Tandai kandidat ini sudah dikirim surat
+      sentLetterIds.add(receiverId);
+      closeModal();
+      showToast('✓ Surat terkirim! Menunggu respon kandidat.');
+      // Hapus kandidat dari grid setelah kirim
+      if (currentTab === 'rekomendasi') {
+        candidates = candidates.filter(c2 => (c2.profiles||c2).id !== receiverId);
+        allCandidates = allCandidates.filter(c2 => (c2.profiles||c2).id !== receiverId);
+        renderGrid(candidates);
+        document.getElementById('bannerCount').textContent = candidates.length;
+        document.getElementById('navBadge').textContent = candidates.length;
+      }
+    } else {
+      showToast('Gagal: ' + (data.error || 'Coba lagi.'));
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Kirim Surat →';
+    }
+  } catch(e) {
+    console.error(e);
+    showToast('Gagal terhubung ke server.');
+    sendBtn.disabled = false;
+    sendBtn.textContent = 'Kirim Surat →';
+  }
 }
 
 // ── HELPERS ───────────────────────────────────────────────
