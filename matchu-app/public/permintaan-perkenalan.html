@@ -11,7 +11,6 @@
   --brand:#7A2236;--brand-dark:#5E1A2A;--brand-light:#f9f0f3;--brand-mid:#c4677e;
   --bg:#F5F2EF;--white:#fff;--text:#1C1C1E;--text-2:#6B7280;--border:#E8E3DF;
   --topbar-h:68px;--radius:16px;--shadow:0 2px 16px rgba(0,0,0,0.06);
-  --green:#1ea672;--gold:#f59e0b;
 }
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:100;}
@@ -32,7 +31,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .sidebar-footer{padding:16px;border-top:1px solid var(--border);}
 .sidebar-user{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:var(--bg);}
 .s-avatar{width:36px;height:36px;border-radius:50%;background:var(--brand);color:white;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.s-avatar img{width:100%;height:100%;object-fit:cover;}
+.s-avatar img,.t-avatar img{width:100%;height:100%;object-fit:cover;}
 
 /* TOPBAR */
 .topbar{position:sticky;top:0;z-index:50;height:var(--topbar-h);background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;}
@@ -46,16 +45,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .notif-dot.show{display:block;}
 .user-pill{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 6px;border:1px solid var(--border);border-radius:50px;background:none;cursor:pointer;}
 .t-avatar{width:32px;height:32px;border-radius:50%;background:var(--brand);color:white;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.t-avatar img,.s-avatar img{width:100%;height:100%;object-fit:cover;}
 .t-name{font-size:13px;font-weight:600;}
-.notif-dropdown{position:absolute;top:calc(var(--topbar-h)+6px);right:20px;width:310px;background:white;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.14);border:1px solid var(--border);z-index:300;display:none;}
-.notif-dropdown.open{display:block;}
-.notif-drop-head{padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
-.notif-drop-title{font-size:15px;font-weight:700;}
-.notif-drop-item{display:flex;align-items:flex-start;gap:12px;padding:13px 18px;border-bottom:1px solid var(--border);}
-.notif-drop-item:last-child{border-bottom:none;}
-.notif-drop-text{font-size:13px;line-height:1.5;}
-.notif-drop-time{font-size:11px;color:var(--text-2);margin-top:2px;}
 
 /* CONTENT */
 .content{padding:28px 28px 60px;max-width:1100px;}
@@ -101,10 +91,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .card-top-sub{font-size:13px;color:var(--text-2);}
 
 /* LETTER CARD */
-.letter-card{display:flex;align-items:flex-start;gap:16px;padding:18px 22px;border-bottom:1px solid var(--border);transition:background .1s;}
+.letter-card{display:flex;align-items:flex-start;gap:16px;padding:18px 22px;border-bottom:1px solid var(--border);transition:background .1s, opacity .3s, transform .3s;}
 .letter-card:last-child{border-bottom:none;}
 .letter-card:hover{background:#fdf9f9;}
-.lc-avatar{width:52px;height:52px;border-radius:14px;background:repeating-linear-gradient(135deg,#d8d0d3 0,#d8d0d3 4px,#ede8ea 4px,#ede8ea 8px);display:flex;align-items:center;justify-content:center;font-size:10px;color:#b0a0a5;font-weight:600;text-align:center;line-height:1.3;flex-shrink:0;overflow:hidden;}
+.letter-card.removing{opacity:0;transform:translateX(40px);pointer-events:none;}
+.lc-avatar{width:52px;height:52px;border-radius:14px;background:repeating-linear-gradient(135deg,#d8d0d3 0,#d8d0d3 4px,#ede8ea 4px,#ede8ea 8px);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--brand);flex-shrink:0;overflow:hidden;}
 .lc-avatar img{width:100%;height:100%;object-fit:cover;}
 .lc-body{flex:1;min-width:0;}
 .lc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px;}
@@ -131,15 +122,25 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 /* ACTION BUTTONS */
 .btn-primary{padding:8px 18px;background:var(--brand);color:white;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;}
 .btn-primary:hover{background:var(--brand-dark);}
-.btn-outline{padding:8px 18px;background:transparent;color:var(--brand);border:1.5px solid var(--brand);border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;}
-.btn-outline:hover{background:var(--brand-light);}
+.btn-primary:disabled{background:#ccc;cursor:not-allowed;}
 .btn-chat{padding:8px 18px;background:linear-gradient(130deg,var(--brand),#9E304D);color:white;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.15s;}
 .btn-chat:hover{opacity:.9;}
 .btn-chat svg{width:13px;height:13px;stroke:white;}
-.btn-reject{padding:8px 18px;background:transparent;color:#CF1322;border:1.5px solid #ffa39e;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;}
+.btn-reject{padding:8px 18px;background:transparent;color:#CF1322;border:1.5px solid #fca5a5;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;}
 .btn-reject:hover{background:#FFF1F0;}
 .btn-view{padding:8px 14px;background:var(--bg);color:var(--text-2);border:1px solid var(--border);border-radius:9px;font-size:13px;cursor:pointer;transition:.15s;}
 .btn-view:hover{border-color:var(--brand-mid);color:var(--brand);}
+
+/* SUCCESS OVERLAY — animasi setelah terima */
+.accept-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:800;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s;}
+.accept-overlay.show{opacity:1;}
+.accept-card{background:white;border-radius:24px;padding:36px 40px;text-align:center;max-width:380px;width:90%;transform:scale(.85);transition:transform .35s cubic-bezier(.34,1.56,.64,1);}
+.accept-overlay.show .accept-card{transform:scale(1);}
+.accept-icon{font-size:52px;margin-bottom:12px;}
+.accept-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--brand);margin-bottom:6px;}
+.accept-sub{font-size:14px;color:var(--text-2);line-height:1.7;margin-bottom:22px;}
+.accept-btn{width:100%;padding:13px;background:var(--brand);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s;}
+.accept-btn:hover{background:var(--brand-dark);}
 
 /* MODAL TOLAK */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;align-items:center;justify-content:center;padding:20px;}
@@ -164,22 +165,18 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .prof-item-label{font-size:11px;color:var(--text-2);font-weight:600;text-transform:uppercase;margin-bottom:3px;}
 .prof-item-value{font-size:13px;font-weight:700;}
 
-/* EMPTY */
+/* EMPTY & SKELETON */
 .empty-state{text-align:center;padding:48px 20px;}
 .empty-icon{font-size:44px;margin-bottom:12px;}
 .empty-title{font-size:17px;font-weight:700;margin-bottom:6px;}
 .empty-desc{font-size:14px;color:var(--text-2);line-height:1.7;max-width:360px;margin:0 auto;}
-
-/* SKELETON */
 .skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:8px;}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-/* REALTIME PULSE */
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 .realtime-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;animation:pulse 2s infinite;margin-right:6px;}
 
 /* TOAST */
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--brand);color:white;padding:13px 28px;border-radius:50px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.2);opacity:0;transition:opacity .3s;pointer-events:none;}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--brand);color:white;padding:13px 28px;border-radius:50px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.2);opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
 .toast.show{opacity:1;}
 
 @media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr);}.content{padding:16px 16px 60px;}.page-banner{flex-direction:column;align-items:flex-start;}.banner-stats{width:100%;}.lc-head{flex-direction:column;gap:8px;}}
@@ -198,7 +195,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <a href="dashboard.html" class="nav-item"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><rect x="3" y="3" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.8"/></svg></span>Dashboard</a>
     <a href="profil.html" class="nav-item"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>Profil Saya</a>
     <a href="kandidat.html" class="nav-item"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M2 20c0-3.3 3.1-6 7-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="15" r="4" stroke="currentColor" stroke-width="1.8"/></svg></span>Kandidat</a>
-    <a href="permintaan-perkenalan.html" class="nav-item active"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg></span>Permintaan Perkenalan<span class="nav-badge" id="navBadgeLetter">0</span></a>
+    <a href="permintaan-perkenalan.html" class="nav-item active"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg></span>Permintaan Perkenalan<span class="nav-badge" id="navBadgeLetter" style="display:none">0</span></a>
     <a href="chat.html" class="nav-item"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>Chat</a>
     <div class="nav-label" style="margin-top:8px">Akun</div>
     <a href="premium.html" class="nav-item"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>Premium</a>
@@ -208,10 +205,20 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <div class="sidebar-footer">
     <div class="sidebar-user">
       <div class="s-avatar" id="sidebarAvatar">?</div>
-      <div><div style="font-size:13px;font-weight:600;" id="sidebarName">Memuat...</div><div style="font-size:11px;color:var(--text-2);">Member Matchu</div></div>
+      <div><div style="font-size:13px;font-weight:600;" id="sidebarName">Memuat...</div><div style="font-size:11px;color:var(--text-2);" id="sidebarRole">Member Matchu</div></div>
     </div>
   </div>
 </aside>
+
+<!-- SUCCESS OVERLAY (muncul setelah terima surat) -->
+<div class="accept-overlay" id="acceptOverlay">
+  <div class="accept-card">
+    <div class="accept-icon">🎉</div>
+    <div class="accept-title">Perkenalan Diterima!</div>
+    <div class="accept-sub" id="acceptSubText">Chat dengan kandidat kini terbuka. Mulai percakapan sekarang!</div>
+    <button class="accept-btn" id="acceptChatBtn">Buka Chat Sekarang →</button>
+  </div>
+</div>
 
 <!-- MODAL TOLAK -->
 <div class="modal-bg" id="rejectModal">
@@ -227,7 +234,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   </div>
 </div>
 
-<!-- MODAL PROFIL -->
+<!-- PROFIL MODAL -->
 <div class="prof-modal-bg" id="profileModal">
   <div class="prof-box">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
@@ -261,8 +268,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 </header>
 
 <div class="content">
-
-  <!-- BANNER -->
   <div class="page-banner">
     <div class="banner-left">
       <div class="banner-tag">Surat Perkenalan</div>
@@ -270,82 +275,39 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       <p>Kelola surat perkenalan yang kamu kirim dan terima dari kandidat lain.</p>
     </div>
     <div class="banner-stats">
-      <div class="banner-stat-box">
-        <div class="banner-stat-num" id="bannerSent">—</div>
-        <div class="banner-stat-label">Dikirim</div>
-      </div>
-      <div class="banner-stat-box">
-        <div class="banner-stat-num" id="bannerIncoming">—</div>
-        <div class="banner-stat-label">Masuk Baru</div>
-      </div>
+      <div class="banner-stat-box"><div class="banner-stat-num" id="bannerSent">—</div><div class="banner-stat-label">Dikirim</div></div>
+      <div class="banner-stat-box"><div class="banner-stat-num" id="bannerIncoming">—</div><div class="banner-stat-label">Masuk Baru</div></div>
     </div>
   </div>
 
-  <!-- STATS -->
   <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z" stroke-linejoin="round"/></svg></div>
-      <div class="stat-num" id="statSent">—</div>
-      <div class="stat-label">Total Dikirim</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3" stroke-linecap="round"/></svg></div>
-      <div class="stat-num" id="statPending">—</div>
-      <div class="stat-label">Menunggu Respon</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
-      <div class="stat-num" id="statAccepted">—</div>
-      <div class="stat-label">Diterima</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v12H4z" stroke-linejoin="round"/><path d="M4 4l8 8 8-8"/></svg></div>
-      <div class="stat-num" id="statIncoming">—</div>
-      <div class="stat-label">Surat Masuk Baru</div>
-    </div>
+    <div class="stat-card"><div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z" stroke-linejoin="round"/></svg></div><div class="stat-num" id="statSent">—</div><div class="stat-label">Total Dikirim</div></div>
+    <div class="stat-card"><div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3" stroke-linecap="round"/></svg></div><div class="stat-num" id="statPending">—</div><div class="stat-label">Menunggu Respon</div></div>
+    <div class="stat-card"><div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div class="stat-num" id="statAccepted">—</div><div class="stat-label">Diterima</div></div>
+    <div class="stat-card"><div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v12H4z" stroke-linejoin="round"/><path d="M4 4l8 8 8-8"/></svg></div><div class="stat-num" id="statIncoming">—</div><div class="stat-label">Surat Masuk Baru</div></div>
   </div>
 
-  <!-- ATURAN PERKENALAN -->
   <div class="aturan-card">
     <div class="aturan-icon">ℹ️</div>
     <div>
       <div class="aturan-title">Aturan Perkenalan Matchu</div>
-      <div class="aturan-desc">
-        Setiap 3 hari, kamu mendapat <b>3 kandidat rekomendasi</b> (Premium: 10) untuk dikirimi surat perkenalan.
-        Kamu dapat menerima surat masuk tanpa batas. Surat masuk yang sudah direspon tidak bisa diubah.
-        Kandidat yang sudah saling menerima perkenalan <b>tidak akan muncul lagi</b> di rekomendasi selamanya.
-        Chat terbuka otomatis setelah surat diterima — <b>2 hari</b> untuk reguler, <b>7 hari</b> untuk Premium.
-      </div>
+      <div class="aturan-desc">Setiap 3 hari, kamu mendapat <b>3 kandidat rekomendasi</b> (Premium: 10) untuk dikirimi surat perkenalan. Kamu dapat menerima surat masuk tanpa batas. Surat masuk yang sudah direspon tidak bisa diubah. Kandidat yang sudah saling menerima perkenalan <b>tidak akan muncul lagi</b> di rekomendasi selamanya. Chat terbuka otomatis setelah surat diterima — <b>2 hari</b> untuk reguler, <b>7 hari</b> untuk Premium.</div>
     </div>
   </div>
 
-  <!-- TABS: 5 tab -->
   <div class="tabs-row">
-    <button class="tab-btn active" onclick="switchTab(this,'dikirim')">
-      📤 Dikirim <span class="tab-count" id="tabDikirim">0</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab(this,'masuk')">
-      📥 Masuk <span class="tab-count" id="tabMasuk">0</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab(this,'menunggu')">
-      ⏳ Menunggu <span class="tab-count" id="tabMenunggu">0</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab(this,'diterima')">
-      ✅ Diterima <span class="tab-count" id="tabDiterima">0</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab(this,'ditolak')">
-      ✕ Ditolak <span class="tab-count" id="tabDitolak">0</span>
-    </button>
+    <button class="tab-btn active" onclick="switchTab(this,'dikirim')">📤 Dikirim <span class="tab-count" id="tabDikirim">0</span></button>
+    <button class="tab-btn" onclick="switchTab(this,'masuk')">📥 Masuk <span class="tab-count" id="tabMasuk">0</span></button>
+    <button class="tab-btn" onclick="switchTab(this,'menunggu')">⏳ Menunggu <span class="tab-count" id="tabMenunggu">0</span></button>
+    <button class="tab-btn" onclick="switchTab(this,'diterima')">✅ Diterima <span class="tab-count" id="tabDiterima">0</span></button>
+    <button class="tab-btn" onclick="switchTab(this,'ditolak')">✕ Ditolak <span class="tab-count" id="tabDitolak">0</span></button>
   </div>
 
-  <!-- REALTIME INDICATOR -->
   <div style="display:flex;align-items:center;font-size:12px;color:var(--text-2);margin-bottom:12px;">
-    <span class="realtime-dot"></span>
-    Auto-refresh setiap 30 detik
+    <span class="realtime-dot"></span>Auto-refresh setiap 30 detik
     <button onclick="manualRefresh()" style="margin-left:10px;font-size:12px;color:var(--brand);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;">↻ Refresh sekarang</button>
   </div>
 
-  <!-- CONTENT AREA -->
   <div class="card-wrap">
     <div class="card-top">
       <div class="card-top-title" id="cardTitle">Surat yang Dikirim</div>
@@ -358,41 +320,39 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       </div>
     </div>
   </div>
-
 </div>
 
 <script>
 const userId = localStorage.getItem('matchu_user_id');
-if (!userId) { window.location.href = 'login.html'; }
+if (!userId) window.location.href = 'login.html';
 
-let allSent = [];
-let allReceived = [];
-let currentTab = 'dikirim';
+let allSent        = [];
+let allReceived    = [];
+let currentTab     = 'dikirim';
 let pendingRejectId = null;
-let refreshInterval = null;
+let pendingChatRoomId = null; // disimpan setelah accept berhasil
 
 // ── LOAD DATA ─────────────────────────────────────────────
 async function loadAll(silent = false) {
   try {
     if (!silent) {
-      // Load profil user
-      const profRes = await fetch(`/api/get-profile?userId=${userId}`);
+      const profRes  = await fetch(`/api/get-profile?userId=${userId}`);
       const profData = await profRes.json();
       if (profData.success) {
-        const p = profData.profile;
-        const inisial = (p.nama_panggilan||p.nama||'?')[0].toUpperCase();
-        ['topbarAvatar','sidebarAvatar'].forEach(id => {
-          const el = document.getElementById(id);
-          if (!el) return;
-          el.innerHTML = p.foto_url_1 ? `<img src="${p.foto_url_1}" alt="">` : inisial;
-        });
-        document.getElementById('topbarName').textContent = p.nama_panggilan||p.nama||'—';
-        document.getElementById('sidebarName').textContent = p.nama_panggilan||p.nama||'—';
+        const p       = profData.profile;
+        const inisial = (p.nama_panggilan || p.nama || '?')[0].toUpperCase();
+        const fotoHTML = p.foto_url_1 ? `<img src="${p.foto_url_1}" alt="">` : inisial;
+        document.getElementById('topbarAvatar').innerHTML  = fotoHTML;
+        document.getElementById('sidebarAvatar').innerHTML = fotoHTML;
+        document.getElementById('topbarName').textContent  = p.nama_panggilan || p.nama || '—';
+        document.getElementById('sidebarName').textContent = p.nama_panggilan || p.nama || '—';
+        if (document.getElementById('sidebarRole')) {
+          document.getElementById('sidebarRole').textContent = p.is_premium ? 'Member Premium ⭐' : 'Member Reguler';
+        }
       }
     }
 
-    // Load letters
-    const res = await fetch(`/api/letters?userId=${userId}`);
+    const res  = await fetch(`/api/letters?userId=${userId}`);
     const data = await res.json();
     if (!data.success) {
       if (!silent) showError('Gagal memuat surat.');
@@ -400,7 +360,6 @@ async function loadAll(silent = false) {
     }
 
     const prevIncoming = allReceived.filter(r => r.status === 'pending').length;
-
     allSent     = data.sent     || [];
     allReceived = data.received || [];
 
@@ -408,28 +367,23 @@ async function loadAll(silent = false) {
     const acceptedSent    = allSent.filter(s => s.status === 'accepted').length;
     const incomingPending = allReceived.filter(r => r.status === 'pending').length;
 
-    // ── Update stats ───────────────────────────────────────
-    document.getElementById('statSent').textContent     = allSent.length;
-    document.getElementById('statPending').textContent  = pendingSent;
-    document.getElementById('statAccepted').textContent = acceptedSent;
-    document.getElementById('statIncoming').textContent = incomingPending;
-    document.getElementById('bannerSent').textContent   = allSent.length;
+    document.getElementById('statSent').textContent       = allSent.length;
+    document.getElementById('statPending').textContent    = pendingSent;
+    document.getElementById('statAccepted').textContent   = acceptedSent;
+    document.getElementById('statIncoming').textContent   = incomingPending;
+    document.getElementById('bannerSent').textContent     = allSent.length;
     document.getElementById('bannerIncoming').textContent = incomingPending;
+    document.getElementById('tabDikirim').textContent     = allSent.length;
+    document.getElementById('tabMasuk').textContent       = allReceived.length;
+    document.getElementById('tabMenunggu').textContent    = pendingSent;
+    document.getElementById('tabDiterima').textContent    = acceptedSent;
+    document.getElementById('tabDitolak').textContent     = allSent.filter(s => s.status === 'rejected').length;
 
-    // ── Update tab counts ──────────────────────────────────
-    document.getElementById('tabDikirim').textContent  = allSent.length;
-    document.getElementById('tabMasuk').textContent    = allReceived.length;
-    document.getElementById('tabMenunggu').textContent = pendingSent;
-    document.getElementById('tabDiterima').textContent = acceptedSent;
-    document.getElementById('tabDitolak').textContent  = allSent.filter(s => s.status === 'rejected').length;
-
-    // ── Update badge di sidebar ────────────────────────────
-    // Badge menampilkan: surat masuk pending (belum direspon)
     const badge = incomingPending;
-    document.getElementById('navBadgeLetter').textContent = badge;
-    document.getElementById('navBadgeLetter').style.display = badge > 0 ? 'flex' : 'none';
+    const badgeEl = document.getElementById('navBadgeLetter');
+    badgeEl.textContent    = badge;
+    badgeEl.style.display  = badge > 0 ? 'flex' : 'none';
 
-    // ── Highlight tab Masuk jika ada baru ─────────────────
     const masukCount = document.getElementById('tabMasuk');
     if (incomingPending > 0) {
       masukCount.classList.add('has-new');
@@ -438,21 +392,18 @@ async function loadAll(silent = false) {
       masukCount.classList.remove('has-new');
     }
 
-    // ── Notif jika ada surat masuk baru ───────────────────
     if (silent && incomingPending > prevIncoming) {
-      showToast(`📥 Surat perkenalan baru masuk!`);
+      showToast('📥 Surat perkenalan baru masuk!');
     }
 
-    // ── Re-render tab aktif ────────────────────────────────
     renderCurrentTab();
-
   } catch(e) {
     console.error('loadAll:', e);
     if (!silent) showError('Gagal terhubung ke server.');
   }
 }
 
-// ── RENDER TAB ────────────────────────────────────────────
+// ── RENDER ────────────────────────────────────────────────
 function renderCurrentTab() {
   switch(currentTab) {
     case 'dikirim':  renderSent(allSent); break;
@@ -467,85 +418,49 @@ function switchTab(btn, tab) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   currentTab = tab;
-
-  const titleMap = {
-    dikirim: 'Surat yang Kamu Kirim',
-    masuk:   'Surat Masuk dari Kandidat',
-    menunggu:'Menunggu Respon',
-    diterima:'Surat Diterima — Chat Terbuka',
-    ditolak: 'Surat Ditolak',
-  };
+  const titleMap = { dikirim:'Surat yang Kamu Kirim', masuk:'Surat Masuk dari Kandidat', menunggu:'Menunggu Respon', diterima:'Surat Diterima — Chat Terbuka', ditolak:'Surat Ditolak' };
   document.getElementById('cardTitle').textContent = titleMap[tab] || '';
   renderCurrentTab();
 }
 
-// ── RENDER SURAT DIKIRIM (+ filter view) ─────────────────
 function renderSent(list) {
   const el = document.getElementById('letterList');
-  if (!list || list.length === 0) {
-    el.innerHTML = emptyState('📤', 'Belum Ada Surat', 'Belum ada surat di kategori ini.');
-    return;
-  }
+  if (!list || list.length === 0) { el.innerHTML = emptyState('📤','Belum Ada Surat','Belum ada surat di kategori ini.'); return; }
   el.innerHTML = list.map(l => {
     const p = l.receiver;
     if (!p) return '';
     const usia = p.tanggal_lahir ? hitungUsia(p.tanggal_lahir) + ' Thn' : '';
-    const statusBadge = statusEl(l.status);
-    const isNew = isRecent(l.created_at);
-
-    let actionBtn = '';
-    if (l.status === 'accepted' && l.chat_room_id) {
-      actionBtn = `<button class="btn-chat" onclick="goToChat('${l.chat_room_id}')"><svg fill="none" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Buka Chat</button>`;
-    } else {
-      actionBtn = `<button class="btn-view" onclick="openProfileModal('${p.id}',null,null)">Lihat Profil</button>`;
-    }
-
-    const rejectBox = l.reject_reason
-      ? `<div class="reject-box"><strong>Alasan penolakan:</strong>${escHtml(l.reject_reason)}</div>` : '';
-
+    let actionBtn = l.status === 'accepted' && l.chat_room_id
+      ? `<button class="btn-chat" onclick="goToChat('${l.chat_room_id}')"><svg fill="none" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Buka Chat</button>`
+      : `<button class="btn-view" onclick="openProfileModal('${p.id}',null,null)">Lihat Profil</button>`;
+    const rejectBox = l.reject_reason ? `<div class="reject-box"><strong>Alasan penolakan:</strong>${escHtml(l.reject_reason)}</div>` : '';
     return `<div class="letter-card" style="${l.status==='accepted'?'background:#f6fff9;':l.status==='rejected'?'background:#fff8f8;':''}">
-      <div class="lc-avatar">${p.foto_url_1 ? `<img src="${p.foto_url_1}" alt="">` : inisial(p.nama_panggilan)}</div>
+      <div class="lc-avatar">${p.foto_url_1?`<img src="${p.foto_url_1}" alt="">`:inisial(p.nama_panggilan)}</div>
       <div class="lc-body">
         <div class="lc-head">
-          <div>
-            <div class="lc-name">${escHtml(p.nama_panggilan||'Kandidat')} ${isNew?'<span class="badge-new">Baru</span>':''}</div>
-            <div class="lc-meta">${escHtml(p.profesi||'—')}${usia?' · '+usia:''}</div>
-            <span class="lc-univ">${escHtml(p.universitas||'—')}</span>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
-            ${statusBadge}
-            <span class="lc-time">${formatDate(l.created_at)}</span>
-          </div>
+          <div><div class="lc-name">${escHtml(p.nama_panggilan||'Kandidat')} ${isRecent(l.created_at)?'<span class="badge-new">Baru</span>':''}</div><div class="lc-meta">${escHtml(p.profesi||'—')}${usia?' · '+usia:''}</div><span class="lc-univ">${escHtml(p.universitas||'—')}</span></div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">${statusEl(l.status)}<span class="lc-time">${formatDate(l.created_at)}</span></div>
         </div>
-        <div class="lc-msg">"${escHtml(l.message)}"</div>
-        ${rejectBox}
-        <div class="lc-footer">
-          ${actionBtn}
-          ${p.education_score_given?'<span class="lc-verified">✓ Terverifikasi</span>':''}
-        </div>
+        <div class="lc-msg">"${escHtml(l.message)}"</div>${rejectBox}
+        <div class="lc-footer">${actionBtn}</div>
       </div>
     </div>`;
   }).join('');
 }
 
-// ── RENDER SURAT MASUK ────────────────────────────────────
 function renderReceived(list) {
   const el = document.getElementById('letterList');
-  if (!list || list.length === 0) {
-    el.innerHTML = emptyState('📥', 'Belum Ada Surat Masuk', 'Surat perkenalan dari kandidat lain akan muncul di sini.');
-    return;
-  }
+  if (!list || list.length === 0) { el.innerHTML = emptyState('📥','Belum Ada Surat Masuk','Surat perkenalan dari kandidat lain akan muncul di sini.'); return; }
   el.innerHTML = list.map(l => {
     const p = l.sender;
     if (!p) return '';
-    const usia = p.tanggal_lahir ? hitungUsia(p.tanggal_lahir) + ' Thn' : '';
+    const usia      = p.tanggal_lahir ? hitungUsia(p.tanggal_lahir) + ' Thn' : '';
     const isPending = l.status === 'pending';
-    const isNew = isPending && isRecent(l.created_at);
-
-    let actionBtns = '';
+    const isNew     = isPending && isRecent(l.created_at);
+    let actionBtns  = '';
     if (isPending) {
       actionBtns = `
-        <button class="btn-primary" onclick="acceptLetter('${l.id}',this)">Terima</button>
+        <button class="btn-primary" id="acceptBtn-${l.id}" onclick="acceptLetter('${l.id}', '${escHtml(p.nama_panggilan||'Kandidat')}')">Terima</button>
         <button class="btn-reject" onclick="openRejectModal('${l.id}')">Tolak</button>
         <button class="btn-view" onclick="openProfileModal('${p.id}','${l.id}','received')">Lihat Profil</button>`;
     } else if (l.status === 'accepted' && l.chat_room_id) {
@@ -555,55 +470,101 @@ function renderReceived(list) {
     } else {
       actionBtns = `<button class="btn-view" onclick="openProfileModal('${p.id}',null,null)">Lihat Profil</button>`;
     }
-
-    const rejectBox = l.reject_reason
-      ? `<div class="reject-box"><strong>Alasan penolakanmu:</strong>${escHtml(l.reject_reason)}</div>` : '';
-
+    const rejectBox = l.reject_reason ? `<div class="reject-box"><strong>Alasan penolakanmu:</strong>${escHtml(l.reject_reason)}</div>` : '';
     return `<div class="letter-card" id="lc-${l.id}" style="${l.status==='accepted'?'background:#f6fff9;':l.status==='rejected'?'background:#fff8f8;':''}">
-      <div class="lc-avatar">${p.foto_url_1 ? `<img src="${p.foto_url_1}" alt="">` : inisial(p.nama_panggilan)}</div>
+      <div class="lc-avatar">${p.foto_url_1?`<img src="${p.foto_url_1}" alt="">`:inisial(p.nama_panggilan)}</div>
       <div class="lc-body">
         <div class="lc-head">
-          <div>
-            <div class="lc-name">${escHtml(p.nama_panggilan||'Kandidat')} ${isNew?'<span class="badge-new">Baru</span>':''}</div>
-            <div class="lc-meta">${escHtml(p.profesi||'—')}${usia?' · '+usia:''}</div>
-            <span class="lc-univ">${escHtml(p.universitas||'—')}</span>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
-            ${statusEl(l.status)}
-            <span class="lc-time">${formatDate(l.created_at)}</span>
-          </div>
+          <div><div class="lc-name">${escHtml(p.nama_panggilan||'Kandidat')} ${isNew?'<span class="badge-new">Baru</span>':''}</div><div class="lc-meta">${escHtml(p.profesi||'—')}${usia?' · '+usia:''}</div><span class="lc-univ">${escHtml(p.universitas||'—')}</span></div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">${statusEl(l.status)}<span class="lc-time">${formatDate(l.created_at)}</span></div>
         </div>
-        <div class="lc-msg">"${escHtml(l.message)}"</div>
-        ${rejectBox}
+        <div class="lc-msg">"${escHtml(l.message)}"</div>${rejectBox}
         <div class="lc-footer" id="act-${l.id}">${actionBtns}</div>
       </div>
     </div>`;
   }).join('');
 }
 
-// ── TERIMA SURAT ──────────────────────────────────────────
-async function acceptLetter(letterId, btn) {
-  btn.disabled = true; btn.textContent = 'Memproses...';
+// ── TERIMA SURAT — perbaikan utama ────────────────────────
+async function acceptLetter(letterId, partnerName) {
+  // Disable tombol
+  const btn = document.getElementById(`acceptBtn-${letterId}`);
+  if (btn) { btn.disabled = true; btn.textContent = 'Memproses...'; }
+
   try {
     const res = await fetch('/api/letters/respond', {
-      method: 'POST',
+      method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ letterId, userId, action: 'accept' }),
+      body:    JSON.stringify({ letterId, userId, action: 'accept' }),
     });
-    const data = await res.json();
-    if (data.success) {
-      showToast('✓ Surat diterima! Chat terbuka.');
-      // Reload semua data — update realtime
-      await loadAll(true);
-    } else {
-      showToast('Gagal: ' + (data.error||'Coba lagi.'));
-      btn.disabled = false; btn.textContent = 'Terima';
+
+    // Tangkap error network / non-JSON
+    if (!res.ok) {
+      const text = await res.text();
+      console.error('respond error:', res.status, text);
+      showToast(`Gagal: server error ${res.status}`);
+      if (btn) { btn.disabled = false; btn.textContent = 'Terima'; }
+      return;
     }
+
+    const data = await res.json();
+
+    if (!data.success) {
+      showToast('Gagal: ' + (data.error || 'Coba lagi.'));
+      if (btn) { btn.disabled = false; btn.textContent = 'Terima'; }
+      return;
+    }
+
+    // SUKSES — simpan room ID, animasi kartu keluar, tampilkan overlay
+    pendingChatRoomId = data.chat_room_id;
+    closeModal('profileModal'); // tutup modal profil jika terbuka
+
+    // Animasi kartu menghilang
+    const card = document.getElementById(`lc-${letterId}`);
+    if (card) {
+      card.classList.add('removing');
+      setTimeout(() => card.remove(), 320);
+    }
+
+    // Tampilkan success overlay
+    document.getElementById('acceptSubText').textContent =
+      `Chat dengan ${partnerName} kini terbuka. Mulai percakapan sekarang!`;
+    showAcceptOverlay();
+
+    // Reload data di background (silent)
+    loadAll(true);
+
   } catch(e) {
-    showToast('Gagal terhubung ke server.');
-    btn.disabled = false; btn.textContent = 'Terima';
+    console.error('acceptLetter catch:', e);
+    showToast('Gagal terhubung ke server. Periksa koneksi internet.');
+    if (btn) { btn.disabled = false; btn.textContent = 'Terima'; }
   }
 }
+
+// ── ACCEPT OVERLAY ────────────────────────────────────────
+function showAcceptOverlay() {
+  const ov = document.getElementById('acceptOverlay');
+  ov.style.display = 'flex';
+  requestAnimationFrame(() => ov.classList.add('show'));
+}
+function hideAcceptOverlay() {
+  const ov = document.getElementById('acceptOverlay');
+  ov.classList.remove('show');
+  setTimeout(() => { ov.style.display = 'none'; }, 300);
+}
+
+document.getElementById('acceptChatBtn').addEventListener('click', () => {
+  if (pendingChatRoomId) {
+    window.location.href = `chat.html?room=${pendingChatRoomId}`;
+  } else {
+    window.location.href = 'chat.html';
+  }
+});
+
+// Klik di luar card tutup overlay
+document.getElementById('acceptOverlay').addEventListener('click', function(e) {
+  if (e.target === this) hideAcceptOverlay();
+});
 
 // ── MODAL TOLAK ───────────────────────────────────────────
 function openRejectModal(letterId) {
@@ -620,30 +581,37 @@ async function confirmReject() {
   const reason = document.getElementById('rejectReason').value.trim();
   closeModal('rejectModal');
   if (!pendingRejectId) return;
+
+  const card = document.getElementById(`lc-${pendingRejectId}`);
+
   try {
-    const res = await fetch('/api/letters/respond', {
-      method: 'POST',
+    const res  = await fetch('/api/letters/respond', {
+      method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ letterId: pendingRejectId, userId, action: 'reject', rejectReason: reason }),
+      body:    JSON.stringify({ letterId: pendingRejectId, userId, action: 'reject', rejectReason: reason }),
     });
     const data = await res.json();
     if (data.success) {
+      // Animasi kartu keluar
+      if (card) { card.classList.add('removing'); setTimeout(() => card.remove(), 320); }
       showToast('Surat ditolak.');
-      await loadAll(true);
+      loadAll(true);
     } else {
-      showToast('Gagal: ' + (data.error||'Coba lagi.'));
+      showToast('Gagal: ' + (data.error || 'Coba lagi.'));
     }
-  } catch(e) { showToast('Gagal terhubung ke server.'); }
+  } catch(e) {
+    showToast('Gagal terhubung ke server.');
+  }
   pendingRejectId = null;
 }
 
 // ── PROFIL MODAL ──────────────────────────────────────────
 async function openProfileModal(profileId, letterId, context) {
   try {
-    const res = await fetch(`/api/get-profile?userId=${profileId}`);
+    const res  = await fetch(`/api/get-profile?userId=${profileId}`);
     const data = await res.json();
     if (!data.success) { showToast('Gagal memuat profil.'); return; }
-    const p = data.profile;
+    const p    = data.profile;
     const usia = p.tanggal_lahir ? hitungUsia(p.tanggal_lahir) + ' Tahun' : '—';
 
     document.getElementById('profModalName').textContent = p.nama_panggilan || 'Kandidat';
@@ -653,17 +621,25 @@ async function openProfileModal(profileId, letterId, context) {
       <div class="prof-item"><div class="prof-item-label">Domisili</div><div class="prof-item-value">${escHtml(p.kota_domisili||'—')}</div></div>
       <div class="prof-item"><div class="prof-item-label">Usia</div><div class="prof-item-value">${usia}</div></div>
       <div class="prof-item"><div class="prof-item-label">Agama</div><div class="prof-item-value">${escHtml(p.agama||'—')}</div></div>
-      <div class="prof-item"><div class="prof-item-label">Target Menikah</div><div class="prof-item-value">${escHtml(p.target_menikah||'—')}</div></div>
-    `;
+      <div class="prof-item"><div class="prof-item-label">Target Menikah</div><div class="prof-item-value">${escHtml(p.target_menikah||'—')}</div></div>`;
 
     const actEl = document.getElementById('profModalActions');
     actEl.innerHTML = '';
+
     if (context === 'received' && letterId) {
       const letter = allReceived.find(l => l.id === letterId);
+      const partnerName = p.nama_panggilan || 'Kandidat';
       if (letter?.status === 'pending') {
+        // Tombol terima di dalam modal — memanggil acceptLetter dengan benar
         actEl.innerHTML = `
-          <button class="btn-primary" style="flex:1;" onclick="closeModal('profileModal');acceptLetter('${letterId}',{disabled:false,textContent:'Terima'})">Terima Surat</button>
-          <button class="btn-reject" style="flex:1;" onclick="closeModal('profileModal');openRejectModal('${letterId}')">Tolak Surat</button>`;
+          <button class="btn-primary" style="flex:1;" id="modalAcceptBtn"
+            onclick="closeModal('profileModal'); acceptLetter('${letterId}', '${escHtml(partnerName)}')">
+            Terima Surat
+          </button>
+          <button class="btn-reject" style="flex:1;"
+            onclick="closeModal('profileModal'); openRejectModal('${letterId}')">
+            Tolak Surat
+          </button>`;
       } else if (letter?.status === 'accepted' && letter?.chat_room_id) {
         actEl.innerHTML = `<button class="btn-chat" style="width:100%;" onclick="goToChat('${letter.chat_room_id}')"><svg fill="none" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Buka Chat</button>`;
       }
@@ -680,14 +656,11 @@ function goToChat(roomId) {
   window.location.href = `chat.html?room=${roomId}`;
 }
 
-// ── REALTIME REFRESH ──────────────────────────────────────
+// ── AUTO REFRESH ──────────────────────────────────────────
 function startAutoRefresh() {
-  refreshInterval = setInterval(() => loadAll(true), 30000); // 30 detik
+  setInterval(() => loadAll(true), 30000);
 }
-function manualRefresh() {
-  showToast('Memperbarui...');
-  loadAll(false);
-}
+function manualRefresh() { showToast('Memperbarui...'); loadAll(false); }
 
 // ── HELPERS ───────────────────────────────────────────────
 function statusEl(s) {
@@ -698,19 +671,13 @@ function statusEl(s) {
 }
 function hitungUsia(tgl) {
   const today = new Date(), born = new Date(tgl);
-  let age = today.getFullYear()-born.getFullYear();
-  if (today.getMonth()-born.getMonth()<0||(today.getMonth()===born.getMonth()&&today.getDate()<born.getDate())) age--;
+  let age = today.getFullYear() - born.getFullYear();
+  if (today.getMonth() - born.getMonth() < 0 || (today.getMonth() === born.getMonth() && today.getDate() < born.getDate())) age--;
   return age;
 }
-function formatDate(iso) {
-  return new Date(iso).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
-}
-function isRecent(iso) {
-  return (Date.now()-new Date(iso).getTime()) < 48*60*60*1000;
-}
-function inisial(name) {
-  return (name||'?')[0].toUpperCase();
-}
+function formatDate(iso) { return new Date(iso).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}); }
+function isRecent(iso)   { return (Date.now() - new Date(iso).getTime()) < 48*60*60*1000; }
+function inisial(name)   { return (name||'?')[0].toUpperCase(); }
 function escHtml(s) {
   if (!s) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -718,9 +685,7 @@ function escHtml(s) {
 function emptyState(icon, title, desc) {
   return `<div class="empty-state"><div class="empty-icon">${icon}</div><div class="empty-title">${title}</div><div class="empty-desc">${desc}</div></div>`;
 }
-function showError(msg) {
-  document.getElementById('letterList').innerHTML = emptyState('⚠️','Terjadi Kesalahan',msg);
-}
+function showError(msg) { document.getElementById('letterList').innerHTML = emptyState('⚠️','Terjadi Kesalahan',msg); }
 function showToast(msg) {
   const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
@@ -730,22 +695,21 @@ function closeModal(id) {
   document.body.style.overflow = '';
 }
 document.querySelectorAll('.modal-bg,.prof-modal-bg').forEach(m =>
-  m.addEventListener('click', e => { if (e.target === m) { m.classList.remove('open'); document.body.style.overflow=''; } })
+  m.addEventListener('click', e => { if (e.target === m) closeModal(m.id); })
 );
 
-// ── SIDEBAR & NOTIF ───────────────────────────────────────
+// ── SIDEBAR ───────────────────────────────────────────────
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('overlay');
-const notifDD = document.getElementById('notifDropdown');
 document.getElementById('hamburger').addEventListener('click', () => { sidebar.classList.toggle('hidden'); overlay.classList.toggle('active'); });
 document.getElementById('sidebarClose').addEventListener('click', () => { sidebar.classList.add('hidden'); overlay.classList.remove('active'); });
 overlay.addEventListener('click', () => { sidebar.classList.add('hidden'); overlay.classList.remove('active'); });
-document.getElementById('logoutBtn').addEventListener('click', e => { e.preventDefault(); if (confirm('Yakin ingin keluar?')) { localStorage.clear(); window.location.href='login.html'; } });
+document.getElementById('logoutBtn').addEventListener('click', e => {
+  e.preventDefault();
+  if (confirm('Yakin ingin keluar?')) { localStorage.clear(); window.location.href = 'login.html'; }
+});
 
 // ── INIT ──────────────────────────────────────────────────
-// Sembunyikan badge sidebar jika 0 saat awal
-document.getElementById('navBadgeLetter').style.display = 'none';
-
 loadAll();
 startAutoRefresh();
 </script>

@@ -26,11 +26,10 @@
 
 body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; }
 
-/* ===== OVERLAY ===== */
 .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 100; }
 .overlay.active { display: block; }
 
-/* ===== SIDEBAR ===== */
+/* SIDEBAR */
 .sidebar { position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh; background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 200; transition: transform .28s cubic-bezier(.4,0,.2,1); overflow: hidden; }
 .sidebar.hidden { transform: translateX(-100%); }
 .sidebar-logo { height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
@@ -46,14 +45,15 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .nav-badge { margin-left: auto; background: var(--brand); color: white; font-size: 10px; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 .sidebar-footer { padding: 16px; border-top: 1px solid var(--border); flex-shrink: 0; }
 .sidebar-user { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; background: var(--bg); }
-.s-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--brand); color: white; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.s-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--brand); color: white; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+.s-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .s-name { font-size: 13px; font-weight: 600; color: var(--text); }
 .s-role { font-size: 11px; color: var(--text-2); }
 
-/* ===== APP SHELL ===== */
+/* APP SHELL */
 .app-shell { display: flex; flex-direction: column; height: 100vh; }
 
-/* ===== TOPBAR ===== */
+/* TOPBAR */
 .topbar { position: sticky; top: 0; z-index: 50; height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; gap: 12px; flex-shrink: 0; }
 .hamburger { width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 10px; background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; flex-shrink: 0; }
 .hamburger span { display: block; width: 18px; height: 2px; background: var(--text); border-radius: 2px; }
@@ -67,10 +67,11 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .notif-dot { position: absolute; top: 7px; right: 7px; width: 8px; height: 8px; border-radius: 50%; background: var(--brand); border: 2px solid white; }
 .user-pill { display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 6px; border: 1px solid var(--border); border-radius: 50px; background: none; cursor: pointer; transition: background .15s; }
 .user-pill:hover { background: var(--brand-light); }
-.t-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--brand); color: white; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+.t-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--brand); color: white; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.t-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .t-name { font-size: 13px; font-weight: 600; color: var(--text); }
 
-/* ===== NOTIF DROPDOWN ===== */
+/* NOTIF DROPDOWN */
 .notif-dropdown { position: absolute; top: calc(var(--topbar-h) + 6px); right: 20px; width: 310px; background: white; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.14); border: 1px solid var(--border); z-index: 300; display: none; }
 .notif-dropdown.open { display: block; }
 .notif-drop-head { padding: 16px 18px 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
@@ -83,32 +84,24 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .notif-drop-text { font-size: 13px; color: var(--text); line-height: 1.5; }
 .notif-drop-time { font-size: 11px; color: var(--text-2); margin-top: 2px; }
 
-/* ===== CHAT LAYOUT ===== */
-.chat-shell {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  overflow: hidden;
-  height: calc(100vh - var(--topbar-h));
-}
+/* CHAT LAYOUT */
+.chat-shell { flex: 1; display: grid; grid-template-columns: 320px 1fr; overflow: hidden; height: calc(100vh - var(--topbar-h)); }
 
-/* ===== CHAT LIST PANEL ===== */
+/* CHAT LIST PANEL */
 .chat-list-panel { background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
-
 .list-head { padding: 20px 20px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .list-head-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
 .list-search { display: flex; align-items: center; gap: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; }
 .list-search svg { width: 15px; height: 15px; stroke: var(--text-2); flex-shrink: 0; }
 .list-search input { border: none; background: transparent; font-size: 13px; color: var(--text); outline: none; width: 100%; }
 .list-search input::placeholder { color: var(--text-2); }
-
 .chat-items { flex: 1; overflow-y: auto; }
 .chat-item { display: flex; align-items: center; gap: 13px; padding: 14px 18px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background .12s; position: relative; }
 .chat-item:hover { background: #fdf8f9; }
 .chat-item.active { background: var(--brand-light); border-left: 3px solid var(--brand); }
 .chat-item.active .ci-name { color: var(--brand); }
-
-.ci-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--brand-light); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: var(--brand); flex-shrink: 0; position: relative; }
+.ci-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--brand-light); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: var(--brand); flex-shrink: 0; position: relative; overflow: hidden; }
+.ci-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .ci-online { position: absolute; bottom: 1px; right: 1px; width: 10px; height: 10px; border-radius: 50%; background: #22c55e; border: 2px solid white; }
 .ci-info { flex: 1; min-width: 0; }
 .ci-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
@@ -118,30 +111,30 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .ci-meta { display: flex; align-items: center; gap: 6px; }
 .ci-days { font-size: 10px; color: var(--brand); background: var(--brand-light); padding: 2px 7px; border-radius: 20px; font-weight: 600; }
 .ci-unread { width: 18px; height: 18px; border-radius: 50%; background: var(--brand); color: white; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-left: auto; }
-.ci-match { font-size: 10px; color: var(--text-2); }
 
-/* ===== WELCOME SCREEN ===== */
-.welcome-screen {
-  flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 14px;
-  background: var(--bg);
-}
+/* EMPTY / LOADING */
+.list-empty { text-align: center; padding: 40px 20px; color: var(--text-2); }
+.list-empty-icon { font-size: 36px; margin-bottom: 10px; }
+.list-loading { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
+.skeleton { background: linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 12px; height: 72px; }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* WELCOME SCREEN */
+.welcome-screen { flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 14px; background: var(--bg); }
 .welcome-screen svg { width: 56px; height: 56px; stroke: var(--border); }
 .welcome-screen h3 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--text-2); }
 .welcome-screen p { font-size: 14px; color: var(--text-2); text-align: center; max-width: 280px; line-height: 1.7; }
 
-/* ===== CHAT ROOM ===== */
+/* CHAT ROOM */
 .chat-room { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
 .chat-room.hidden { display: none; }
 
 /* Room header */
-.room-header {
-  background: var(--white); border-bottom: 1px solid var(--border);
-  padding: 14px 20px; display: flex; align-items: center; gap: 14px;
-  flex-shrink: 0;
-}
+.room-header { background: var(--white); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
 .room-back { display: none; width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 9px; background: none; cursor: pointer; align-items: center; justify-content: center; }
 .room-back svg { width: 16px; height: 16px; stroke: var(--text); }
-.room-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--brand-light); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: var(--brand); flex-shrink: 0; position: relative; }
+.room-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--brand-light); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: var(--brand); flex-shrink: 0; position: relative; overflow: hidden; }
+.room-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .room-avatar .online-dot { position: absolute; bottom: 1px; right: 1px; width: 9px; height: 9px; border-radius: 50%; background: #22c55e; border: 2px solid white; }
 .room-info { flex: 1; }
 .room-name { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 1px; }
@@ -149,39 +142,21 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .room-match { font-size: 13px; font-weight: 700; color: var(--brand); background: var(--brand-light); padding: 5px 12px; border-radius: 20px; }
 .room-actions { display: flex; gap: 8px; }
 
-.interest-btn {
-  display: flex; align-items: center; gap: 6px;
-  padding: 8px 16px; background: var(--brand); color: white;
-  border: none; border-radius: 9px; font-size: 13px; font-weight: 700;
-  cursor: pointer; transition: all .15s;
-}
+.interest-btn { display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--brand); color: white; border: none; border-radius: 9px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .15s; }
 .interest-btn svg { width: 14px; height: 14px; stroke: white; flex-shrink: 0; }
 .interest-btn:hover { background: var(--brand-dark); }
 .interest-btn.pressed { background: #e83e8c; }
 
-.report-btn {
-  display: flex; align-items: center; gap: 5px;
-  padding: 8px 14px; background: transparent; color: #c0392b;
-  border: 1.5px solid #fca5a5; border-radius: 9px; font-size: 13px; font-weight: 600;
-  cursor: pointer; transition: all .15s;
-}
+.report-btn { display: flex; align-items: center; gap: 5px; padding: 8px 14px; background: transparent; color: #c0392b; border: 1.5px solid #fca5a5; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; }
 .report-btn svg { width: 14px; height: 14px; stroke: #c0392b; }
 .report-btn:hover { background: #fff0f0; }
 
 /* Info banner */
-.room-banner {
-  background: var(--brand-light); border-bottom: 1px solid rgba(122,34,54,0.12);
-  padding: 9px 20px; font-size: 12.5px; color: var(--brand);
-  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
-}
+.room-banner { background: var(--brand-light); border-bottom: 1px solid rgba(122,34,54,0.12); padding: 9px 20px; font-size: 12.5px; color: var(--brand); display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .room-banner svg { width: 14px; height: 14px; stroke: var(--brand); flex-shrink: 0; }
 
 /* Timer bar */
-.timer-bar {
-  background: #FFFBEC; border-bottom: 1px solid #F5C842;
-  padding: 8px 20px; font-size: 12px; color: #856404;
-  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
-}
+.timer-bar { background: #FFFBEC; border-bottom: 1px solid #F5C842; padding: 8px 20px; font-size: 12px; color: #856404; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
 .timer-bar-left { display: flex; align-items: center; gap: 7px; }
 .timer-bar svg { width: 13px; height: 13px; stroke: #856404; }
 .timer-progress { flex: 1; max-width: 120px; height: 5px; background: #ffe58f; border-radius: 5px; overflow: hidden; }
@@ -189,59 +164,31 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 
 /* Messages area */
 .messages-area { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; background: var(--bg); }
-
 .day-divider { text-align: center; font-size: 11px; color: var(--text-2); margin: 6px 0; display: flex; align-items: center; gap: 10px; }
 .day-divider::before, .day-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
 .msg { display: flex; flex-direction: column; max-width: 68%; }
 .msg.recv { align-self: flex-start; }
 .msg.sent { align-self: flex-end; }
-
-.msg-bubble {
-  padding: 12px 16px; border-radius: 18px;
-  font-size: 14px; line-height: 1.65;
-}
+.msg-bubble { padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.65; }
 .msg.recv .msg-bubble { background: var(--white); border: 1px solid var(--border); border-bottom-left-radius: 4px; color: var(--text); }
 .msg.sent .msg-bubble { background: var(--brand); color: white; border-bottom-right-radius: 4px; }
-
 .msg-time { font-size: 11px; color: var(--text-2); margin-top: 4px; }
 .msg.sent .msg-time { text-align: right; }
 .msg-read { font-size: 10px; color: rgba(255,255,255,0.6); }
-
-/* Mutual interest notification bubble */
-.msg-system {
-  align-self: center; background: white;
-  border: 1px solid var(--border); border-radius: 14px;
-  padding: 12px 18px; text-align: center; max-width: 80%;
-  box-shadow: var(--shadow);
-}
+.msg-system { align-self: center; background: white; border: 1px solid var(--border); border-radius: 14px; padding: 12px 18px; text-align: center; max-width: 80%; box-shadow: var(--shadow); }
 .msg-system-icon { font-size: 22px; margin-bottom: 4px; }
 .msg-system-text { font-size: 13px; color: var(--text); font-weight: 600; margin-bottom: 2px; }
 .msg-system-sub { font-size: 11px; color: var(--text-2); }
 
 /* Input area */
-.room-input-wrap {
-  background: var(--white); border-top: 1px solid var(--border);
-  padding: 14px 18px; display: flex; gap: 10px; align-items: flex-end; flex-shrink: 0;
-}
-.input-box {
-  flex: 1; background: var(--bg); border: 1px solid var(--border);
-  border-radius: 14px; padding: 11px 16px;
-  font-size: 14px; font-family: 'Inter', sans-serif;
-  color: var(--text); resize: none; outline: none; max-height: 120px;
-  line-height: 1.5; transition: border-color .15s;
-}
+.room-input-wrap { background: var(--white); border-top: 1px solid var(--border); padding: 14px 18px; display: flex; gap: 10px; align-items: flex-end; flex-shrink: 0; }
+.input-box { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 11px 16px; font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text); resize: none; outline: none; max-height: 120px; line-height: 1.5; transition: border-color .15s; }
 .input-box:focus { border-color: var(--brand-mid); }
-.send-btn {
-  width: 44px; height: 44px; border-radius: 12px;
-  border: none; background: var(--brand); color: white;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; transition: background .15s;
-}
+.send-btn { width: 44px; height: 44px; border-radius: 12px; border: none; background: var(--brand); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .15s; }
 .send-btn:hover { background: var(--brand-dark); }
 .send-btn svg { width: 18px; height: 18px; stroke: white; }
 
-/* ===== REPORT MODAL ===== */
+/* REPORT MODAL */
 .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 600; align-items: center; justify-content: center; padding: 20px; }
 .modal-bg.open { display: flex; }
 .report-modal { background: white; border-radius: 20px; width: 100%; max-width: 420px; padding: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
@@ -255,11 +202,11 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .report-cancel { flex: 1; padding: 11px; border: 1px solid var(--border); background: var(--bg); border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--text); }
 .report-send { flex: 1; padding: 11px; border: none; background: #c0392b; color: white; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; }
 
-/* ===== INTEREST TOAST ===== */
+/* INTEREST TOAST */
 .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: var(--brand); color: white; padding: 13px 28px; border-radius: 50px; font-size: 14px; font-weight: 600; z-index: 9999; box-shadow: 0 8px 24px rgba(0,0,0,0.2); opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap; }
 .toast.show { opacity: 1; }
 
-/* ===== RESPONSIVE ===== */
+/* RESPONSIVE */
 @media (max-width: 900px) {
   .chat-shell { grid-template-columns: 1fr; }
   .chat-list-panel { display: block; }
@@ -275,7 +222,6 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 </head>
 <body>
 
-<!-- OVERLAY -->
 <div class="overlay" id="overlay"></div>
 
 <!-- SIDEBAR -->
@@ -293,13 +239,13 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
       <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>Profil Saya
     </a>
     <a href="kandidat.html" class="nav-item">
-      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M2 20c0-3.3 3.1-6 7-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="15" r="4" stroke="currentColor" stroke-width="1.8"/></svg></span>Kandidat<span class="nav-badge">3</span>
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M2 20c0-3.3 3.1-6 7-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="15" r="4" stroke="currentColor" stroke-width="1.8"/></svg></span>Kandidat<span class="nav-badge" id="navBadgeKandidat" style="display:none">3</span>
     </a>
     <a href="permintaan-perkenalan.html" class="nav-item">
-      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg></span>Permintaan Perkenalan<span class="nav-badge">2</span>
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg></span>Permintaan Perkenalan<span class="nav-badge" id="navBadgeSurat" style="display:none">0</span>
     </a>
     <a href="chat.html" class="nav-item active">
-      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>Chat<span class="nav-badge">1</span>
+      <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>Chat<span class="nav-badge" id="navBadgeChat" style="display:none">0</span>
     </a>
     <a href="notifikasi.html" class="nav-item">
       <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>Notifikasi
@@ -311,14 +257,17 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
     <a href="pengaturan.html" class="nav-item">
       <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" stroke-width="1.8"/></svg></span>Pengaturan
     </a>
-    <a href="logout.html" class="nav-item" style="color:#c0392b;">
+    <a href="#" class="nav-item" style="color:#c0392b;" id="logoutBtn">
       <span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" width="18" height="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round"/><polyline points="16,17 21,12 16,7" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="21" y1="12" x2="9" y2="12" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round"/></svg></span>Keluar
     </a>
   </nav>
   <div class="sidebar-footer">
     <div class="sidebar-user">
-      <div class="s-avatar">A</div>
-      <div><div class="s-name">Alif Ramadhan</div><div class="s-role">Member Reguler</div></div>
+      <div class="s-avatar" id="sidebarAvatar">?</div>
+      <div>
+        <div class="s-name" id="sidebarName">Memuat...</div>
+        <div class="s-role" id="sidebarRole">Member Matchu</div>
+      </div>
     </div>
   </div>
 </aside>
@@ -329,13 +278,11 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
     <div class="notif-drop-title">Notifikasi</div>
     <span class="notif-drop-clear">Tandai semua dibaca</span>
   </div>
-  <div class="notif-drop-item">
-    <div class="notif-drop-icon"><svg fill="none" viewBox="0 0 24 24"><path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="1.8"/></svg></div>
-    <div><div class="notif-drop-text"><b>Manda</b> menerima surat perkenalan Anda.</div><div class="notif-drop-time">2 jam lalu</div></div>
-  </div>
-  <div class="notif-drop-item">
-    <div class="notif-drop-icon"><svg fill="none" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
-    <div><div class="notif-drop-text">Chat dengan <b>Rara</b> akan berakhir dalam 2 hari.</div><div class="notif-drop-time">5 jam lalu</div></div>
+  <div id="notifList">
+    <div class="notif-drop-item">
+      <div class="notif-drop-icon"><svg fill="none" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+      <div><div class="notif-drop-text">Belum ada notifikasi baru.</div></div>
+    </div>
   </div>
 </div>
 
@@ -375,11 +322,11 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
     <div class="topbar-right">
       <button class="notif-btn" id="notifBtn" aria-label="Notifikasi">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke-linecap="round"/></svg>
-        <span class="notif-dot"></span>
+        <span class="notif-dot" id="notifDot" style="display:none"></span>
       </button>
-      <button class="user-pill">
-        <div class="t-avatar">A</div>
-        <span class="t-name">Alif</span>
+      <button class="user-pill" onclick="window.location='profil.html'">
+        <div class="t-avatar" id="topbarAvatar">?</div>
+        <span class="t-name" id="topbarName">...</span>
       </button>
     </div>
   </header>
@@ -397,7 +344,11 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
         </div>
       </div>
       <div class="chat-items" id="chatItems">
-        <!-- rendered by JS -->
+        <div class="list-loading">
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+        </div>
       </div>
     </div>
 
@@ -423,7 +374,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
           <div class="room-name" id="roomName">-</div>
           <div class="room-sub" id="roomSub">-</div>
         </div>
-        <div class="room-match" id="roomMatch">-</div>
+        <div class="room-match" id="roomMatch" style="display:none">-</div>
         <div class="room-actions">
           <button class="interest-btn" id="interestBtn" onclick="toggleInterest()">
             <svg fill="none" viewBox="0 0 24 24"><path d="M12 21C12 21 3 14.5 3 8.5C3 5.4 5.4 3 8.5 3C10.2 3 11.8 3.8 12 5C12.2 3.8 13.8 3 15.5 3C18.6 3 21 5.4 21 8.5C21 14.5 12 21 12 21Z" stroke="currentColor" stroke-width="1.8"/></svg>
@@ -437,7 +388,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
       </div>
 
       <!-- Info banner -->
-      <div class="room-banner">
+      <div class="room-banner" id="roomBanner">
         <svg fill="none" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.8"/></svg>
         Foto & nama asli terbuka setelah Mutual Interest. Tekan <strong>&nbsp;Interest&nbsp;</strong> jika kamu merasa cocok.
       </div>
@@ -446,7 +397,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
       <div class="timer-bar" id="timerBar">
         <div class="timer-bar-left">
           <svg fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <span id="timerText">Chat aktif tersisa <strong>3 hari</strong></span>
+          <span id="timerText">Memuat info chat...</span>
         </div>
         <div class="timer-progress"><div class="timer-fill" id="timerFill" style="width:60%"></div></div>
       </div>
@@ -468,156 +419,300 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 </div><!-- end app-shell -->
 
 <script>
-/* ===== DATA ===== */
-const chats = [
-  {
-    id: 0, name: 'Manda', initials: 'M', univ: 'Institut Teknologi Bandung', profesi: 'S1 Teknik Informatika · Bandung', match: '92%',
-    daysLeft: 3, lastMsg: 'Sudah berapa lama di Bandung?', time: '14:23', unread: 1, online: true, interestPressed: false,
-    messages: [
-      { from: 'them', text: 'Halo Alif, terima kasih sudah mengirim surat perkenalan 😊', time: '13:40' },
-      { from: 'me', text: 'Halo Manda! Senang bisa berkenalan. Saya Alif dari ITB juga.', time: '13:42' },
-      { from: 'them', text: 'Wah kebetulan sekali! Jurusan apa?', time: '13:44' },
-      { from: 'me', text: 'Teknik Informatika angkatan 2019. Kalau Manda?', time: '13:45' },
-      { from: 'them', text: 'Sama! Angkatan 2020 😄 Sekarang sudah kerja di mana?', time: '13:50' },
-      { from: 'me', text: 'Saya software engineer di salah satu startup Bandung. Manda sendiri?', time: '13:52' },
-      { from: 'them', text: 'Saya masih fresh grad, lagi nyari kerja di bidang data science.', time: '13:55' },
-      { from: 'me', text: 'Bagus! Kalau butuh referensi atau diskusi soal karir, saya siap bantu 😊', time: '14:02' },
-      { from: 'them', text: 'Sudah berapa lama di Bandung?', time: '14:23' },
-    ]
-  },
-  {
-    id: 1, name: 'Rara', initials: 'R', univ: 'Universitas Indonesia', profesi: 'S1 Psikologi · Depok', match: '88%',
-    daysLeft: 1, lastMsg: 'Kamu menyukai traveling juga?', time: '10:15', unread: 0, online: false, interestPressed: false,
-    messages: [
-      { from: 'them', text: 'Hai Alif! Senang menerima surat dari kamu 🙂', time: '09:10' },
-      { from: 'me', text: 'Hai Rara! Makasih sudah mau buka surat saya hehe', time: '09:14' },
-      { from: 'them', text: 'Saya baca profilmu, kamu suka traveling juga ya?', time: '09:20' },
-      { from: 'me', text: 'Iya! Terutama ke tempat alam. Kalau Rara, destinasi favorit di mana?', time: '09:25' },
-      { from: 'them', text: 'Saya suka Raja Ampat dan Labuan Bajo. Sudah pernah ke sana?', time: '09:30' },
-      { from: 'me', text: 'Belum sempat, tapi sudah masuk bucket list! 😆', time: '09:35' },
-      { type: 'system', text: '❤️ Mutual Interest Tercapai!', sub: 'Foto dan nama asli saling terbuka sekarang.', time: '09:40' },
-      { from: 'them', text: 'Kamu menyukai traveling juga?', time: '10:15' },
-    ]
-  },
-  {
-    id: 2, name: 'Sari', initials: 'S', univ: 'Universitas Gadjah Mada', profesi: 'S2 Manajemen · Yogyakarta', match: '85%',
-    daysLeft: 5, lastMsg: 'Oke, nanti kita lanjut 😊', time: 'Kemarin', unread: 0, online: false, interestPressed: false,
-    messages: [
-      { from: 'them', text: 'Halo! Saya Sari. Profil kamu menarik 🙂', time: 'Kemarin 18:00' },
-      { from: 'me', text: 'Hai Sari! Makasih. Profil kamu juga menarik, terutama background management-nya.', time: 'Kemarin 18:05' },
-      { from: 'them', text: 'Hehe, kamu kerja di bidang apa sekarang?', time: 'Kemarin 18:10' },
-      { from: 'me', text: 'Software engineer. Kamu lagi ambil S2 atau sudah selesai?', time: 'Kemarin 18:15' },
-      { from: 'them', text: 'Baru selesai semester kemarin. Skripsi lagi tipis-tipisnya 😅', time: 'Kemarin 18:20' },
-      { from: 'me', text: 'Semangat ya! Pasti bisa 💪', time: 'Kemarin 18:25' },
-      { from: 'them', text: 'Oke, nanti kita lanjut 😊', time: 'Kemarin 18:30' },
-    ]
-  }
-];
+/* ===== AUTH CHECK ===== */
+const userId = localStorage.getItem('matchu_user_id');
+if (!userId) window.location.href = 'login.html';
 
-let activeChatId = null;
-let interestState = [false, false, false];
+/* ===== STATE ===== */
+const urlParams   = new URLSearchParams(window.location.search);
+const targetRoom  = urlParams.get('room'); // dari redirect permintaan-perkenalan
+let chats         = [];       // array of room objects
+let activeChatId  = null;     // index ke chats[]
+let interestState = {};       // { roomId: true/false }
+let currentUser   = null;     // data profil user yang login
+
+/* ===== INIT ===== */
+async function init() {
+  await loadUserProfile();
+  await loadRooms();
+}
+
+/* ===== LOAD USER PROFILE ===== */
+async function loadUserProfile() {
+  try {
+    const res  = await fetch(`/api/get-profile?userId=${userId}`);
+    const data = await res.json();
+    if (!data.success) return;
+    currentUser = data.profile;
+
+    const nama     = currentUser.nama_panggilan || currentUser.nama || 'User';
+    const inisial  = nama[0].toUpperCase();
+    const fotoUrl  = currentUser.foto_url_1;
+    const isPremium = currentUser.is_premium;
+
+    // Topbar
+    const topbarAv = document.getElementById('topbarAvatar');
+    topbarAv.innerHTML = fotoUrl ? `<img src="${fotoUrl}" alt="${nama}">` : inisial;
+    document.getElementById('topbarName').textContent = nama;
+
+    // Sidebar
+    const sidebarAv = document.getElementById('sidebarAvatar');
+    sidebarAv.innerHTML = fotoUrl ? `<img src="${fotoUrl}" alt="${nama}">` : inisial;
+    document.getElementById('sidebarName').textContent = nama;
+    document.getElementById('sidebarRole').textContent = isPremium ? 'Member Premium ⭐' : 'Member Reguler';
+
+  } catch(e) {
+    console.warn('loadUserProfile error:', e);
+  }
+}
+
+/* ===== LOAD CHAT ROOMS ===== */
+async function loadRooms() {
+  try {
+    const res  = await fetch(`/api/chat/rooms?userId=${userId}`);
+    const data = await res.json();
+
+    if (!data.success) {
+      renderEmptyList('Gagal memuat chat. Coba refresh halaman.');
+      return;
+    }
+
+    chats = (data.rooms || []).map(r => ({
+      id:             r.id,
+      partnerId:      r.partner?.id,
+      name:           r.partner?.nama_panggilan || 'Kandidat',
+      initials:       (r.partner?.nama_panggilan || '?')[0].toUpperCase(),
+      univ:           r.partner?.universitas || '—',
+      profesi:        r.partner?.profesi || '—',
+      fotoUrl:        r.partner?.foto_url_1 || null,
+      daysLeft:       r.days_left ?? 5,
+      maxDays:        r.max_days ?? 5,
+      isExpired:      r.is_expired || false,
+      lastMsg:        r.last_message?.content || '',
+      time:           r.last_message?.created_at ? formatTime(r.last_message.created_at) : '',
+      unread:         r.unread_count || 0,
+      myInterest:     r.my_interest || false,
+      mutualInterest: r.mutual_interest || false,
+      messages:       [],
+    }));
+
+    // Sync interest state dari server
+    chats.forEach(c => {
+      interestState[c.id] = c.myInterest;
+    });
+
+    // Hitung total unread untuk badge
+    const totalUnread = chats.reduce((acc, c) => acc + c.unread, 0);
+    updateChatBadge(totalUnread);
+
+    renderChatList();
+
+    // Buka room dari URL param jika ada
+    if (targetRoom) {
+      const idx = chats.findIndex(c => c.id === targetRoom);
+      if (idx !== -1) openChat(idx);
+    }
+
+  } catch(e) {
+    console.error('loadRooms error:', e);
+    renderEmptyList('Gagal terhubung ke server.');
+  }
+}
+
+/* ===== UPDATE BADGES ===== */
+function updateChatBadge(count) {
+  const badge = document.getElementById('navBadgeChat');
+  if (count > 0) {
+    badge.textContent = count;
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
+}
 
 /* ===== RENDER CHAT LIST ===== */
 function renderChatList(filter = '') {
   const container = document.getElementById('chatItems');
-  container.innerHTML = '';
-  chats.forEach(c => {
-    if (filter && !c.name.toLowerCase().includes(filter.toLowerCase())) return;
-    const item = document.createElement('div');
-    item.className = 'chat-item' + (activeChatId === c.id ? ' active' : '');
-    item.dataset.id = c.id;
-    const dayClass = c.daysLeft <= 1 ? 'color:#c0392b;background:#fff0f0' : '';
-    item.innerHTML = `
-      <div class="ci-avatar">${c.initials}${c.online ? '<div class="ci-online"></div>' : ''}</div>
+  const filtered  = chats.filter(c =>
+    !filter || c.name.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="list-empty">
+        <div class="list-empty-icon">💬</div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:6px;">Belum ada chat</div>
+        <div style="font-size:13px;">Chat terbuka setelah surat perkenalan diterima.</div>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map((c, idx) => {
+    const realIdx    = chats.indexOf(c);
+    const isActive   = activeChatId === realIdx;
+    const dayStyle   = c.daysLeft <= 1 ? 'color:#c0392b;background:#fff0f0' : '';
+    const avatarHTML = c.fotoUrl
+      ? `<img src="${c.fotoUrl}" alt="${c.name}">`
+      : c.initials;
+
+    return `<div class="chat-item${isActive ? ' active' : ''}" data-idx="${realIdx}" onclick="openChat(${realIdx})">
+      <div class="ci-avatar">${avatarHTML}</div>
       <div class="ci-info">
         <div class="ci-top">
-          <div class="ci-name">${c.name}</div>
+          <div class="ci-name">${escHtml(c.name)}</div>
           <div class="ci-time">${c.time}</div>
         </div>
-        <div class="ci-preview">${c.lastMsg}</div>
+        <div class="ci-preview">${escHtml(c.lastMsg) || '<em>Mulai percakapan...</em>'}</div>
         <div class="ci-meta">
-          <span class="ci-days" style="${dayClass}">⏱ ${c.daysLeft} hari lagi</span>
-          <span class="ci-match">${c.match} cocok</span>
+          <span class="ci-days" style="${dayStyle}">⏱ ${c.daysLeft} hari lagi</span>
           ${c.unread ? `<span class="ci-unread">${c.unread}</span>` : ''}
         </div>
       </div>
-    `;
-    item.addEventListener('click', () => openChat(c.id));
-    container.appendChild(item);
-  });
+    </div>`;
+  }).join('');
+}
+
+function renderEmptyList(msg) {
+  document.getElementById('chatItems').innerHTML = `
+    <div class="list-empty">
+      <div class="list-empty-icon">⚠️</div>
+      <div style="font-size:13px;">${msg}</div>
+    </div>`;
 }
 
 /* ===== OPEN CHAT ===== */
-function openChat(id) {
-  activeChatId = id;
-  const c = chats[id];
+async function openChat(idx) {
+  activeChatId = idx;
+  const c = chats[idx];
 
-  // Update active state
   renderChatList(document.getElementById('chatSearch').value);
 
-  // Fill room header
-  document.getElementById('roomAvatar').innerHTML = c.initials + (c.online ? '<div class="online-dot"></div>' : '');
+  // Header avatar
+  const roomAv = document.getElementById('roomAvatar');
+  if (c.fotoUrl) {
+    roomAv.innerHTML = `<img src="${c.fotoUrl}" alt="${c.name}"><div class="online-dot"></div>`;
+  } else {
+    roomAv.innerHTML = `${c.initials}<div class="online-dot"></div>`;
+  }
+
   document.getElementById('roomName').textContent = c.name;
-  document.getElementById('roomSub').textContent = c.univ + ' · ' + c.profesi;
-  document.getElementById('roomMatch').textContent = c.match + ' cocok';
+  document.getElementById('roomSub').textContent  = `${c.univ} · ${c.profesi}`;
+
+  // Match badge — sembunyikan jika tidak ada data
+  const matchEl = document.getElementById('roomMatch');
+  matchEl.style.display = 'none'; // sembunyikan dulu, isi jika ada
 
   // Timer
-  const fill = Math.round((c.daysLeft / 5) * 100);
+  const maxDays = c.maxDays || 5;
+  const fill    = Math.round((c.daysLeft / maxDays) * 100);
   document.getElementById('timerFill').style.width = fill + '%';
-  const urgency = c.daysLeft <= 1 ? 'color:#c0392b' : '';
-  document.getElementById('timerText').innerHTML = `Chat aktif tersisa <strong style="${urgency}">${c.daysLeft} hari</strong>. Segera lanjutkan di WA / Instagram setelah habis.`;
+  const urgStyle = c.daysLeft <= 1 ? 'color:#c0392b' : '';
+  document.getElementById('timerText').innerHTML =
+    `Chat aktif tersisa <strong style="${urgStyle}">${c.daysLeft} hari</strong>. Segera lanjutkan di WA / Instagram setelah habis.`;
 
   // Interest button
+  syncInterestBtn(idx);
+
+  // Banner — sembunyikan jika mutual interest
+  document.getElementById('roomBanner').style.display = c.mutualInterest ? 'none' : 'flex';
+
+  // Clear unread
+  chats[idx].unread = 0;
+  updateChatBadge(chats.reduce((acc, ch) => acc + ch.unread, 0));
+
+  // Load messages dari server
+  await loadMessages(idx);
+
+  // Show room
+  document.getElementById('welcomeScreen').classList.add('hidden');
+  document.getElementById('chatRoom').classList.remove('hidden');
+
+  // Mobile
+  if (window.innerWidth <= 900) {
+    document.getElementById('chatListPanel').classList.add('hidden-mobile');
+  }
+
+  document.getElementById('inputBox').focus();
+}
+
+/* ===== SYNC INTEREST BUTTON ===== */
+function syncInterestBtn(idx) {
+  const c    = chats[idx];
   const ibtn = document.getElementById('interestBtn');
-  if (interestState[id]) {
+  if (interestState[c.id]) {
     ibtn.classList.add('pressed');
     ibtn.innerHTML = `<svg fill="none" viewBox="0 0 24 24" width="14" height="14"><path d="M12 21C12 21 3 14.5 3 8.5C3 5.4 5.4 3 8.5 3C10.2 3 11.8 3.8 12 5C12.2 3.8 13.8 3 15.5 3C18.6 3 21 5.4 21 8.5C21 14.5 12 21 12 21Z" stroke="white" stroke-width="1.8" fill="white"/></svg> Sudah Interest`;
   } else {
     ibtn.classList.remove('pressed');
     ibtn.innerHTML = `<svg fill="none" viewBox="0 0 24 24" width="14" height="14"><path d="M12 21C12 21 3 14.5 3 8.5C3 5.4 5.4 3 8.5 3C10.2 3 11.8 3.8 12 5C12.2 3.8 13.8 3 15.5 3C18.6 3 21 5.4 21 8.5C21 14.5 12 21 12 21Z" stroke="white" stroke-width="1.8"/></svg> Interest`;
   }
+}
 
-  // Clear unread
-  chats[id].unread = 0;
+/* ===== LOAD MESSAGES ===== */
+async function loadMessages(idx) {
+  const c   = chats[idx];
+  const area = document.getElementById('messagesArea');
+  area.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-2);font-size:13px;">Memuat pesan...</div>';
 
-  // Render messages
-  renderMessages(id);
+  try {
+    const res  = await fetch(`/api/chat/messages?roomId=${c.id}&userId=${userId}`);
+    const data = await res.json();
 
-  // Show room, hide welcome
-  document.getElementById('welcomeScreen').classList.add('hidden');
-  document.getElementById('chatRoom').classList.remove('hidden');
+    if (!data.success) {
+      area.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-2);font-size:13px;">Gagal memuat pesan.</div>';
+      return;
+    }
 
-  // Mobile: hide list
-  if (window.innerWidth <= 900) {
-    document.getElementById('chatListPanel').classList.add('hidden-mobile');
+    chats[idx].messages = data.messages || [];
+    renderMessages(idx);
+
+  } catch(e) {
+    area.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-2);font-size:13px;">Gagal terhubung ke server.</div>';
   }
-
-  // Focus input
-  document.getElementById('inputBox').focus();
 }
 
 /* ===== RENDER MESSAGES ===== */
-function renderMessages(id) {
+function renderMessages(idx) {
   const area = document.getElementById('messagesArea');
+  const msgs = chats[idx].messages || [];
   area.innerHTML = '';
-  const msgs = chats[id].messages;
 
-  // Day divider
-  const div0 = document.createElement('div');
-  div0.className = 'day-divider';
-  div0.textContent = id === 2 ? 'Kemarin' : 'Hari ini';
-  area.appendChild(div0);
+  if (msgs.length === 0) {
+    area.innerHTML = `
+      <div class="msg-system">
+        <div class="msg-system-icon">👋</div>
+        <div class="msg-system-text">Chat baru dibuka!</div>
+        <div class="msg-system-sub">Mulai perkenalan dengan ${escHtml(chats[idx].name)} sekarang.</div>
+      </div>`;
+    return;
+  }
 
+  // Group messages by date
+  let lastDate = '';
   msgs.forEach(m => {
+    // Day divider
+    const msgDate = m.created_at ? new Date(m.created_at).toLocaleDateString('id-ID', {day:'numeric',month:'long',year:'numeric'}) : '';
+    if (msgDate && msgDate !== lastDate) {
+      const div = document.createElement('div');
+      div.className = 'day-divider';
+      div.textContent = isToday(m.created_at) ? 'Hari ini' : isYesterday(m.created_at) ? 'Kemarin' : msgDate;
+      area.appendChild(div);
+      lastDate = msgDate;
+    }
+
     if (m.type === 'system') {
       const sys = document.createElement('div');
       sys.className = 'msg-system';
-      sys.innerHTML = `<div class="msg-system-icon">❤️</div><div class="msg-system-text">${m.text}</div><div class="msg-system-sub">${m.sub}</div>`;
+      sys.innerHTML = `<div class="msg-system-icon">❤️</div><div class="msg-system-text">${escHtml(m.text||m.content)}</div><div class="msg-system-sub">${escHtml(m.sub||'')}</div>`;
       area.appendChild(sys);
     } else {
-      const el = document.createElement('div');
-      el.className = 'msg ' + (m.from === 'me' ? 'sent' : 'recv');
-      el.innerHTML = `<div class="msg-bubble">${m.text}</div><div class="msg-time">${m.time}${m.from === 'me' ? ' <span class="msg-read">✓✓</span>' : ''}</div>`;
+      const isSent = m.sender_id === userId || m.from === 'me';
+      const el     = document.createElement('div');
+      el.className = 'msg ' + (isSent ? 'sent' : 'recv');
+      const time   = m.created_at ? formatTime(m.created_at) : (m.time || '');
+      el.innerHTML = `
+        <div class="msg-bubble">${escHtml(m.content || m.text)}</div>
+        <div class="msg-time">${time}${isSent ? ' <span class="msg-read">✓✓</span>' : ''}</div>`;
       area.appendChild(el);
     }
   });
@@ -626,85 +721,97 @@ function renderMessages(id) {
 }
 
 /* ===== SEND MESSAGE ===== */
-function sendMessage() {
+async function sendMessage() {
   if (activeChatId === null) return;
   const box = document.getElementById('inputBox');
   const txt = box.value.trim();
   if (!txt) return;
 
+  const c   = chats[activeChatId];
   const now = new Date();
-  const time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-  chats[activeChatId].messages.push({ from: 'me', text: txt, time });
-  chats[activeChatId].lastMsg = txt;
-  chats[activeChatId].time = time;
+  const time = formatTime(now.toISOString());
 
+  // Optimistic UI
+  const tempMsg = { sender_id: userId, content: txt, created_at: now.toISOString(), time };
+  chats[activeChatId].messages.push(tempMsg);
+  chats[activeChatId].lastMsg = txt;
+  chats[activeChatId].time    = time;
   box.value = '';
   box.style.height = 'auto';
   renderMessages(activeChatId);
   renderChatList(document.getElementById('chatSearch').value);
 
-  // Simulate reply after 1.5s
-  const c = chats[activeChatId];
-  const replies = [
-    'Iya, saya setuju 😊',
-    'Wah menarik sekali!',
-    'Hehe, nanti kita bahas lebih lanjut ya.',
-    'Oke, makasih sudah berbagi ceritanya 😄',
-    'Insyaallah bisa kita lanjutkan di luar Matchu juga ya 😊'
-  ];
-  setTimeout(() => {
-    const reply = replies[Math.floor(Math.random() * replies.length)];
-    const replyTime = new Date();
-    const rt = replyTime.getHours().toString().padStart(2,'0') + ':' + replyTime.getMinutes().toString().padStart(2,'0');
-    chats[activeChatId].messages.push({ from: 'them', text: reply, time: rt });
-    chats[activeChatId].lastMsg = reply;
-    chats[activeChatId].time = rt;
-    if (activeChatId !== null) renderMessages(activeChatId);
-    renderChatList(document.getElementById('chatSearch').value);
-  }, 1500);
+  // Kirim ke server
+  try {
+    await fetch('/api/chat/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roomId: c.id, senderId: userId, content: txt }),
+    });
+  } catch(e) {
+    console.warn('sendMessage error:', e);
+  }
 }
 
 function handleEnter(e) {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
 }
-
 function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
 
 /* ===== INTEREST ===== */
-function toggleInterest() {
+async function toggleInterest() {
   if (activeChatId === null) return;
-  if (interestState[activeChatId]) {
+  const c = chats[activeChatId];
+  if (interestState[c.id]) {
     showToast('Sudah menandai Interest untuk chat ini.');
     return;
   }
-  interestState[activeChatId] = true;
-  const ibtn = document.getElementById('interestBtn');
-  ibtn.classList.add('pressed');
-  ibtn.innerHTML = `<svg fill="none" viewBox="0 0 24 24" width="14" height="14"><path d="M12 21C12 21 3 14.5 3 8.5C3 5.4 5.4 3 8.5 3C10.2 3 11.8 3.8 12 5C12.2 3.8 13.8 3 15.5 3C18.6 3 21 5.4 21 8.5C21 14.5 12 21 12 21Z" stroke="white" stroke-width="1.8" fill="white"/></svg> Sudah Interest`;
+  interestState[c.id] = true;
+  syncInterestBtn(activeChatId);
   showToast('❤️ Interest ditandai! Menunggu mereka menekan Interest juga.');
+
+  try {
+    await fetch('/api/chat/interest', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roomId: c.id, userId }),
+    });
+  } catch(e) { console.warn('toggleInterest error:', e); }
 }
 
 /* ===== REPORT ===== */
-function openReport() { document.getElementById('reportModal').classList.add('open'); document.body.style.overflow = 'hidden'; }
-function closeReport() { document.getElementById('reportModal').classList.remove('open'); document.body.style.overflow = ''; }
-function sendReport() {
-  const name = activeChatId !== null ? chats[activeChatId].name : 'pengguna ini';
+function openReport() { document.getElementById('reportModal').classList.add('open'); }
+function closeReport() { document.getElementById('reportModal').classList.remove('open'); }
+async function sendReport() {
+  if (activeChatId === null) { closeReport(); return; }
+  const reason = document.querySelector('input[name=report]:checked')?.value || 'lainnya';
+  const name   = chats[activeChatId]?.name || 'pengguna ini';
   closeReport();
+
+  try {
+    await fetch('/api/chat/report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roomId: chats[activeChatId].id, reportedBy: userId, reason }),
+    });
+  } catch(e) {}
+
+  chats.splice(activeChatId, 1);
+  activeChatId = null;
+  renderChatList();
   document.getElementById('chatRoom').classList.add('hidden');
   document.getElementById('welcomeScreen').classList.remove('hidden');
   document.getElementById('welcomeScreen').innerHTML = `
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2" width="56" height="56"><circle cx="12" cy="12" r="9" stroke="#c0392b" stroke-width="1.5"/><path d="M12 8v4M12 16h.01" stroke="#c0392b" stroke-width="2" stroke-linecap="round"/></svg>
     <h3 style="color:#c0392b">Laporan Terkirim</h3>
-    <p>Koneksi dengan <strong>${name}</strong> langsung diputus. Laporan Anda akan ditinjau oleh tim Matchu dalam 24 jam. Pengguna tidak dapat lagi menghubungi Anda.</p>
-  `;
-  if (activeChatId !== null) chats.splice(activeChatId, 1);
-  activeChatId = null;
-  renderChatList();
+    <p>Koneksi dengan <strong>${escHtml(name)}</strong> langsung diputus. Laporan akan ditinjau oleh tim Matchu dalam 24 jam.</p>`;
 }
-document.getElementById('reportModal').addEventListener('click', e => { if (e.target === document.getElementById('reportModal')) closeReport(); });
+document.getElementById('reportModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('reportModal')) closeReport();
+});
 
 /* ===== BACK TO LIST (mobile) ===== */
 function backToList() {
@@ -715,38 +822,69 @@ function backToList() {
   renderChatList();
 }
 
-/* ===== FILTER CHATS ===== */
+/* ===== FILTER ===== */
 function filterChats() {
   renderChatList(document.getElementById('chatSearch').value);
 }
 
-/* ===== SIDEBAR ===== */
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('overlay');
-const hamburger = document.getElementById('hamburger');
-const sidebarClose = document.getElementById('sidebarClose');
-function openSidebar() { sidebar.classList.remove('hidden'); overlay.classList.add('active'); }
-function closeSidebar() { sidebar.classList.add('hidden'); overlay.classList.remove('active'); }
-hamburger.addEventListener('click', () => sidebar.classList.contains('hidden') ? openSidebar() : closeSidebar());
-sidebarClose.addEventListener('click', closeSidebar);
-overlay.addEventListener('click', () => { closeSidebar(); closeNotif(); });
-
-/* ===== NOTIF ===== */
-const notifBtn = document.getElementById('notifBtn');
-const notifDropdown = document.getElementById('notifDropdown');
-function closeNotif() { notifDropdown.classList.remove('open'); }
-notifBtn.addEventListener('click', e => { e.stopPropagation(); notifDropdown.classList.toggle('open'); });
-document.addEventListener('click', e => { if (!notifDropdown.contains(e.target) && e.target !== notifBtn) closeNotif(); });
-
-/* ===== TOAST ===== */
+/* ===== HELPERS ===== */
+function formatTime(iso) {
+  const d = new Date(iso);
+  return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+}
+function isToday(iso) {
+  const d = new Date(iso), t = new Date();
+  return d.toDateString() === t.toDateString();
+}
+function isYesterday(iso) {
+  const d = new Date(iso), t = new Date();
+  t.setDate(t.getDate() - 1);
+  return d.toDateString() === t.toDateString();
+}
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-/* ===== INIT ===== */
-renderChatList();
+/* ===== SIDEBAR ===== */
+const sidebar  = document.getElementById('sidebar');
+const overlay  = document.getElementById('overlay');
+const hamburger = document.getElementById('hamburger');
+const sidebarClose = document.getElementById('sidebarClose');
+
+function openSidebar()  { sidebar.classList.remove('hidden'); overlay.classList.add('active'); }
+function closeSidebar() { sidebar.classList.add('hidden'); overlay.classList.remove('active'); }
+
+hamburger.addEventListener('click', () =>
+  sidebar.classList.contains('hidden') ? openSidebar() : closeSidebar()
+);
+sidebarClose.addEventListener('click', closeSidebar);
+overlay.addEventListener('click', () => { closeSidebar(); closeNotif(); });
+
+document.getElementById('logoutBtn').addEventListener('click', e => {
+  e.preventDefault();
+  if (confirm('Yakin ingin keluar?')) {
+    localStorage.clear();
+    window.location.href = 'login.html';
+  }
+});
+
+/* ===== NOTIF ===== */
+const notifBtn      = document.getElementById('notifBtn');
+const notifDropdown = document.getElementById('notifDropdown');
+function closeNotif() { notifDropdown.classList.remove('open'); }
+notifBtn.addEventListener('click', e => { e.stopPropagation(); notifDropdown.classList.toggle('open'); });
+document.addEventListener('click', e => {
+  if (!notifDropdown.contains(e.target) && e.target !== notifBtn) closeNotif();
+});
+
+/* ===== START ===== */
+init();
 </script>
 </body>
 </html>
