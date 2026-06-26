@@ -55,7 +55,13 @@ body{ background:var(--bg); font-family:'Inter',sans-serif; color:var(--text); }
 .badge-pts-ig{ display:inline-block; background:var(--green); color:white; border-radius:20px; padding:2px 10px; font-size:11px; font-weight:700; margin-left:6px; }
 
 /* Section label — identik */
-.section-label{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--primary); margin:28px 0 14px; padding-bottom:8px; border-bottom:1px solid #f0e8ea; }
+.section-label{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--primary); margin:28px 0 14px; padding-bottom:8px; border-bottom:1px solid #f0e8ea; display:flex; align-items:center; gap:8px; }
+
+/* ✅ BARU: badge "Wajib" di section label (dipakai untuk Instagram) */
+.label-wajib{
+  background:#e53e3e; color:white; font-size:9px; font-weight:700;
+  letter-spacing:.03em; padding:2px 8px; border-radius:20px; text-transform:none;
+}
 
 /* Tips box */
 .tips-box{ background:#f9f4f5; border-radius:14px; padding:16px 18px; margin-bottom:20px; }
@@ -76,6 +82,8 @@ body{ background:var(--bg); font-family:'Inter',sans-serif; color:var(--text); }
 }
 .foto-box:hover{ border-color:var(--primary); background:#f9f4f5; }
 .foto-box.has-foto{ border-style:solid; border-color:var(--primary); }
+/* ✅ BARU: highlight merah kalau gagal validasi (belum diupload tapi wajib) */
+.foto-box.invalid{ border-style:solid; border-color:#e53e3e; background:#fff5f5; }
 .foto-box input{ display:none; }
 .foto-placeholder{ text-align:center; color:var(--muted); padding:16px; }
 .foto-placeholder .icon{ font-size:32px; margin-bottom:8px; }
@@ -101,6 +109,8 @@ body{ background:var(--bg); font-family:'Inter',sans-serif; color:var(--text); }
 /* Instagram input */
 .ig-wrap{ display:flex; align-items:center; border:1.5px solid var(--border); border-radius:11px; overflow:hidden; transition:.2s; }
 .ig-wrap:focus-within{ border-color:var(--primary); }
+/* ✅ BARU: highlight merah kalau gagal validasi */
+.ig-wrap.invalid{ border-color:#e53e3e; }
 .ig-at{ padding:0 14px; font-weight:600; color:var(--muted); background:#f9f9f9; border-right:1.5px solid var(--border); font-size:15px; display:flex; align-items:center; height:48px; }
 .ig-input{ border:none !important; flex:1; padding:12px 14px; font-size:14px; font-family:'Inter',sans-serif; color:var(--text); }
 .ig-input:focus{ outline:none; }
@@ -184,7 +194,7 @@ body{ background:var(--bg); font-family:'Inter',sans-serif; color:var(--text); }
   </div>
 
   <!-- Upload Foto -->
-  <div class="section-label">Upload Foto</div>
+  <div class="section-label">Upload Foto <span class="label-wajib">Wajib · 2 Foto</span></div>
   <div class="foto-grid">
     <div class="foto-box" id="box1" onclick="document.getElementById('foto1-input').click()">
       <input type="file" id="foto1-input" accept="image/jpeg,image/png,image/webp" onchange="previewFoto(this,'box1','preview1','badge1')">
@@ -203,17 +213,17 @@ body{ background:var(--bg); font-family:'Inter',sans-serif; color:var(--text); }
       <div class="foto-placeholder" id="placeholder2">
         <div class="icon">+</div>
         <div class="label">Foto Kedua</div>
-        <div class="sub">Opsional · JPG/PNG · Maks. 5MB</div>
+        <div class="sub">Wajib · JPG/PNG · Maks. 5MB</div>
       </div>
       <button type="button" class="foto-remove" onclick="hapusFoto(event,'box2','foto2-input','preview2','placeholder2','badge2')">×</button>
       <div class="foto-label-badge" id="badge2">Foto Kedua</div>
     </div>
   </div>
-  <div class="err" id="foto-err">Upload minimal 1 foto profil.</div>
+  <div class="err" id="foto-err">Foto utama dan foto kedua wajib diupload.</div>
 
   <!-- Instagram -->
-  <div class="section-label">Instagram</div>
-  <div class="ig-wrap">
+  <div class="section-label">Instagram <span class="label-wajib">Wajib</span></div>
+  <div class="ig-wrap" id="ig-wrap">
     <span class="ig-at">@</span>
     <input type="text" id="instagram" class="ig-input" placeholder="username_kamu">
   </div>
@@ -248,11 +258,14 @@ function previewFoto(input, boxId, previewId, badgeId) {
     const img = document.getElementById(previewId);
     img.src = e.target.result;
     img.style.display = 'block';
-    document.getElementById(boxId).classList.add('has-foto');
+    const box = document.getElementById(boxId);
+    box.classList.add('has-foto');
+    box.classList.remove('invalid'); // ✅ hapus highlight merah begitu foto ini terisi
     document.getElementById(boxId === 'box1' ? 'placeholder1' : 'placeholder2').style.display = 'none';
     if (boxId === 'box1') foto1Base64 = e.target.result;
     else foto2Base64 = e.target.result;
-    document.getElementById('foto-err').style.display = 'none';
+    // ✅ sembunyikan error hanya kalau KEDUA foto sudah terisi
+    if (foto1Base64 && foto2Base64) document.getElementById('foto-err').style.display = 'none';
   };
   reader.readAsDataURL(file);
 }
@@ -268,11 +281,40 @@ function hapusFoto(e, boxId, inputId, previewId, placeholderId, badgeId) {
   else foto2Base64 = null;
 }
 
+// ✅ BARU: bersihkan error Instagram secara real-time begitu user mulai mengetik
+document.getElementById('instagram').addEventListener('input', function () {
+  if (this.value.trim()) {
+    document.getElementById('ig-err').style.display = 'none';
+    document.getElementById('ig-wrap').classList.remove('invalid');
+  }
+});
+
 async function submitRegistration() {
   let valid = true;
-  if (!foto1Base64) { document.getElementById('foto-err').style.display = 'block'; valid = false; }
+
+  // ✅ Foto utama DAN foto kedua sekarang wajib keduanya
+  const box1 = document.getElementById('box1');
+  const box2 = document.getElementById('box2');
+  if (!foto1Base64 || !foto2Base64) {
+    document.getElementById('foto-err').style.display = 'block';
+    box1.classList.toggle('invalid', !foto1Base64);
+    box2.classList.toggle('invalid', !foto2Base64);
+    valid = false;
+  } else {
+    box1.classList.remove('invalid');
+    box2.classList.remove('invalid');
+  }
+
   const ig = document.getElementById('instagram').value.trim();
-  if (!ig) { document.getElementById('ig-err').style.display = 'block'; valid = false; }
+  const igWrap = document.getElementById('ig-wrap');
+  if (!ig) {
+    document.getElementById('ig-err').style.display = 'block';
+    igWrap.classList.add('invalid');
+    valid = false;
+  } else {
+    igWrap.classList.remove('invalid');
+  }
+
   if (!document.getElementById('tos').checked) { alert('Centang persetujuan terlebih dahulu.'); valid = false; }
   if (!valid) return;
 

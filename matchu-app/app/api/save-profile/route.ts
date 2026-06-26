@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     const { userId, ...fields } = body;
 
     console.log('[SAVE] userId:', userId);
-    console.log('[SAVE] fields:', JSON.stringify(fields));
+    console.log('[SAVE] fields:', JSON.stringify(fields).slice(0, 500)); // dipotong biar log gak penuh base64
 
     if (!userId) {
       return NextResponse.json({ success: false, error: 'userId wajib.' }, { status: 400 });
@@ -21,6 +21,8 @@ export async function POST(req: NextRequest) {
       'profesi','perusahaan','status_kerja','instagram',
       'universitas','program_studi','jenjang','status_pendidikan',
       'status_nikah','bulan_lahir','tahun_lahir','tahun_masuk',
+      // ✅ DITAMBAHKAN: foto profil sekarang bisa disimpan lewat endpoint ini
+      'foto_url_1','foto_url_2',
     ];
 
     const updateData: Record<string, unknown> = {};
@@ -32,7 +34,22 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    console.log('[SAVE] updateData:', JSON.stringify(updateData));
+    // ✅ Guard: foto dikirim sebagai base64 (data:image/...;base64,xxxx) dari frontend.
+    // Batasi ukurannya supaya tidak ada payload raksasa nyangkut ke kolom text di Supabase.
+    for (const fotoKey of ['foto_url_1', 'foto_url_2']) {
+      const val = updateData[fotoKey];
+      if (typeof val === 'string' && val.startsWith('data:image')) {
+        const approxBytes = val.length * 0.75; // estimasi ukuran asli dari base64
+        if (approxBytes > 6 * 1024 * 1024) {
+          return NextResponse.json(
+            { success: false, error: `Ukuran ${fotoKey === 'foto_url_1' ? 'foto utama' : 'foto kedua'} terlalu besar.` },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
+    console.log('[SAVE] updateData keys:', Object.keys(updateData));
 
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json({ success: false, error: 'Tidak ada data untuk disimpan.' }, { status: 400 });
@@ -46,7 +63,7 @@ export async function POST(req: NextRequest) {
       .eq('id', userId)
       .select(); // ✅ select() agar return data yang diupdate
 
-    console.log('[SAVE] result:', JSON.stringify(data));
+    console.log('[SAVE] result count:', data?.length);
     console.log('[SAVE] error:', error?.message || 'null');
 
     if (error) {

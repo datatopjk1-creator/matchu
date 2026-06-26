@@ -24,13 +24,14 @@
   --shadow: 0 2px 16px rgba(0,0,0,0.06);
 }
 
-body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; }
+html { height: 100%; overscroll-behavior: none; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior: none; position: fixed; inset: 0; width: 100%; }
 
 .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 100; }
 .overlay.active { display: block; }
 
 /* SIDEBAR */
-.sidebar { position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh; background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 200; transition: transform .28s cubic-bezier(.4,0,.2,1); overflow: hidden; }
+.sidebar { position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh; height: 100dvh; background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 200; transition: transform .28s cubic-bezier(.4,0,.2,1); overflow: hidden; }
 .sidebar.hidden { transform: translateX(-100%); }
 .sidebar-logo { height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .logo-text { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--brand); letter-spacing: 2px; }
@@ -51,10 +52,10 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .s-role { font-size: 11px; color: var(--text-2); }
 
 /* APP SHELL */
-.app-shell { display: flex; flex-direction: column; height: 100vh; }
+.app-shell { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
 
 /* TOPBAR */
-.topbar { position: sticky; top: 0; z-index: 50; height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; gap: 12px; flex-shrink: 0; }
+.topbar { position: sticky; top: 0; z-index: 50; height: var(--topbar-h); padding-top: env(safe-area-inset-top); box-sizing: content-box; background: var(--white); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding-left: 24px; padding-right: 24px; gap: 12px; flex-shrink: 0; }
 .hamburger { width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 10px; background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; flex-shrink: 0; }
 .hamburger span { display: block; width: 18px; height: 2px; background: var(--text); border-radius: 2px; }
 .hamburger:hover span { background: var(--brand); }
@@ -85,7 +86,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .notif-drop-time { font-size: 11px; color: var(--text-2); margin-top: 2px; }
 
 /* CHAT LAYOUT */
-.chat-shell { flex: 1; display: grid; grid-template-columns: 320px 1fr; overflow: hidden; height: calc(100vh - var(--topbar-h)); }
+.chat-shell { flex: 1; display: grid; grid-template-columns: 320px 1fr; overflow: hidden; min-height: 0; }
 
 /* CHAT LIST PANEL */
 .chat-list-panel { background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
@@ -138,7 +139,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
   top: 0;
   z-index: 100;
 
-  padding-top: calc(14px + env(safe-area-inset-top));
+  padding-top: 14px;
   padding-right: 20px;
   padding-bottom: 14px;
   padding-left: 20px;
@@ -271,7 +272,17 @@ object-fit:cover;
 
 border-radius:12px;
 
+cursor:pointer;
+
+transition: opacity .15s;
+
 }
+
+.photo-grid img:hover{ opacity:.85; }
+
+/* PHOTO VIEWER (lightbox) */
+.photo-viewer-img{ max-width:92vw; max-height:88vh; border-radius:14px; display:block; box-shadow:0 20px 60px rgba(0,0,0,0.4); }
+.photo-viewer-close{ position:absolute; top:18px; right:18px; width:38px; height:38px; border-radius:50%; border:none; background:rgba(255,255,255,0.9); cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; }
 
 .profile-name{
 
@@ -453,6 +464,12 @@ text-align:center;
       <button class="report-send" style="background:var(--brand)" onclick="closeMutualModal(); openProfileModal(mutualModalIdx)">Lihat Profil</button>
     </div>
   </div>
+</div>
+
+<!-- PHOTO VIEWER (lightbox untuk klik foto profil) -->
+<div class="modal-bg" id="photoViewer" onclick="if(event.target.id==='photoViewer') closePhotoViewer()" style="background:rgba(0,0,0,0.85);">
+  <button class="photo-viewer-close" onclick="closePhotoViewer()">✕</button>
+  <img id="photoViewerImg" class="photo-viewer-img" src="" alt="Foto profil">
 </div>
 
 <!-- TOAST -->
@@ -655,6 +672,12 @@ async function loadUserProfile() {
 
     isExpired: r.is_expired,
 
+    // Timestamp asli untuk countdown live. Pakai expires_at kalau ada;
+    // kalau tidak ada, hitung manual dari matched_at/created_at + 5 hari.
+    expiresAt: r.expires_at || null,
+    matchedAt: r.matched_at || r.mutual_interest_at || null,
+    createdAt: r.created_at || null,
+
     lastMsg: r.last_message?.message || '',
 
     time: r.last_message?.created_at
@@ -694,7 +717,72 @@ async function loadUserProfile() {
   }
 }
 
-/* ===== UPDATE BADGES ===== */
+/* ===== COUNTDOWN LIVE =====
+   Chat dihapus 5 hari setelah match (mutual interest), terhitung dari
+   expiresAt (kalau backend sudah mengirim), atau dari matchedAt/createdAt + 5 hari
+   sebagai fallback kalau backend belum mengirim expiresAt.
+*/
+const CHAT_LIFETIME_DAYS = 5;
+const CHAT_LIFETIME_MS   = CHAT_LIFETIME_DAYS * 24 * 60 * 60 * 1000;
+
+function getRoomExpiryDate(c) {
+  if (c.expiresAt) return new Date(c.expiresAt);
+  if (c.matchedAt) return new Date(new Date(c.matchedAt).getTime() + CHAT_LIFETIME_MS);
+  if (c.createdAt) return new Date(new Date(c.createdAt).getTime() + CHAT_LIFETIME_MS);
+  return null;
+}
+
+function formatCountdown(diffMs) {
+  if (diffMs <= 0) return 'Berakhir';
+  const totalMinutes = Math.floor(diffMs / 60000);
+  const days    = Math.floor(totalMinutes / 1440);
+  const hours   = Math.floor((totalMinutes % 1440) / 60);
+  const minutes = totalMinutes % 60;
+  if (days > 0)  return `${days} hari ${hours} jam`;
+  if (hours > 0) return `${hours} jam ${minutes} menit`;
+  return `${minutes} menit`;
+}
+
+/* Update semua tampilan countdown (list chat + room header) tanpa render ulang total */
+function tickCountdowns() {
+  const now = Date.now();
+
+  chats.forEach((c, idx) => {
+    const expiry = getRoomExpiryDate(c);
+    if (!expiry) return;
+    const diffMs = expiry.getTime() - now;
+
+    c._countdownText = formatCountdown(diffMs);
+    c._countdownMs   = diffMs;
+
+    // Badge di list chat (kalau elemennya ada di DOM)
+    const badge = document.querySelector(`.chat-item[data-idx="${idx}"] .ci-days`);
+    if (badge) {
+      badge.textContent = '⏱ ' + c._countdownText;
+      badge.style.color = diffMs <= 24*60*60*1000 ? '#c0392b' : '';
+      badge.style.background = diffMs <= 24*60*60*1000 ? '#fff0f0' : '';
+    }
+
+    // Timer bar di room yang sedang dibuka
+    if (activeChatId === idx) {
+      const fill = Math.max(0, Math.min(100, Math.round(100 - (diffMs / CHAT_LIFETIME_MS) * 100)));
+      const fillEl = document.getElementById('timerFill');
+      if (fillEl) fillEl.style.width = fill + '%';
+
+      const urgStyle = diffMs <= 24*60*60*1000 ? 'color:#c0392b' : '';
+      const textEl = document.getElementById('timerText');
+      if (textEl) {
+        textEl.innerHTML = diffMs <= 0
+          ? `<strong style="color:#c0392b">Chat ini sudah kedaluwarsa.</strong> Lanjutkan di WA / Instagram.`
+          : `Chat aktif tersisa <strong style="${urgStyle}">${c._countdownText}</strong>. Segera lanjutkan di WA / Instagram setelah habis.`;
+      }
+    }
+  });
+}
+
+// Update tiap 30 detik — cukup presisi untuk satuan menit, ringan untuk perangkat.
+setInterval(tickCountdowns, 30000);
+
 function updateChatBadge(count) {
   const badge = document.getElementById('navBadgeChat');
   if (count > 0) {
@@ -752,8 +840,13 @@ function renderChatList(filter = '') {
   container.innerHTML = filtered.map((c, idx) => {
     const realIdx    = chats.indexOf(c);
     const isActive   = activeChatId === realIdx;
-    const dayStyle   = c.daysLeft <= 1 ? 'color:#c0392b;background:#fff0f0' : '';
     const avatarHTML = avatarInner(c);
+
+    const expiry      = getRoomExpiryDate(c);
+    const diffMs       = expiry ? expiry.getTime() - Date.now() : null;
+    const countdownTxt = diffMs !== null ? formatCountdown(diffMs) : `${c.daysLeft} hari lagi`;
+    const urgent        = diffMs !== null ? diffMs <= 24*60*60*1000 : (c.daysLeft <= 1);
+    const dayStyle      = urgent ? 'color:#c0392b;background:#fff0f0' : '';
 
     return `<div class="chat-item${isActive ? ' active' : ''}" data-idx="${realIdx}" onclick="openChat(${realIdx})">
       <div class="ci-avatar" onclick="event.stopPropagation(); avatarClicked(${realIdx})">${avatarHTML}</div>
@@ -764,7 +857,7 @@ function renderChatList(filter = '') {
         </div>
         <div class="ci-preview">${escHtml(c.lastMsg) || '<em>Mulai percakapan...</em>'}</div>
         <div class="ci-meta">
-          <span class="ci-days" style="${dayStyle}">⏱ ${c.daysLeft} hari lagi</span>
+          <span class="ci-days" style="${dayStyle}">⏱ ${countdownTxt}</span>
           ${c.unread ? `<span class="ci-unread">${c.unread}</span>` : ''}
         </div>
       </div>
@@ -797,13 +890,8 @@ async function openChat(idx) {
   const matchEl = document.getElementById('roomMatch');
   matchEl.style.display = 'none'; // sembunyikan dulu, isi jika ada
 
-  // Timer
-  const maxDays = c.maxDays || 5;
-  const fill    = Math.round((c.daysLeft / maxDays) * 100);
-  document.getElementById('timerFill').style.width = fill + '%';
-  const urgStyle = c.daysLeft <= 1 ? 'color:#c0392b' : '';
-  document.getElementById('timerText').innerHTML =
-    `Chat aktif tersisa <strong style="${urgStyle}">${c.daysLeft} hari</strong>. Segera lanjutkan di WA / Instagram setelah habis.`;
+  // Timer (countdown live — 5 hari sejak match)
+  tickCountdowns();
 
   // Interest button
   syncInterestBtn(idx);
@@ -1117,6 +1205,19 @@ async function toggleInterest() {
   }
 }
 
+/* ===== PHOTO VIEWER (lightbox) =====
+   Klik foto (photo1/photo2 di modal profil) -> tampil full-screen.
+*/
+function viewPhoto(src) {
+  if (!src) return;
+  document.getElementById('photoViewerImg').src = src;
+  document.getElementById('photoViewer').classList.add('open');
+}
+function closePhotoViewer() {
+  document.getElementById('photoViewer').classList.remove('open');
+  document.getElementById('photoViewerImg').src = '';
+}
+
 /* ===== MUTUAL INTEREST POPUP ===== */
 function showMutualPopup(idx) {
   const c = chats[idx];
@@ -1317,8 +1418,8 @@ function closeProfileModal(){
     <!-- Sesudah mutual interest: 2 foto asli (foto_url_1 & foto_url_2) -->
     <div id="unlockedSection" style="display:none;">
       <div class="photo-grid">
-        <img id="photo1">
-        <img id="photo2">
+        <img id="photo1" onclick="viewPhoto(this.src)">
+        <img id="photo2" onclick="viewPhoto(this.src)">
       </div>
     </div>
 

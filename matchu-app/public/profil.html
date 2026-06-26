@@ -126,10 +126,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 /* FOTO */
 .foto-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
-.foto-slot{aspect-ratio:3/4;border-radius:14px;background:var(--bg);border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:12px;font-weight:500;color:var(--text-2);overflow:hidden;position:relative;}
+.foto-slot{aspect-ratio:3/4;border-radius:14px;background:var(--bg);border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:12px;font-weight:500;color:var(--text-2);overflow:hidden;position:relative;cursor:pointer;transition:border-color .15s,opacity .15s;}
+.foto-slot:hover{border-color:var(--brand);opacity:.92;}
 .foto-slot.filled{border-style:solid;border-color:var(--border);}
 .foto-slot img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
 .foto-label{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(122,34,54,0.8);color:white;font-size:10px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;}
+.foto-edit-badge{position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.55);color:white;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;pointer-events:none;}
+.foto-save-bar{display:none;margin-top:14px;gap:10px;}
+.foto-save-bar.show{display:flex;}
 
 /* VERIFIKASI BANNER */
 .verif-banner{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;margin-bottom:4px;}
@@ -204,6 +208,7 @@ textarea.field-input{resize:vertical;min-height:80px;line-height:1.6;}
 .danger-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#c0392b;margin-bottom:6px;}
 .danger-desc{font-size:13px;color:#888;line-height:1.6;margin-bottom:14px;}
 .danger-btn{padding:10px 24px;background:#c0392b;color:white;border:none;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;}
+.danger-btn:disabled{opacity:.6;cursor:not-allowed;}
 
 @media(max-width:900px){
   .main-grid{grid-template-columns:1fr;}
@@ -475,29 +480,37 @@ textarea.field-input{resize:vertical;min-height:80px;line-height:1.6;}
         </div>
       </div>
 
-      <!-- 8. FOTO PROFIL -->
+      <!-- 8. FOTO PROFIL (✅ sekarang bisa diedit: klik foto -> upload -> simpan) -->
       <div class="section-card">
         <div class="section-head">
           <div class="section-title"><span class="section-icon">📸</span> Foto Profil</div>
         </div>
         <div class="foto-grid">
-          <div class="foto-slot" id="foto1Slot">
+          <div class="foto-slot" id="foto1Slot" onclick="document.getElementById('fotoInput1').click()">
             <span style="font-size:24px;">📷</span>
             <span>Foto Utama</span>
+            <div class="foto-edit-badge">✏ Tambah</div>
           </div>
-          <div class="foto-slot" id="foto2Slot">
+          <div class="foto-slot" id="foto2Slot" onclick="document.getElementById('fotoInput2').click()">
             <span style="font-size:24px;">📷</span>
             <span>Foto Kedua</span>
+            <div class="foto-edit-badge">✏ Tambah</div>
           </div>
         </div>
-        <div style="margin-top:10px;font-size:12px;color:var(--text-2);">Untuk mengganti foto, hubungi tim Matchu atau gunakan menu Pengaturan.</div>
+        <input type="file" id="fotoInput1" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleFotoUpload(1, this)">
+        <input type="file" id="fotoInput2" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleFotoUpload(2, this)">
+        <div class="foto-save-bar" id="fotoSaveBar">
+          <button class="btn-cancel" onclick="cancelFotoEdit()">Batal</button>
+          <button class="btn-save" onclick="saveFoto()">Simpan Foto</button>
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:var(--text-2);">Klik salah satu foto untuk menggantinya. Maks. 5MB, format JPG/PNG/WebP.</div>
       </div>
 
-      <!-- DANGER -->
+      <!-- DANGER (✅ sekarang benar-benar menghapus akun) -->
       <div class="danger-card">
         <div class="danger-title">⚠ Zona Berbahaya</div>
         <div class="danger-desc">Menghapus akun akan menghapus seluruh data secara permanen dan tidak dapat dipulihkan.</div>
-        <button class="danger-btn" onclick="confirmDelete()">Hapus Akun Permanen</button>
+        <button class="danger-btn" id="deleteAccountBtn" onclick="confirmDelete()">Hapus Akun Permanen</button>
       </div>
 
     </div>
@@ -700,6 +713,7 @@ textarea.field-input{resize:vertical;min-height:80px;line-height:1.6;}
 let profile = null;
 let trustBreakdown = null;
 let eduSsBase64 = null; // ✅ base64 screenshot baru (kalau user upload ulang)
+let fotoPending = { 1: null, 2: null }; // ✅ base64 foto profil baru yang belum disimpan
 const userId = localStorage.getItem('matchu_user_id');
 if (!userId) { alert('Sesi tidak ditemukan. Silakan login.'); window.location.href = 'login.html'; }
 
@@ -846,11 +860,23 @@ function renderSections() {
   const bahasaList = ['Bahasa Indonesia', ...(p.bahasa ? p.bahasa.split(',').map(b => b.trim()).filter(Boolean) : [])];
   document.getElementById('infoBahasa').innerHTML = bahasaList.map(b => `<span class="tag-chip">${b}</span>`).join('');
 
-  // FOTO
-  const s1 = document.getElementById('foto1Slot');
-  const s2 = document.getElementById('foto2Slot');
-  if (p.foto_url_1) { s1.classList.add('filled'); s1.innerHTML = `<img src="${p.foto_url_1}" alt="Foto Utama"><span class="foto-label">Foto Utama</span>`; }
-  if (p.foto_url_2) { s2.classList.add('filled'); s2.innerHTML = `<img src="${p.foto_url_2}" alt="Foto Kedua"><span class="foto-label">Foto Kedua</span>`; }
+  // FOTO — ✅ render ulang slot 1 & 2 (terisi ATAU placeholder kosong), lengkap dengan badge edit
+  renderFotoSlot(1, p.foto_url_1);
+  renderFotoSlot(2, p.foto_url_2);
+}
+
+// ✅ BARU: render satu slot foto (dipakai initial load, refresh setelah simpan, dan saat cancel)
+function renderFotoSlot(slot, url) {
+  const el = document.getElementById('foto' + slot + 'Slot');
+  if (!el) return;
+  const label = slot === 1 ? 'Foto Utama' : 'Foto Kedua';
+  if (url) {
+    el.classList.add('filled');
+    el.innerHTML = `<img src="${url}" alt="${label}"><span class="foto-label">${label}</span><div class="foto-edit-badge">✏ Ganti</div>`;
+  } else {
+    el.classList.remove('filled');
+    el.innerHTML = `<span style="font-size:24px;">📷</span><span>${label}</span><div class="foto-edit-badge">✏ Tambah</div>`;
+  }
 }
 
 function setVal(id, val) {
@@ -944,6 +970,73 @@ function handleEduUpload(input) {
     document.getElementById('eduUploadText').textContent = file.name;
   };
   reader.readAsDataURL(file);
+}
+
+/* ===== ✅ BARU: FOTO PROFIL — klik foto -> pilih file -> preview -> simpan ===== */
+function handleFotoUpload(slot, input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { alert('Ukuran file maksimal 5MB.'); input.value = ''; return; }
+  if (!['image/jpeg','image/png','image/webp'].includes(file.type)) {
+    alert('Format file harus JPG, PNG, atau WebP.'); input.value = ''; return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    fotoPending[slot] = e.target.result;
+    renderFotoSlot(slot, e.target.result); // preview langsung, belum tersimpan ke server
+    document.getElementById('fotoSaveBar').classList.add('show');
+  };
+  reader.readAsDataURL(file);
+}
+
+function cancelFotoEdit() {
+  fotoPending = { 1: null, 2: null };
+  document.getElementById('fotoInput1').value = '';
+  document.getElementById('fotoInput2').value = '';
+  document.getElementById('fotoSaveBar').classList.remove('show');
+  // Kembalikan tampilan slot ke data asli (sebelum diganti) dari profile yang sudah dimuat.
+  if (profile) {
+    renderFotoSlot(1, profile.foto_url_1);
+    renderFotoSlot(2, profile.foto_url_2);
+  }
+}
+
+async function saveFoto() {
+  if (!fotoPending[1] && !fotoPending[2]) return;
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = 'Menyimpan...';
+
+  const payload = { userId };
+  if (fotoPending[1]) payload.foto_url_1 = fotoPending[1];
+  if (fotoPending[2]) payload.foto_url_2 = fotoPending[2];
+
+  try {
+    const res = await fetch('/api/save-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      fotoPending = { 1: null, 2: null };
+      document.getElementById('fotoInput1').value = '';
+      document.getElementById('fotoInput2').value = '';
+      document.getElementById('fotoSaveBar').classList.remove('show');
+
+      const fr = await fetch(`/api/get-profile?userId=${userId}`);
+      const fd = await fr.json();
+      if (fd.success) { profile = fd.profile; trustBreakdown = fd.trust_breakdown; }
+      renderAll();
+      showToast('✓ Foto profil berhasil diperbarui');
+    } else {
+      alert('Gagal: ' + (data.error || 'Coba lagi.'));
+    }
+  } catch(e) {
+    alert('Gagal terhubung ke server.'); console.error(e);
+  }
+  btn.disabled = false; btn.textContent = 'Simpan Foto';
 }
 
 // ── TAG SELECTOR ──────────────────────────────────────────
@@ -1089,7 +1182,43 @@ document.addEventListener('click', e => { if (!notifDropdown.contains(e.target) 
 function doLogout() { if (confirm('Yakin ingin keluar?')) { localStorage.clear(); window.location.href = 'login.html'; } }
 document.getElementById('btnLogout').addEventListener('click', doLogout);
 document.getElementById('logoutSidebar').addEventListener('click', e => { e.preventDefault(); doLogout(); });
-function confirmDelete() { if (confirm('Yakin hapus akun? TIDAK BISA dibatalkan.')) alert('Fitur hapus akun akan segera tersedia.'); }
+
+/* ===== ✅ ZONA BERBAHAYA — sekarang benar-benar menghapus akun =====
+   ASUMSI endpoint backend: POST /api/delete-account dengan body { userId }.
+   Kalau nama endpoint di backend kamu berbeda, kasih tahu saya supaya URL-nya disesuaikan.
+*/
+async function confirmDelete() {
+  const sure = confirm('Yakin ingin menghapus akun?\n\nSemua data kamu (profil, foto, riwayat chat, dan match) akan dihapus PERMANEN dan TIDAK BISA dikembalikan.');
+  if (!sure) return;
+
+  const typed = prompt('Untuk konfirmasi terakhir, ketik HAPUS (huruf besar semua) lalu tekan OK:');
+  if (typed !== 'HAPUS') { showToast('Penghapusan akun dibatalkan.'); return; }
+
+  const btn = document.getElementById('deleteAccountBtn');
+  btn.disabled = true; btn.textContent = 'Menghapus akun...';
+
+  try {
+    const res = await fetch('/api/delete-account', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId }),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      alert('Akun kamu telah dihapus secara permanen. Terima kasih sudah menggunakan Matchu.');
+      localStorage.clear();
+      window.location.href = 'login.html';
+    } else {
+      alert('Gagal menghapus akun: ' + (data.error || 'Coba lagi nanti atau hubungi tim support.'));
+      btn.disabled = false; btn.textContent = 'Hapus Akun Permanen';
+    }
+  } catch(e) {
+    console.error('confirmDelete error:', e);
+    alert('Gagal terhubung ke server. Coba lagi nanti.');
+    btn.disabled = false; btn.textContent = 'Hapus Akun Permanen';
+  }
+}
 
 // ── INIT ──────────────────────────────────────────────────
 loadProfile();
