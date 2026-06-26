@@ -776,7 +776,10 @@ async function sendMessage() {
   const time = formatTime(now.toISOString());
 
   // Optimistic UI
-
+// Kosongkan input setelah teks disimpan ke variabel
+box.value = '';
+box.style.height = 'auto';
+box.focus();
   // Kirim ke server
   try {
     await fetch('/api/chat/send', {
