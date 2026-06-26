@@ -130,10 +130,27 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .chat-room.hidden { display: none; }
 
 /* Room header */
-.room-header { background: var(--white); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+.room-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  padding-top: calc(14px + env(safe-area-inset-top));
+  padding-right: 20px;
+  padding-bottom: 14px;
+  padding-left: 20px;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
 .room-back { display: none; width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 9px; background: none; cursor: pointer; align-items: center; justify-content: center; }
 .room-back svg { width: 16px; height: 16px; stroke: var(--text); }
-.room-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--brand-light); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: var(--brand); flex-shrink: 0; position: relative; overflow: hidden; }
+.room-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--brand-light); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: var(--brand); flex-shrink: 0; position: relative; overflow: hidden; cursor: pointer; }
 .room-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .room-avatar .online-dot { position: absolute; bottom: 1px; right: 1px; width: 9px; height: 9px; border-radius: 50%; background: #22c55e; border: 2px solid white; }
 .room-info { flex: 1; }
@@ -216,6 +233,22 @@ display:block;
 
 }
 
+/* Fallback avatar (inisial) saat profil masih terkunci / belum mutual interest */
+.profile-photo-fallback{
+  width:130px;
+  height:130px;
+  border-radius:20px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--brand-light);
+  color:var(--brand);
+  font-size:44px;
+  font-weight:700;
+  font-family:'Playfair Display', serif;
+}
+
 .photo-grid{
 
 display:grid;
@@ -283,6 +316,13 @@ border-radius:12px;
 text-align:center;
 
 }
+
+/* PROFILE MODAL (wrapper) — sebelumnya tidak ada style sama sekali, jadi class "open" tidak berefek */
+.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 600; align-items: center; justify-content: center; padding: 20px; }
+.modal.open { display: flex; }
+.modal-card { background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); position: relative; }
+.modal-close { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border: none; background: var(--bg); border-radius: 50%; cursor: pointer; font-size: 15px; color: var(--text-2); display: flex; align-items: center; justify-content: center; z-index: 2; }
+.modal-close:hover { background: var(--brand-light); color: var(--brand); }
 
 /* REPORT MODAL */
 .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 600; align-items: center; justify-content: center; padding: 20px; }
@@ -402,6 +442,19 @@ text-align:center;
   </div>
 </div>
 
+<!-- MUTUAL INTEREST POPUP -->
+<div class="modal-bg" id="mutualModal">
+  <div class="report-modal" style="text-align:center;">
+    <div style="font-size:42px;margin-bottom:6px;">💖</div>
+    <div class="report-modal-title" style="color:var(--brand);justify-content:center;">Mutual Interest!</div>
+    <div class="report-modal-desc" id="mutualModalText">Kalian berdua saling tertarik. Profil lengkap sekarang terbuka.</div>
+    <div class="report-modal-btns">
+      <button class="report-cancel" onclick="closeMutualModal()">Tutup</button>
+      <button class="report-send" style="background:var(--brand)" onclick="closeMutualModal(); openProfileModal(mutualModalIdx)">Lihat Profil</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
@@ -463,7 +516,7 @@ text-align:center;
         <button class="room-back" id="roomBack" onclick="backToList()">
           <svg fill="none" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <div class="room-avatar" id="roomAvatar">
+        <div class="room-avatar" id="roomAvatar" onclick="avatarClicked(activeChatId)">
           <div class="online-dot"></div>
         </div>
         <div class="room-info">
@@ -472,7 +525,7 @@ text-align:center;
         </div>
         <div class="room-match" id="roomMatch" style="display:none">-</div>
         <div class="room-actions">
-          <button class="interest-btn" id="interestBtn" onclick="toggleInterest()">
+          <button class="interest-btn" id="interestBtn" onclick="toggleInterest()" title="Tenang, lawan chatmu tidak mendapat notifikasi saat kamu menekan Interest.">
             <svg fill="none" viewBox="0 0 24 24"><path d="M12 21C12 21 3 14.5 3 8.5C3 5.4 5.4 3 8.5 3C10.2 3 11.8 3.8 12 5C12.2 3.8 13.8 3 15.5 3C18.6 3 21 5.4 21 8.5C21 14.5 12 21 12 21Z" stroke="currentColor" stroke-width="1.8"/></svg>
             Interest
           </button>
@@ -533,6 +586,7 @@ let chats         = [];       // array of room objects
 let activeChatId  = null;     // index ke chats[]
 let interestState = {};       // { roomId: true/false }
 let currentUser   = null;     // data profil user yang login
+let mutualModalIdx = null;    // index chat yang sedang ditampilkan di popup mutual interest
 
 /* ===== INIT ===== */
 async function init() {
@@ -651,6 +705,33 @@ function updateChatBadge(count) {
   }
 }
 
+/* ===== AVATAR HELPER =====
+   Sebelum mutual interest: avatar HANYA menampilkan inisial (foto disembunyikan demi privasi).
+   Setelah mutual interest: foto asli ditampilkan jika ada.
+*/
+function avatarInner(c) {
+  if (c.mutualInterest && c.fotoUrl) {
+    return `<img src="${c.fotoUrl}" alt="${escHtml(c.name)}">`;
+  }
+  return c.initials;
+}
+
+/* ===== AVATAR CLICK =====
+   - Belum mutual interest -> tampilkan toast ajakan klik Interest.
+   - Sudah mutual interest -> buka modal profil lengkap (bisa diklik berkali-kali).
+*/
+function avatarClicked(idx) {
+  if (idx === null || idx === undefined) return;
+  const c = chats[idx];
+  if (!c) return;
+
+  if (c.mutualInterest) {
+    openProfileModal(idx);
+  } else {
+    showToast('❤️ Klik tombol Interest jika kamu tertarik untuk membuka profil ini.');
+  }
+}
+
 /* ===== RENDER CHAT LIST ===== */
 function renderChatList(filter = '') {
   const container = document.getElementById('chatItems');
@@ -672,12 +753,10 @@ function renderChatList(filter = '') {
     const realIdx    = chats.indexOf(c);
     const isActive   = activeChatId === realIdx;
     const dayStyle   = c.daysLeft <= 1 ? 'color:#c0392b;background:#fff0f0' : '';
-    const avatarHTML = c.fotoUrl
-      ? `<img src="${c.fotoUrl}" alt="${c.name}">`
-      : c.initials;
+    const avatarHTML = avatarInner(c);
 
     return `<div class="chat-item${isActive ? ' active' : ''}" data-idx="${realIdx}" onclick="openChat(${realIdx})">
-      <div class="ci-avatar">${avatarHTML}</div>
+      <div class="ci-avatar" onclick="event.stopPropagation(); avatarClicked(${realIdx})">${avatarHTML}</div>
       <div class="ci-info">
         <div class="ci-top">
           <div class="ci-name">${escHtml(c.name)}</div>
@@ -708,13 +787,8 @@ async function openChat(idx) {
 
   renderChatList(document.getElementById('chatSearch').value);
 
-  // Header avatar
-  const roomAv = document.getElementById('roomAvatar');
-  if (c.fotoUrl) {
-    roomAv.innerHTML = `<img src="${c.fotoUrl}" alt="${c.name}"><div class="online-dot"></div>`;
-  } else {
-    roomAv.innerHTML = `${c.initials}<div class="online-dot"></div>`;
-  }
+  // Header avatar (inisial dulu sebelum mutual interest, foto setelahnya)
+  refreshRoomAvatar(idx);
 
   document.getElementById('roomName').textContent = c.name;
   document.getElementById('roomSub').textContent  = `${c.univ} · ${c.profesi}`;
@@ -756,6 +830,17 @@ async function openChat(idx) {
 
   document.getElementById('inputBox').focus();
 }
+
+/* ===== REFRESH ROOM AVATAR =====
+   Dipanggil saat buka chat, dan saat status interest/mutual berubah (toggle sendiri atau realtime).
+*/
+function refreshRoomAvatar(idx) {
+  const c = chats[idx];
+  if (!c) return;
+  const roomAv = document.getElementById('roomAvatar');
+  roomAv.innerHTML = avatarInner(c) + '<div class="online-dot"></div>';
+}
+
 function subscribeRealtime(roomId, idx) {
 
   if (realtimeChannel) {
@@ -783,6 +868,49 @@ function subscribeRealtime(roomId, idx) {
         renderMessages(idx);
         renderChatList(document.getElementById('chatSearch').value);
 
+      }
+    )
+    .on(
+      'postgres_changes',
+      {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'chat_rooms',
+        filter: `id=eq.${roomId}`
+      },
+      (payload) => {
+
+        const row = payload.new;
+        const c   = chats[idx];
+        if (!c) return;
+
+        const wasMutual = c.mutualInterest;
+
+        // Cocokkan kolom user_a_id / user_b_id dengan user yang sedang login,
+        // supaya tahu mana "myInterest" dan mana "partnerInterest".
+        if (row.user_a_id === userId) {
+          c.myInterest      = !!row.user_a_interest;
+          c.partnerInterest = !!row.user_b_interest;
+        } else if (row.user_b_id === userId) {
+          c.myInterest      = !!row.user_b_interest;
+          c.partnerInterest = !!row.user_a_interest;
+        }
+
+        c.mutualInterest = !!row.mutual_interest;
+        interestState[c.id] = c.myInterest;
+
+        if (activeChatId === idx) {
+          syncInterestBtn(idx);
+          refreshRoomAvatar(idx);
+          document.getElementById('roomBanner').style.display = c.mutualInterest ? 'none' : 'flex';
+        }
+
+        renderChatList(document.getElementById('chatSearch').value);
+
+        // Tampilkan popup tengah jika baru saja jadi mutual interest
+        if (!wasMutual && c.mutualInterest) {
+          showMutualPopup(idx);
+        }
       }
     )
     .subscribe((status) => {
@@ -974,17 +1102,36 @@ async function toggleInterest() {
 
     if (data.mutualInterest) {
       c.mutualInterest = true;
-      showToast('💖 Mutual Interest! Profil sekarang terbuka.');
+      refreshRoomAvatar(activeChatId);
+      document.getElementById('roomBanner').style.display = 'none';
+      showMutualPopup(activeChatId);
     } else {
       showToast('❤️ Interest ditandai! Menunggu mereka menekan Interest juga.');
     }
 
     syncInterestBtn(activeChatId);
+    renderChatList(document.getElementById('chatSearch').value);
 
   } catch (e) {
     console.warn('toggleInterest error:', e);
   }
 }
+
+/* ===== MUTUAL INTEREST POPUP ===== */
+function showMutualPopup(idx) {
+  const c = chats[idx];
+  if (!c) return;
+  mutualModalIdx = idx;
+  document.getElementById('mutualModalText').textContent =
+    `Kamu dan ${c.name} saling menekan Interest. Profil lengkap sekarang terbuka.`;
+  document.getElementById('mutualModal').classList.add('open');
+}
+function closeMutualModal() {
+  document.getElementById('mutualModal').classList.remove('open');
+}
+document.getElementById('mutualModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('mutualModal')) closeMutualModal();
+});
 
 /* ===== REPORT ===== */
 function openReport() { document.getElementById('reportModal').classList.add('open'); }
@@ -1091,11 +1238,13 @@ let realtimeChannel = null;
 /* ===== START ===== */
 init();
 
-async function openProfileModal(){
+async function openProfileModal(idx){
 
-    if(activeChatId===null) return;
+    if (idx === undefined || idx === null) idx = activeChatId;
+    if (idx === null || idx === undefined) return;
 
-    const c=chats[activeChatId];
+    const c = chats[idx];
+    if (!c) return;
 
     const res=await fetch(`/api/chat/partner-profile?roomId=${c.id}&userId=${userId}`);
 
@@ -1105,37 +1254,44 @@ async function openProfileModal(){
 
     const p=data.profile;
 
-    profilePhotoMain.src=p.foto_url_1;
-
-    profileName.textContent=p.nama_lengkap || p.nama_panggilan;
-
     profileUniv.textContent=p.universitas || "";
 
     profileJob.textContent=p.profesi || "";
 
     if(data.unlocked){
 
+        // Nama lengkap baru ditampilkan setelah mutual interest.
+        profileName.textContent=p.nama_lengkap || p.nama_panggilan;
+
         lockedMessage.style.display="none";
 
+        // Avatar inisial disembunyikan, ganti dengan 2 foto asli (foto_url_1 & foto_url_2).
+        profilePhotoFallback.style.display="none";
+
         unlockedSection.style.display="block";
+        unlockedInstagram.style.display="block";
 
-        photo2.src=p.foto_url_2;
+        // Guard: jangan set src kalau kosong, supaya tidak request ke "/null" atau "/undefined".
+        if (p.foto_url_1) { photo1.src = p.foto_url_1; photo1.style.display = "block"; }
+        else { photo1.removeAttribute("src"); photo1.style.display = "none"; }
 
-        photo3.src=p.foto_url_3;
+        if (p.foto_url_2) { photo2.src = p.foto_url_2; photo2.style.display = "block"; }
+        else { photo2.removeAttribute("src"); photo2.style.display = "none"; }
 
         profileInstagram.textContent=p.instagram || "-";
 
-        profileBio.textContent=p.bio || "-";
-
-        profileMbti.textContent=p.mbti || "-";
-
-        profileHobi.textContent=p.hobi || "-";
-
     }else{
+
+        // Belum mutual interest -> avatar cuma inisial huruf depan, nama cuma nama panggilan.
+        profileName.textContent=p.nama_panggilan || c.name;
 
         lockedMessage.style.display="block";
 
+        profilePhotoFallback.style.display="flex";
+        profilePhotoFallback.textContent=c.initials;
+
         unlockedSection.style.display="none";
+        unlockedInstagram.style.display="none";
 
     }
 
@@ -1155,7 +1311,16 @@ function closeProfileModal(){
 
     <button class="modal-close" onclick="closeProfileModal()">✕</button>
 
-    <img id="profilePhotoMain" class="profile-photo-main">
+    <!-- Sebelum mutual interest: avatar inisial huruf depan -->
+    <div id="profilePhotoFallback" class="profile-photo-fallback" style="display:none;"></div>
+
+    <!-- Sesudah mutual interest: 2 foto asli (foto_url_1 & foto_url_2) -->
+    <div id="unlockedSection" style="display:none;">
+      <div class="photo-grid">
+        <img id="photo1">
+        <img id="photo2">
+      </div>
+    </div>
 
     <div class="profile-name" id="profileName"></div>
 
@@ -1167,36 +1332,9 @@ function closeProfileModal(){
       🔒 Profil lengkap akan terbuka setelah kedua pihak menekan Interest.
     </div>
 
-    <div id="unlockedSection" style="display:none;">
-
-      <div class="photo-grid">
-
-        <img id="photo2">
-
-        <img id="photo3">
-
-      </div>
-
-      <div class="profile-item">
-        <strong>Instagram</strong>
-        <div id="profileInstagram"></div>
-      </div>
-
-      <div class="profile-item">
-        <strong>Bio</strong>
-        <div id="profileBio"></div>
-      </div>
-
-      <div class="profile-item">
-        <strong>MBTI</strong>
-        <div id="profileMbti"></div>
-      </div>
-
-      <div class="profile-item">
-        <strong>Hobi</strong>
-        <div id="profileHobi"></div>
-      </div>
-
+    <div id="unlockedInstagram" class="profile-item" style="display:none;">
+      <strong>Instagram</strong>
+      <div id="profileInstagram"></div>
     </div>
 
   </div>
