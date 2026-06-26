@@ -885,7 +885,7 @@ document.addEventListener('click', e => {
 const SUPABASE_URL = 'https://aqvwyecuzvhjdwcildsp.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxdnd5ZWN1enZoamR3Y2lsZHNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5ODI4MjEsImV4cCI6MjA5NzU1ODgyMX0.LikoVzwoyYgFfCNOppGu3iQub2y05Hi8qBHQYu-uZDg';
 
-const supabase = window.supabase.createClient(
+const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
