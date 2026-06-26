@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Chat | Matchu</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 <style>
@@ -182,7 +182,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 
 /* Input area */
 .room-input-wrap { background: var(--white); border-top: 1px solid var(--border); padding: 14px 18px; display: flex; gap: 10px; align-items: flex-end; flex-shrink: 0; }
-.input-box { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 11px 16px; font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text); resize: none; outline: none; max-height: 120px; line-height: 1.5; transition: border-color .15s; }
+.input-box { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 11px 16px; font-size: 16px; font-family: 'Inter', sans-serif; color: var(--text); resize: none; outline: none; max-height: 120px; line-height: 1.5; transition: border-color .15s; }
 .input-box:focus { border-color: var(--brand-mid); }
 .send-btn { width: 44px; height: 44px; border-radius: 12px; border: none; background: var(--brand); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .15s; }
 .send-btn:hover { background: var(--brand-dark); }
@@ -422,6 +422,13 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 /* ===== AUTH CHECK ===== */
 const userId = localStorage.getItem('matchu_user_id');
 if (!userId) window.location.href = 'login.html';
+const SUPABASE_URL = 'https://aqvwyecuzvhjdwcildsp.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxdnd5ZWN1enZoamR3Y2lsZHNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5ODI4MjEsImV4cCI6MjA5NzU1ODgyMX0.LikoVzwoyYgFfCNOppGu3iQub2y05Hi8qBHQYu-uZDg';
+
+const realtimeClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
 /* ===== STATE ===== */
 const urlParams   = new URLSearchParams(window.location.search);
@@ -623,6 +630,7 @@ async function openChat(idx) {
   // Load messages dari server
   await loadMessages(idx);
 
+  subscribeRealtime(chats[idx].id, idx);
   // Show room
   document.getElementById('welcomeScreen').classList.add('hidden');
   document.getElementById('chatRoom').classList.remove('hidden');
@@ -634,7 +642,40 @@ async function openChat(idx) {
 
   document.getElementById('inputBox').focus();
 }
+function subscribeRealtime(roomId, idx) {
 
+  if (realtimeChannel) {
+    realtimeClient.removeChannel(realtimeChannel);
+  }
+
+  realtimeChannel = realtimeClient
+    .channel(`room-${roomId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'chat_messages',
+        filter: `room_id=eq.${roomId}`
+      },
+      (payload) => {
+
+        chats[idx].messages.push(payload.new);
+
+        chats[idx].lastMsg = payload.new.message || payload.new.content || '';
+
+        chats[idx].time = formatTime(payload.new.created_at);
+
+        renderMessages(idx);
+        renderChatList(document.getElementById('chatSearch').value);
+
+      }
+    )
+    .subscribe((status) => {
+      console.log('Realtime:', status);
+    });
+
+}
 /* ===== SYNC INTEREST BUTTON ===== */
 function syncInterestBtn(idx) {
   const c    = chats[idx];
@@ -735,14 +776,6 @@ async function sendMessage() {
   const time = formatTime(now.toISOString());
 
   // Optimistic UI
-  const tempMsg = { sender_id: userId, message: txt, created_at: now.toISOString(), time };
-  chats[activeChatId].messages.push(tempMsg);
-  chats[activeChatId].lastMsg = txt;
-  chats[activeChatId].time    = time;
-  box.value = '';
-  box.style.height = 'auto';
-  renderMessages(activeChatId);
-  renderChatList(document.getElementById('chatSearch').value);
 
   // Kirim ke server
   try {
@@ -885,13 +918,6 @@ notifBtn.addEventListener('click', e => { e.stopPropagation(); notifDropdown.cla
 document.addEventListener('click', e => {
   if (!notifDropdown.contains(e.target) && e.target !== notifBtn) closeNotif();
 });
-const SUPABASE_URL = 'https://aqvwyecuzvhjdwcildsp.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxdnd5ZWN1enZoamR3Y2lsZHNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5ODI4MjEsImV4cCI6MjA5NzU1ODgyMX0.LikoVzwoyYgFfCNOppGu3iQub2y05Hi8qBHQYu-uZDg';
-
-const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
 
 let realtimeChannel = null;
 /* ===== START ===== */
