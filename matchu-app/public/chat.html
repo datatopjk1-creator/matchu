@@ -188,6 +188,102 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .send-btn:hover { background: var(--brand-dark); }
 .send-btn svg { width: 18px; height: 18px; stroke: white; }
 
+.profile-modal{
+
+width:min(460px,92vw);
+
+max-height:90vh;
+
+overflow:auto;
+
+padding:24px;
+
+}
+
+.profile-photo-main{
+
+width:130px;
+
+height:130px;
+
+border-radius:20px;
+
+object-fit:cover;
+
+margin:auto;
+
+display:block;
+
+}
+
+.photo-grid{
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:10px;
+
+margin-top:20px;
+
+}
+
+.photo-grid img{
+
+width:100%;
+
+height:170px;
+
+object-fit:cover;
+
+border-radius:12px;
+
+}
+
+.profile-name{
+
+font-size:22px;
+
+font-weight:700;
+
+margin-top:18px;
+
+text-align:center;
+
+}
+
+.profile-univ,
+
+.profile-job{
+
+text-align:center;
+
+color:#777;
+
+margin-top:4px;
+
+}
+
+.profile-item{
+
+margin-top:18px;
+
+}
+
+.locked-box{
+
+margin-top:20px;
+
+padding:14px;
+
+background:#FFF8E8;
+
+border-radius:12px;
+
+text-align:center;
+
+}
+
 /* REPORT MODAL */
 .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 600; align-items: center; justify-content: center; padding: 20px; }
 .modal-bg.open { display: flex; }
@@ -474,34 +570,52 @@ async function loadUserProfile() {
 }
 
 /* ===== LOAD CHAT ROOMS ===== */
-async function loadRooms() {
-  try {
-    const res  = await fetch(`/api/chat/rooms?userId=${userId}`);
-    const data = await res.json();
+  async function loadRooms() {
+    try {
+      const res  = await fetch(`/api/chat/rooms?userId=${userId}`);
+      const data = await res.json();
 
-    if (!data.success) {
-      renderEmptyList('Gagal memuat chat. Coba refresh halaman.');
-      return;
-    }
+      if (!data.success) {
+        renderEmptyList('Gagal memuat chat. Coba refresh halaman.');
+        return;
+      }
 
-    chats = (data.rooms || []).map(r => ({
-      id:             r.id,
-      partnerId:      r.partner?.id,
-      name:           r.partner?.nama_panggilan || 'Kandidat',
-      initials:       (r.partner?.nama_panggilan || '?')[0].toUpperCase(),
-      univ:           r.partner?.universitas || '—',
-      profesi:        r.partner?.profesi || '—',
-      fotoUrl:        r.partner?.foto_url_1 || null,
-      daysLeft:       r.days_left ?? 5,
-      maxDays:        r.max_days ?? 5,
-      isExpired:      r.is_expired || false,
-      lastMsg:        r.last_message?.message || '',
-      time:           r.last_message?.created_at ? formatTime(r.last_message.created_at) : '',
-      unread:         r.unread_count || 0,
-      myInterest:     r.my_interest || false,
-      mutualInterest: r.mutual_interest || false,
-      messages:       [],
-    }));
+      chats = (data.rooms || []).map(r => ({
+    id: r.id,
+
+    partnerId: r.partner?.id,
+
+    name: r.partner?.nama_panggilan || 'Kandidat',
+
+    initials: (r.partner?.nama_panggilan || '?')[0].toUpperCase(),
+
+    univ: r.partner?.universitas || '—',
+
+    profesi: r.partner?.profesi || '—',
+
+    fotoUrl: r.partner?.foto_url_1 || null,
+
+    daysLeft: r.days_left,
+
+    maxDays: r.max_days,
+
+    isExpired: r.is_expired,
+
+    lastMsg: r.last_message?.message || '',
+
+    time: r.last_message?.created_at
+        ? formatTime(r.last_message.created_at)
+        : '',
+
+    unread: r.unread_count || 0,
+
+    // ===== TAMBAHAN =====
+    myInterest: r.my_interest || false,
+    partnerInterest: r.partner_interest || false,
+    mutualInterest: r.mutual_interest || false,
+
+    messages: [],
+  }));
 
     // Sync interest state dari server
     chats.forEach(c => {
@@ -678,15 +792,38 @@ function subscribeRealtime(roomId, idx) {
 }
 /* ===== SYNC INTEREST BUTTON ===== */
 function syncInterestBtn(idx) {
-  const c    = chats[idx];
+
+  const c = chats[idx];
+
   const ibtn = document.getElementById('interestBtn');
-  if (interestState[c.id]) {
+
+  if (c.mutualInterest) {
+
     ibtn.classList.add('pressed');
-    ibtn.innerHTML = `<svg fill="none" viewBox="0 0 24 24" width="14" height="14"><path d="M12 21C12 21 3 14.5 3 8.5C3 5.4 5.4 3 8.5 3C10.2 3 11.8 3.8 12 5C12.2 3.8 13.8 3 15.5 3C18.6 3 21 5.4 21 8.5C21 14.5 12 21 12 21Z" stroke="white" stroke-width="1.8" fill="white"/></svg> Sudah Interest`;
-  } else {
-    ibtn.classList.remove('pressed');
-    ibtn.innerHTML = `<svg fill="none" viewBox="0 0 24 24" width="14" height="14"><path d="M12 21C12 21 3 14.5 3 8.5C3 5.4 5.4 3 8.5 3C10.2 3 11.8 3.8 12 5C12.2 3.8 13.8 3 15.5 3C18.6 3 21 5.4 21 8.5C21 14.5 12 21 12 21Z" stroke="white" stroke-width="1.8"/></svg> Interest`;
+
+    ibtn.innerHTML =
+      `💖 Mutual Interest`;
+
+    return;
+
   }
+
+  if (c.myInterest) {
+
+    ibtn.classList.add('pressed');
+
+    ibtn.innerHTML =
+      `❤️ Sudah Interest`;
+
+    return;
+
+  }
+
+  ibtn.classList.remove('pressed');
+
+  ibtn.innerHTML =
+    `🤍 Interest`;
+
 }
 
 /* ===== LOAD MESSAGES ===== */
@@ -803,22 +940,50 @@ function autoResize(el) {
 /* ===== INTEREST ===== */
 async function toggleInterest() {
   if (activeChatId === null) return;
+
   const c = chats[activeChatId];
-  if (interestState[c.id]) {
+
+  if (c.myInterest) {
     showToast('Sudah menandai Interest untuk chat ini.');
     return;
   }
-  interestState[c.id] = true;
-  syncInterestBtn(activeChatId);
-  showToast('❤️ Interest ditandai! Menunggu mereka menekan Interest juga.');
 
   try {
-    await fetch('/api/chat/interest', {
+
+    const res = await fetch('/api/chat/interest', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ roomId: c.id, userId }),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        roomId: c.id,
+        userId
+      }),
     });
-  } catch(e) { console.warn('toggleInterest error:', e); }
+
+    const data = await res.json();
+
+    if (!data.success) {
+      showToast(data.error || 'Gagal menyimpan Interest.');
+      return;
+    }
+
+    // Update state lokal
+    c.myInterest = true;
+    interestState[c.id] = true;
+
+    if (data.mutualInterest) {
+      c.mutualInterest = true;
+      showToast('💖 Mutual Interest! Profil sekarang terbuka.');
+    } else {
+      showToast('❤️ Interest ditandai! Menunggu mereka menekan Interest juga.');
+    }
+
+    syncInterestBtn(activeChatId);
+
+  } catch (e) {
+    console.warn('toggleInterest error:', e);
+  }
 }
 
 /* ===== REPORT ===== */
@@ -925,6 +1090,117 @@ document.addEventListener('click', e => {
 let realtimeChannel = null;
 /* ===== START ===== */
 init();
+
+async function openProfileModal(){
+
+    if(activeChatId===null) return;
+
+    const c=chats[activeChatId];
+
+    const res=await fetch(`/api/chat/partner-profile?roomId=${c.id}&userId=${userId}`);
+
+    const data=await res.json();
+
+    if(!data.success) return;
+
+    const p=data.profile;
+
+    profilePhotoMain.src=p.foto_url_1;
+
+    profileName.textContent=p.nama_lengkap || p.nama_panggilan;
+
+    profileUniv.textContent=p.universitas || "";
+
+    profileJob.textContent=p.profesi || "";
+
+    if(data.unlocked){
+
+        lockedMessage.style.display="none";
+
+        unlockedSection.style.display="block";
+
+        photo2.src=p.foto_url_2;
+
+        photo3.src=p.foto_url_3;
+
+        profileInstagram.textContent=p.instagram || "-";
+
+        profileBio.textContent=p.bio || "-";
+
+        profileMbti.textContent=p.mbti || "-";
+
+        profileHobi.textContent=p.hobi || "-";
+
+    }else{
+
+        lockedMessage.style.display="block";
+
+        unlockedSection.style.display="none";
+
+    }
+
+    profileModal.classList.add("open");
+
+}
+
+function closeProfileModal(){
+
+    profileModal.classList.remove("open");
+
+}
 </script>
+<div id="profileModal" class="modal">
+
+  <div class="modal-card profile-modal">
+
+    <button class="modal-close" onclick="closeProfileModal()">✕</button>
+
+    <img id="profilePhotoMain" class="profile-photo-main">
+
+    <div class="profile-name" id="profileName"></div>
+
+    <div class="profile-univ" id="profileUniv"></div>
+
+    <div class="profile-job" id="profileJob"></div>
+
+    <div id="lockedMessage" class="locked-box">
+      🔒 Profil lengkap akan terbuka setelah kedua pihak menekan Interest.
+    </div>
+
+    <div id="unlockedSection" style="display:none;">
+
+      <div class="photo-grid">
+
+        <img id="photo2">
+
+        <img id="photo3">
+
+      </div>
+
+      <div class="profile-item">
+        <strong>Instagram</strong>
+        <div id="profileInstagram"></div>
+      </div>
+
+      <div class="profile-item">
+        <strong>Bio</strong>
+        <div id="profileBio"></div>
+      </div>
+
+      <div class="profile-item">
+        <strong>MBTI</strong>
+        <div id="profileMbti"></div>
+      </div>
+
+      <div class="profile-item">
+        <strong>Hobi</strong>
+        <div id="profileHobi"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 </body>
 </html>

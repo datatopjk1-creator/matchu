@@ -14,7 +14,10 @@ export async function GET(req: NextRequest) {
     created_at,
     user_a_id,
     user_b_id,
-    letter_id
+    letter_id,
+    user_a_interest,
+    user_b_interest,
+    mutual_interest
   `)
   .or(`user_a_id.eq.${userId},user_b_id.eq.${userId}`)
   .order('created_at', { ascending: false });
@@ -80,23 +83,34 @@ export async function GET(req: NextRequest) {
     const maxDays  = Math.round(msTotal / (1000 * 60 * 60 * 24));
 
     return {
-          id: room.id,
-          created_at: room.created_at,
-          expires_at: room.expires_at,
+      id: room.id,
+      created_at: room.created_at,
+      expires_at: room.expires_at,
 
-          user_a_id: room.user_a_id,
-          user_b_id: room.user_b_id,
-          letter_id: room.letter_id,
+      user_a_id: room.user_a_id,
+      user_b_id: room.user_b_id,
+      letter_id: room.letter_id,
 
-          partner: partnerRes.data ?? null,
-          last_message: lastMsgRes.data ?? null,
+      partner: partnerRes.data ?? null,
+      last_message: lastMsgRes.data ?? null,
 
-          days_left: daysLeft,
-          max_days: maxDays,
-          is_expired: new Date(room.expires_at) <= new Date(),
+      days_left: daysLeft,
+      max_days: maxDays,
+      is_expired: new Date(room.expires_at) <= new Date(),
 
-          unread_count: unreadRes.count ?? 0,
-    };
+      unread_count: unreadRes.count ?? 0,
+
+      // ===== TAMBAHAN =====
+      my_interest: isUserA
+        ? room.user_a_interest
+        : room.user_b_interest,
+
+      partner_interest: isUserA
+        ? room.user_b_interest
+        : room.user_a_interest,
+
+      mutual_interest: room.mutual_interest,
+  };
   }));
 
   return NextResponse.json({ success: true, rooms: enriched });
