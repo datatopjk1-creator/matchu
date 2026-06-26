@@ -728,11 +728,14 @@ async function sendMessage() {
   if (!txt) return;
 
   const c   = chats[activeChatId];
+  console.log("CHAT =", c);
+  console.log("USER =", userId);
+  console.log("TEXT =", txt);
   const now = new Date();
   const time = formatTime(now.toISOString());
 
   // Optimistic UI
-  const tempMsg = { sender_id: userId, content: txt, created_at: now.toISOString(), time };
+  const tempMsg = { sender_id: userId, message: txt, created_at: now.toISOString(), time };
   chats[activeChatId].messages.push(tempMsg);
   chats[activeChatId].lastMsg = txt;
   chats[activeChatId].time    = time;
@@ -746,7 +749,7 @@ async function sendMessage() {
     await fetch('/api/chat/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ roomId: c.id, senderId: userId, message: txt }),
+      body: JSON.stringify({ roomId: c.id, senderId: userId, content: txt }),
     });
   } catch(e) {
     console.warn('sendMessage error:', e);
