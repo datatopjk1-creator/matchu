@@ -1,31 +1,89 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-export async function POST(req: NextRequest) {
-  const { roomId, userId, message } = await req.json();
-  if (!roomId || !userId || !message?.trim()) {
-    return NextResponse.json({ success: false, error: 'Data tidak lengkap.' }, { status: 400 });
+export async function GET(req: NextRequest) {
+  try {
+    const roomId = req.nextUrl.searchParams.get('roomId');
+    const userId = req.nextUrl.searchParams.get('userId');
+
+    if (!roomId || !userId) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'roomId atau userId tidak ditemukan',
+        },
+        { status: 400 }
+      );
+    }
+
+    // Pastikan user memang anggota room
+    const { data: room, error: roomError } = await supabase
+      .from('chat_rooms')
+      .select('id,user_a_id,user_b_id')
+      .eq('id', roomId)
+      .single();
+
+    if (roomError || !room) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Room tidak ditemukan',
+        },
+        { status: 404 }
+      );
+    }
+
+    if (room.user_a_id !== userId && room.user_b_id !== userId) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Tidak memiliki akses',
+        },
+        { status: 403 }
+      );
+    }
+
+    // Ambil seluruh pesan
+    const { data: messages, error } = await supabase
+      .from('chat_messages')
+      .select('*')
+      .eq('room_id', roomId)
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      console.error(error);
+      return NextResponse.json(
+        {
+          success: false,
+          error: error.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    // Tandai pesan lawan sudah dibaca
+    await supabase
+      .from('chat_messages')
+      .update({
+        is_read: true,
+      })
+      .eq('room_id', roomId)
+      .neq('sender_id', userId)
+      .eq('is_read', false);
+
+    return NextResponse.json({
+      success: true,
+      messages,
+    });
+  } catch (err) {
+    console.error(err);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal Server Error',
+      },
+      { status: 500 }
+    );
   }
-
-  // Verifikasi room aktif dan user ada di dalamnya
-  const { data: room } = await supabase
-    .from('chat_rooms')
-    .select('id, is_active, expires_at, user_a_id, user_b_id')
-    .eq('id', roomId)
-    .or(`user_a_id.eq.${userId},user_b_id.eq.${userId}`)
-    .single();
-
-  if (!room) return NextResponse.json({ success: false, error: 'Room tidak ditemukan.' }, { status: 404 });
-  if (!room.is_active || new Date(room.expires_at) <= new Date()) {
-    return NextResponse.json({ success: false, error: 'Chat sudah berakhir.' }, { status: 403 });
-  }
-
-  const { data: msg, error } = await supabase
-    .from('chat_messages')
-    .insert({ room_id: roomId, sender_id: userId, message: message.trim(), is_read: false })
-    .select()
-    .single();
-
-  if (error) return NextResponse.json({ success: false, error }, { status: 500 });
-  return NextResponse.json({ success: true, message: msg });
 }

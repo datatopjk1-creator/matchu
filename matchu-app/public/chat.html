@@ -417,7 +417,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 
   </div><!-- end chat-shell -->
 </div><!-- end app-shell -->
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ===== AUTH CHECK ===== */
 const userId = localStorage.getItem('matchu_user_id');
@@ -488,7 +488,7 @@ async function loadRooms() {
       daysLeft:       r.days_left ?? 5,
       maxDays:        r.max_days ?? 5,
       isExpired:      r.is_expired || false,
-      lastMsg:        r.last_message?.content || '',
+      lastMsg:        r.last_message?.message || '',
       time:           r.last_message?.created_at ? formatTime(r.last_message.created_at) : '',
       unread:         r.unread_count || 0,
       myInterest:     r.my_interest || false,
@@ -711,7 +711,7 @@ function renderMessages(idx) {
       el.className = 'msg ' + (isSent ? 'sent' : 'recv');
       const time   = m.created_at ? formatTime(m.created_at) : (m.time || '');
       el.innerHTML = `
-        <div class="msg-bubble">${escHtml(m.content || m.text)}</div>
+        <div class="msg-bubble">${escHtml(m.message || m.text)}</div>
         <div class="msg-time">${time}${isSent ? ' <span class="msg-read">✓✓</span>' : ''}</div>`;
       area.appendChild(el);
     }
@@ -746,7 +746,7 @@ async function sendMessage() {
     await fetch('/api/chat/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ roomId: c.id, senderId: userId, content: txt }),
+      body: JSON.stringify({ roomId: c.id, senderId: userId, message: txt }),
     });
   } catch(e) {
     console.warn('sendMessage error:', e);
@@ -882,7 +882,15 @@ notifBtn.addEventListener('click', e => { e.stopPropagation(); notifDropdown.cla
 document.addEventListener('click', e => {
   if (!notifDropdown.contains(e.target) && e.target !== notifBtn) closeNotif();
 });
+const SUPABASE_URL = 'https://aqvwyecuzvhjdwcildsp.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxdnd5ZWN1enZoamR3Y2lsZHNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5ODI4MjEsImV4cCI6MjA5NzU1ODgyMX0.LikoVzwoyYgFfCNOppGu3iQub2y05Hi8qBHQYu-uZDg';
 
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+let realtimeChannel = null;
 /* ===== START ===== */
 init();
 </script>
